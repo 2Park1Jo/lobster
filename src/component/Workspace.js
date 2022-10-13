@@ -33,7 +33,10 @@ const Workspace = function () {
         let minutes = String(date.getMinutes());
         let currentTime = houres + ':' + minutes;
 
-        console.log(currentTime);
+        if (chatContent === ""){
+            return;
+        }
+        
         copiedChattingData.push({
             workspaceId: "1",
             departmentId: accessedDepartmentId, 
