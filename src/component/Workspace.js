@@ -28,7 +28,7 @@ const Workspace = function () {
     const messageEndRef = useRef(null)
 
     function scrollToBottom() {
-        messageEndRef.current?.scrollIntoView({ behavior: "smooth" })
+        messageEndRef.current?.scrollIntoView({ behavior: "smooth"})
     }
 
     function addChattingData(chatContent) {
@@ -221,7 +221,11 @@ const Workspace = function () {
 
                     <div className="px-4 py-5 chat-box bg-white">
                         { departmentChattingData }
-                        <div ref={ messageEndRef } />
+                        <div className="media w-50 ml-auto mb-3">
+                            &nbsp;
+                            <div ref={ messageEndRef } />
+                        </div>
+
                     </div>
 
                 
