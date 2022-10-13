@@ -16,18 +16,23 @@ let memberData = [
     },
     {
         memberEmail: 'test4@naver.com',
-        memberPassword: 'qwe123#',
+        memberPassword: 'qwe123$',
         memberName: '홍영환'
     },
     {
         memberEmail: 'test5@naver.com',
-        memberPassword: 'qwe123#',
+        memberPassword: 'qwe123%',
         memberName: '조준희'
     },
     {
         memberEmail: 'test6@naver.com',
-        memberPassword: 'qwe123#',
+        memberPassword: 'qwe123^',
         memberName: '김영림'
+    },
+    {
+        memberEmail: 'test7@naver.com',
+        memberPassword: 'qwe123&',
+        memberName: '테스터'
     },
 ];
 
