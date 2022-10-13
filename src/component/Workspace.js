@@ -29,8 +29,8 @@ const Workspace = function () {
     function addChattingData(chatContent) {
         let copiedChattingData = [...chattingData];
         let date = new Date();
-        let houres = String(date.getHours());
-        let minutes = String(date.getMinutes());
+        let houres = String(date.getHours()).padStart(2, "0");
+        let minutes = String(date.getMinutes()).padStart(2, "0");
         let currentTime = houres + ':' + minutes;
 
         if (chatContent === ""){
@@ -139,6 +139,12 @@ const Workspace = function () {
         return htmlArrayForWholeMemberList
     }
 
+    const handleOnKeyPress = e => {
+        if (e.key === 'Enter') {
+            addChattingData(inputChattingContent); // Enter 입력이 되면 클릭 이벤트 실행
+        }
+    };
+
     return(
     <div className="maincontainer">
         <div className="container py-5 px-0">
@@ -212,15 +218,13 @@ const Workspace = function () {
                     </div>
 
                 
-                    <form className="bg-light">
-                        <div className="input-group">
-                            <input type="text" placeholder="Type a message" aria-describedby="button-addon2" className="form-control rounded-0 border-0 py-3 bg-light" value={ inputChattingContent }
-                                onChange={e => setInputChattingContent(e.target.value)}/>
-                            <div className="input-group-append">
-                            <button id="button-addon2" type="button" className="btn btn-primary" onClick={ () => addChattingData(inputChattingContent) }> send <i className="fa fa-paper-plane"></i></button>
-                            </div>
+                    <div className="input-group">
+                        <input type="text" placeholder="Type a message" aria-describedby="button-addon2" className="form-control rounded-0 border-0 py-3 bg-light" value={ inputChattingContent }
+                            onChange={e => setInputChattingContent(e.target.value)} onKeyDown={handleOnKeyPress}/>
+                        <div className="input-group-append">
+                        <button id="button-addon2" type="button" className="btn btn-primary" onClick={ () => addChattingData(inputChattingContent) }> send <i className="fa fa-paper-plane"></i></button>
                         </div>
-                    </form>
+                    </div>
 
                 </div>
                 
