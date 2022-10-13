@@ -1,7 +1,7 @@
 import './Workspace.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useLocation } from "react-router";
 import { getMemberData, getMemberName } from '../data/MemberData';
 import { getChattingData } from '../data/ChattingData';
@@ -25,6 +25,11 @@ const Workspace = function () {
     let workspaceMemberData = getWorkspaceMemberData();
     let departmentMemberData = getDepartmentMemberData();
     let [modalIsOpen, setModalIsOpen] = useState(false);
+    const messageEndRef = useRef(null)
+
+    function scrollToBottom() {
+        messageEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    }
 
     function addChattingData(chatContent) {
         let copiedChattingData = [...chattingData];
@@ -53,6 +58,7 @@ const Workspace = function () {
 
     useEffect( () => {
         setDepartmentScreen(accessedDepartmentId, accessedDepartmentName);
+        scrollToBottom();
     }, [chattingData]);
 
     function setChattingDataEachDepartment(targetDepartmentId) {
@@ -127,12 +133,12 @@ const Workspace = function () {
             htmlArrayForWholeMemberList.push(
                     // userCard form
                     <div className="list-group rounded-0">
-                    <a className="list-group-item list-group-item-action active text-white rounded-0">
-                        <div className="media">
-                            <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png" alt="user" width="25" className="rounded-circle" />
-                            <span> { userData[index].memberName } </span>
-                        </div>
-                    </a>
+                        <a className="list-group-item list-group-item-action active text-white rounded-0">
+                            <div className="media">
+                                <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png" alt="user" width="25" className="rounded-circle" />
+                                <span> { userData[index].memberName } </span>
+                            </div>
+                        </a>
                     </div>
                 )
         }
@@ -175,7 +181,7 @@ const Workspace = function () {
                         <p className="h5 mb-0 py-1">{ workspaceData[0].workspaceName }</p>
                     </div>
 
-                    <div className="messages-box">
+                    <div className="left-box">
                         {/* loginUser info */}
                         <div className="list-group rounded-0">
                         <a className="list-group-item list-group-item-action active text-white rounded-0">
@@ -215,6 +221,7 @@ const Workspace = function () {
 
                     <div className="px-4 py-5 chat-box bg-white">
                         { departmentChattingData }
+                        <div ref={ messageEndRef } />
                     </div>
 
                 

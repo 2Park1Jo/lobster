@@ -20,10 +20,10 @@ body {
 .text-small {
     font-size: 0.9rem;
 }
-.messages-box,
+
 .chat-box {
-    height: 510px;
-    overflow-y: scroll;    
+    height: 510px; 
+    overflow-y: scroll;
 }
 
 .chat-body {
