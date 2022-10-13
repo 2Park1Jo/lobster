@@ -53,11 +53,12 @@ const Workspace = function () {
         })
 
         setChattingData(copiedChattingData);
-        setInputChattingContent("");
+        // setInputChattingContent("");
     }
 
     useEffect( () => {
         setDepartmentScreen(accessedDepartmentId, accessedDepartmentName);
+        setInputChattingContent("");
         scrollToBottom();
     }, [chattingData]);
 
@@ -207,9 +208,9 @@ const Workspace = function () {
                         <div className="bg-gray px-4 py-2 bg-light">
                             <p className="mb-0 py-1">WholeMemberList</p>
                         </div>
-
+                        
                         { applyMemberList(workspaceMemberData) }
-
+                        
                     </div>
                 </div>
 
@@ -244,7 +245,23 @@ const Workspace = function () {
                     <div className="bg-gray px-4 py-2 bg-light">
                         <p className="h5 mb-0 py-1"> D-30 </p>
                     </div>
-                    { applyMemberList(departmentUserData) }
+                    <div className="bg-gray px-4 py-2 bg-light">
+                        <p className="mb-0 py-1">참여자</p>
+                    </div>
+
+                    <div className="member-box">
+                        { applyMemberList(departmentUserData) }
+                    </div>
+
+                    <div className="bg-gray px-4 py-2 bg-light">
+                        <p className="mb-0 py-1">역할정하기</p>
+                    </div>
+                    <div className="bg-gray px-4 py-2 bg-light">
+                        <p className="mb-0 py-1">파일함</p>
+                    </div>
+                    <div className="bg-gray px-4 py-2 bg-light">
+                        <p className="mb-0 py-1">버킷</p>
+                    </div>
                 </div>
 
             </div>

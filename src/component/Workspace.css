@@ -21,6 +21,12 @@ body {
     font-size: 0.9rem;
 }
 
+.member-box{
+    height: 130px; 
+    overflow-y: scroll;
+}
+
+.left-box,
 .chat-box {
     height: 510px; 
     overflow-y: scroll;
