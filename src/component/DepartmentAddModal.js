@@ -9,6 +9,11 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen}) => {
     let [inputDepartmentDeadLine, setDepartmentDeadLine] = useState("");
 
     function addDepartmentData() {
+        if (inputDepartmentDeadLine === "" || inputDepartmentGoal === "" || inputDepartmentName === ""){
+            alert("모든정보를 입력해주세요")
+            return
+        }
+
         let departmentData = getDepartmentData();
         departmentData.push(
             {
