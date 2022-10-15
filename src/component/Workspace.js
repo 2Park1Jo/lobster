@@ -5,7 +5,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useLocation } from "react-router";
 import { getMemberData, getMemberName } from '../data/MemberData';
 import { getChattingData } from '../data/ChattingData';
-import { getDepartmentData } from '../data/DepartmentData';
+import { getDepartmentData, getDepartmentGoal } from '../data/DepartmentData';
 import { getDepartmentMemberData } from '../data/DepartmentMemberData';
 import { getWorkspaceData } from '../data/WorkspaceData';
 import { getWorkspaceMemberData } from '../data/WorkspaceMemberData';
@@ -218,6 +218,7 @@ const Workspace = function () {
                 <div className="col-7 px-0">
                     <div className="bg-gray px-4 py-2 bg-light">
                         <p className="h5 mb-0 py-1">{ accessedDepartmentName } </p>
+                        <span className="small text-muted">{ getDepartmentGoal(accessedDepartmentId) }</span>
                     </div>
 
                     <div className="px-4 py-5 chat-box bg-white">
