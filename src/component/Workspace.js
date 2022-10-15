@@ -4,6 +4,7 @@ import 'bootstrap/dist/js/bootstrap.min.js';
 import React, { useEffect, useState, useRef } from 'react';
 import Modal from 'react-modal';
 import ListGroup from 'react-bootstrap/ListGroup';
+import Alert from 'react-bootstrap/Alert';
 
 import { useLocation } from "react-router";
 import { getMemberData, getMemberName } from '../data/MemberData';
@@ -67,7 +68,6 @@ const Workspace = function () {
         })
 
         setChattingData(copiedChattingData);
-        // setInputChattingContent("");
     }
 
     useEffect( () => {
@@ -93,13 +93,11 @@ const Workspace = function () {
 
             htmlArrayForDepartmentChat.push(
                 // chat form
-                <div className="media w-50 ml-auto mb-3">
-                    <div className="media-body">
-                        <li className="small text-muted">{ chatSender } { chatDate }</li>
-                        <div className="bg-primary rounded py-2 px-3">
-                            <p className="text-small mb-0 text-white">{ chatContent }</p>
-                        </div>
-                    </div>
+                <div>
+                    <li className="small text-muted">{ chatSender } { chatDate }</li>
+                    <ListGroup.Item action variant="primary" className="rounded">
+                        <span className="small"> { chatContent } </span>
+                    </ListGroup.Item>
                 </div>
                 )
         }
@@ -136,13 +134,6 @@ const Workspace = function () {
                             { departmentName }
                         </ListGroup.Item>
                     </ListGroup>
-                    // <div className="list-group rounded-0">
-                    //     <button type="button" className="btn btn-primary" onClick={ () => setDepartmentScreen(departmentId, departmentName) }>{ departmentName }</button>
-
-                    //     {/* <a className="list-group-item list-group-item-action active text-white rounded-0">
-                    //         <button type="button" className="btn btn-primary" onClick={ () => setDepartmentScreen(departmentId, departmentName) }>{ departmentName }</button>
-                    //     </a> */}
-                    // </div>
                 )
         }
         return htmlArrayForDepartmentList
@@ -160,14 +151,6 @@ const Workspace = function () {
                             <span> { memberData[index].memberName } </span>
                         </ListGroup.Item>
                     </ListGroup>
-                    // <div className="list-group rounded-0">
-                    //     <a className="list-group-item list-group-item-action text-black rounded-0">
-                    //         <div className="media">
-                    //             <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png" alt="user" width="25" className="rounded-circle" />
-                    //             <span> { userData[index].memberName } </span>
-                    //         </div>
-                    //     </a>
-                    // </div>
                 )
         }
         return htmlArrayForWholeMemberList
@@ -182,11 +165,6 @@ const Workspace = function () {
     return(
     <div className="maincontainer">
         <div className="container py-5 px-0">
-        
-            {/* <header className="text-center">
-                <h5 className="display-4 text-white"><strong>loginUser: { loginUserName }</strong></h5>
-            </header> */}
-
             <div className="row rounded-lg overflow-hidden shadow">
                 {/* left */}
                 <div className="col-1 px-0">
@@ -195,7 +173,6 @@ const Workspace = function () {
                             <div className="list-group rounded-0">
                             <a className="list-group-item list-group-item-action active text-white rounded-0">
                                 ⚙️
-                                {/* <div className="media"><img src="" alt="chat" width="50" className="rounded-circle" /></div> */}
                             </a>
                             </div>
                         </div>
@@ -246,7 +223,9 @@ const Workspace = function () {
                     </div>
 
                     <div className="px-4 py-5 chat-box bg-white">
-                        { departmentChattingData }
+                        <ListGroup>
+                            { departmentChattingData }
+                        </ListGroup>
                         <div className="media w-50 ml-auto mb-3">
                             &nbsp;
                             <div ref={ messageEndRef } />
