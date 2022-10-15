@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './Modal.css';
 import { getDepartmentData, setDepartmentData } from '../data/DepartmentData';
 
 const DepartmentAddModal = ({modalIsOpen, setModalIsOpen}) => {
@@ -24,6 +25,7 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen}) => {
 
     return(
         <div>
+            <button className="modal-close" type="button" onClick={() => setModalIsOpen(false)}>X</button>
             <h3 className="Auth-form-title">그룹추가하기</h3>
             <div className="form-group mt-3">
                 <label>그룹명</label>

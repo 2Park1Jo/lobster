@@ -205,7 +205,6 @@ const Workspace = function () {
                         <div className="bg-gray px-4 py-2 bg-light">
                             <p className="mb-0 py-1">그룹 <button onClick={()=> setModalIsOpen(true)}>+</button> </p>
                             <Modal isOpen= {modalIsOpen} style={modalStyles} onRequestClose={() => setModalIsOpen(false)}>
-                                {/* <button onClick={()=> setModalIsOpen(false)}>X</button> */}
                                 <DepartmentAddModal modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen}/>
                             </Modal>
                         </div>
