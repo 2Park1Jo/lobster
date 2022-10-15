@@ -118,9 +118,11 @@ const Workspace = function () {
             htmlArrayForDepartmentList.push(
                     // departmentList form
                     <div className="list-group rounded-0">
-                        <a className="list-group-item list-group-item-action active text-white rounded-0">
-                            <h6 className="mb-0" onClick={ () => setDepartmentScreen(departmentId, departmentName) }>{ departmentName }</h6>
-                        </a>
+                        <button type="button" className="btn btn-primary" onClick={ () => setDepartmentScreen(departmentId, departmentName) }>{ departmentName }</button>
+
+                        {/* <a className="list-group-item list-group-item-action active text-white rounded-0">
+                            <button type="button" className="btn btn-primary" onClick={ () => setDepartmentScreen(departmentId, departmentName) }>{ departmentName }</button>
+                        </a> */}
                     </div>
                 )
         }
