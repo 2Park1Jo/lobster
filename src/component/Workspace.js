@@ -2,6 +2,9 @@ import './Workspace.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import React, { useEffect, useState, useRef } from 'react';
+import Modal from 'react-modal';
+import ListGroup from 'react-bootstrap/ListGroup';
+
 import { useLocation } from "react-router";
 import { getMemberData, getMemberName } from '../data/MemberData';
 import { getChattingData } from '../data/ChattingData';
@@ -26,6 +29,17 @@ const Workspace = function () {
     let departmentMemberData = getDepartmentMemberData();
     let [modalIsOpen, setModalIsOpen] = useState(false);
     const messageEndRef = useRef(null)
+
+    const modalStyles = {
+        content: {
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            marginRight: '-50%',
+            transform: 'translate(-50%, -50%)',
+        },
+    };
 
     function scrollToBottom() {
         messageEndRef.current?.scrollIntoView({ behavior: "smooth"})
@@ -117,32 +131,43 @@ const Workspace = function () {
 
             htmlArrayForDepartmentList.push(
                     // departmentList form
-                    <div className="list-group rounded-0">
-                        <button type="button" className="btn btn-primary" onClick={ () => setDepartmentScreen(departmentId, departmentName) }>{ departmentName }</button>
+                    <ListGroup>
+                        <ListGroup.Item action variant="danger">
+                            <span onClick={ () => setDepartmentScreen(departmentId, departmentName) }>{ departmentName }</span>
+                        </ListGroup.Item>
+                    </ListGroup>
+                    // <div className="list-group rounded-0">
+                    //     <button type="button" className="btn btn-primary" onClick={ () => setDepartmentScreen(departmentId, departmentName) }>{ departmentName }</button>
 
-                        {/* <a className="list-group-item list-group-item-action active text-white rounded-0">
-                            <button type="button" className="btn btn-primary" onClick={ () => setDepartmentScreen(departmentId, departmentName) }>{ departmentName }</button>
-                        </a> */}
-                    </div>
+                    //     {/* <a className="list-group-item list-group-item-action active text-white rounded-0">
+                    //         <button type="button" className="btn btn-primary" onClick={ () => setDepartmentScreen(departmentId, departmentName) }>{ departmentName }</button>
+                    //     </a> */}
+                    // </div>
                 )
         }
         return htmlArrayForDepartmentList
     }
 
-    function applyMemberList(userData) {
+    function applyMemberList(memberData) {
         let htmlArrayForWholeMemberList = [];
 
-        for (let index = 0; index < userData.length; index++) {
+        for (let index = 0; index < memberData.length; index++) {
             htmlArrayForWholeMemberList.push(
-                    // userCard form
-                    <div className="list-group rounded-0">
-                        <a className="list-group-item list-group-item-action active text-white rounded-0">
-                            <div className="media">
-                                <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png" alt="user" width="25" className="rounded-circle" />
-                                <span> { userData[index].memberName } </span>
-                            </div>
-                        </a>
-                    </div>
+                    // memberCard form
+                    <ListGroup>
+                        <ListGroup.Item action variant="danger">
+                            <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png" alt="user" width="25" className="rounded-circle" />
+                            <span> { memberData[index].memberName } </span>
+                        </ListGroup.Item>
+                    </ListGroup>
+                    // <div className="list-group rounded-0">
+                    //     <a className="list-group-item list-group-item-action text-black rounded-0">
+                    //         <div className="media">
+                    //             <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png" alt="user" width="25" className="rounded-circle" />
+                    //             <span> { userData[index].memberName } </span>
+                    //         </div>
+                    //     </a>
+                    // </div>
                 )
         }
         return htmlArrayForWholeMemberList
@@ -185,23 +210,20 @@ const Workspace = function () {
                     </div>
 
                     <div className="left-box">
-                        {/* loginUser info */}
-                        <div className="list-group rounded-0">
-                        <a className="list-group-item list-group-item-action active text-white rounded-0">
-                            <div className="media">
+                        <ListGroup>
+                            <ListGroup.Item action variant="danger">
                                 <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png" alt="user" width="25" className="rounded-circle" />
                                 <span> { loginUserName } </span>
-                            </div>
-                        </a>
-                        </div>
+                            </ListGroup.Item>
+                        </ListGroup>
                     
                         {/* department List */}
                         <div className="bg-gray px-4 py-2 bg-light">
                             <p className="mb-0 py-1">DepartmentList <button onClick={()=> setModalIsOpen(true)}>+</button> </p>
-                            {/* <Modal isOpen={true}>
+                            <Modal isOpen= {modalIsOpen} style={modalStyles}>
                                 This is Modal content
-                                <button onClick={()=> setModalIsOpen(false)}>+</button>
-                            </Modal> */}
+                                <button onClick={()=> setModalIsOpen(false)}>X</button>
+                            </Modal>
                         </div>
 
                         { applyDepartmentList() }
@@ -234,11 +256,9 @@ const Workspace = function () {
 
                 
                     <div className="input-group">
-                        <input type="text" placeholder="Type a message" aria-describedby="button-addon2" className="form-control rounded-0 border-0 py-3 bg-light" value={ inputChattingContent }
+                        <input type="text" placeholder="Type a message" className="form-control py-3 bg-light" value={ inputChattingContent }
                             onChange={e => setInputChattingContent(e.target.value)} onKeyDown={handleOnKeyPress}/>
-                        <div className="input-group-append">
-                        <button id="button-addon2" type="button" className="btn btn-primary" onClick={ () => addChattingData(inputChattingContent) }> send <i className="fa fa-paper-plane"></i></button>
-                        </div>
+                        <button className="btn btn-primary" onClick={ () => addChattingData(inputChattingContent) }> send </button>
                     </div>
 
                 </div>
