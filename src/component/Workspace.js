@@ -132,8 +132,8 @@ const Workspace = function () {
             htmlArrayForDepartmentList.push(
                     // departmentList form
                     <ListGroup>
-                        <ListGroup.Item action variant="danger">
-                            <span onClick={ () => setDepartmentScreen(departmentId, departmentName) }>{ departmentName }</span>
+                        <ListGroup.Item action variant="danger" onClick={ () => setDepartmentScreen(departmentId, departmentName) }>
+                            { departmentName }
                         </ListGroup.Item>
                     </ListGroup>
                     // <div className="list-group rounded-0">
