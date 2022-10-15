@@ -17,7 +17,7 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen}) => {
         let departmentData = getDepartmentData();
         departmentData.push(
             {
-                departmentId: 'setUniqueIdLater',
+                departmentId:  Math.random(),
                 departmentName: inputDepartmentName,
                 departmentGoal: inputDepartmentGoal,
                 departmentDeadLine: String(inputDepartmentDeadLine)
