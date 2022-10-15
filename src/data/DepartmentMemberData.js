@@ -55,6 +55,14 @@ let departmentMemberData = [
         memberRole: '',
         memberGrade: ''
     },
+    {
+        departmentId: '3',
+        workspaceId: '1',
+        memberEmail: 'test1@naver.com',
+        memberName: '박대원',
+        memberRole: '',
+        memberGrade: ''
+    },
 ];
 
 export function getDepartmentMemberData() {
