@@ -22,3 +22,11 @@ let departmentData = [
 export function getDepartmentData() {
     return departmentData;
 }
+
+export function getDepartmentGoal(departmentId) {
+    for (let index = 0; index < departmentData.length; index++){
+        if (departmentData[index].departmentId === departmentId){
+            return departmentData[index].departmentGoal;
+        }
+    }
+}
