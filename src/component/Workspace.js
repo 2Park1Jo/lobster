@@ -1,15 +1,15 @@
 import './Workspace.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.min.js';
+import DepartmentAddModal from './DepartmentAddModal';
 import React, { useEffect, useState, useRef } from 'react';
 import Modal from 'react-modal';
 import ListGroup from 'react-bootstrap/ListGroup';
-import Alert from 'react-bootstrap/Alert';
+import Button from 'react-bootstrap/Button';
 
 import { useLocation } from "react-router";
 import { getMemberData, getMemberName } from '../data/MemberData';
 import { getChattingData } from '../data/ChattingData';
-import { getDepartmentData, getDepartmentGoal } from '../data/DepartmentData';
+import { getDepartmentData, getDepartmentGoal, getDepartmentDeadLine } from '../data/DepartmentData';
 import { getDepartmentMemberData } from '../data/DepartmentMemberData';
 import { getWorkspaceData } from '../data/WorkspaceData';
 import { getWorkspaceMemberData } from '../data/WorkspaceMemberData';
@@ -28,6 +28,9 @@ const Workspace = function () {
     let workspaceData = getWorkspaceData();
     let workspaceMemberData = getWorkspaceMemberData();
     let departmentMemberData = getDepartmentMemberData();
+
+    let [departmentData, setDepartmentData] = useState(getDepartmentData());
+
     let [modalIsOpen, setModalIsOpen] = useState(false);
     const messageEndRef = useRef(null)
 
@@ -41,6 +44,17 @@ const Workspace = function () {
             transform: 'translate(-50%, -50%)',
         },
     };
+
+    useEffect( () => {
+        setDepartmentScreen(accessedDepartmentId, accessedDepartmentName);
+        setInputChattingContent("");
+        scrollToBottom();
+    }, [chattingData]);
+
+    useEffect( () => {
+        //setDepartmentScreen(accessedDepartmentId, accessedDepartmentName);
+        setModalIsOpen(false);
+    }, [departmentData]);
 
     function scrollToBottom() {
         messageEndRef.current?.scrollIntoView({ behavior: "smooth"})
@@ -69,12 +83,6 @@ const Workspace = function () {
 
         setChattingData(copiedChattingData);
     }
-
-    useEffect( () => {
-        setDepartmentScreen(accessedDepartmentId, accessedDepartmentName);
-        setInputChattingContent("");
-        scrollToBottom();
-    }, [chattingData]);
 
     function setChattingDataEachDepartment(targetDepartmentId) {
         let chatContents = [];
@@ -121,7 +129,6 @@ const Workspace = function () {
 
     function applyDepartmentList() {
         let htmlArrayForDepartmentList = [];
-        let departmentData = getDepartmentData();
 
         for (let index = 0; index < departmentData.length; index++) {
             let departmentName = departmentData[index].departmentName
@@ -196,10 +203,10 @@ const Workspace = function () {
                     
                         {/* department List */}
                         <div className="bg-gray px-4 py-2 bg-light">
-                            <p className="mb-0 py-1">DepartmentList <button onClick={()=> setModalIsOpen(true)}>+</button> </p>
-                            <Modal isOpen= {modalIsOpen} style={modalStyles}>
-                                This is Modal content
-                                <button onClick={()=> setModalIsOpen(false)}>X</button>
+                            <p className="mb-0 py-1">그룹 <button onClick={()=> setModalIsOpen(true)}>+</button> </p>
+                            <Modal isOpen= {modalIsOpen} style={modalStyles} onRequestClose={() => setModalIsOpen(false)}>
+                                {/* <button onClick={()=> setModalIsOpen(false)}>X</button> */}
+                                <DepartmentAddModal modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen}/>
                             </Modal>
                         </div>
 
@@ -207,7 +214,7 @@ const Workspace = function () {
                         
                         {/* whole member List */}
                         <div className="bg-gray px-4 py-2 bg-light">
-                            <p className="mb-0 py-1">WholeMemberList</p>
+                            <p className="mb-0 py-1">멤버</p>
                         </div>
                         
                         { applyMemberList(workspaceMemberData) }
@@ -217,12 +224,12 @@ const Workspace = function () {
 
                 {/* right center */}
                 <div className="col-7 px-0">
-                    <div className="bg-gray px-4 py-2 bg-light">
-                        <p className="h5 mb-0 py-1">{ accessedDepartmentName } </p>
-                        <span className="small text-muted">{ getDepartmentGoal(accessedDepartmentId) }</span>
+                    <div className="bg-gray px-4 bg-light">
+                        <p className="h5">{ accessedDepartmentName } </p>
+                        <span className="small text-muted">&nbsp;{ getDepartmentGoal(accessedDepartmentId) }</span>
                     </div>
 
-                    <div className="px-4 py-5 chat-box bg-white">
+                    <div className="px-4 py-3 chat-box bg-white">
                         <ListGroup>
                             { departmentChattingData }
                         </ListGroup>
@@ -237,7 +244,7 @@ const Workspace = function () {
                     <div className="input-group">
                         <input type="text" placeholder="Type a message" className="form-control py-3 bg-light" value={ inputChattingContent }
                             onChange={e => setInputChattingContent(e.target.value)} onKeyDown={handleOnKeyPress}/>
-                        <button className="btn btn-primary" onClick={ () => addChattingData(inputChattingContent) }> send </button>
+                        <Button onClick={ () => addChattingData(inputChattingContent) }> send </Button>
                     </div>
 
                 </div>
@@ -245,7 +252,7 @@ const Workspace = function () {
                 {/* right */}
                 <div className="col-2 px-0">
                     <div className="bg-gray px-4 py-2 bg-light">
-                        <p className="h5 mb-0 py-1"> D-30 </p>
+                        <p className="h5 mb-0 py-1">&nbsp;{ getDepartmentDeadLine(accessedDepartmentId) }</p>
                     </div>
                     <div className="bg-gray px-4 py-2 bg-light">
                         <p className="mb-0 py-1">참여자</p>
