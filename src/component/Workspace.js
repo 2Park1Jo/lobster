@@ -13,22 +13,26 @@ import { getDepartmentData, getDepartmentGoal, getDepartmentDeadLine } from '../
 import { getDepartmentMemberData } from '../data/DepartmentMemberData';
 import { getWorkspaceData } from '../data/WorkspaceData';
 import { getWorkspaceMemberData } from '../data/WorkspaceMemberData';
+import { findByLabelText } from '@testing-library/react';
 
 
 const Workspace = function () {
     let location = useLocation();
     let loginUserName = location.state.loginUserName;
     let loginUserEmail = location.state.loginUserEmail;
+
     let [accessedDepartmentName, setAccessedDepartmentName] = useState("📢 공지방");
     let [accessedDepartmentId, setAccessedDepartmentId] = useState("1");
+
     let [inputChattingContent,  setInputChattingContent] = useState("");
     let [chattingData, setChattingData] = useState(getChattingData());
     let [departmentChattingData, setDepartmentChattingData] = useState([]);
-    let [departmentUserData, setDepartmentUserData] = useState([]);
-    let workspaceData = getWorkspaceData();
-    let workspaceMemberData = getWorkspaceMemberData();
-    let departmentMemberData = getDepartmentMemberData();
 
+    let workspaceData = getWorkspaceData();
+    let [workspaceMemberData, setWorkspaceMemberData] = useState(getWorkspaceMemberData());
+
+    let [departmentMemberData, setDepartmentMemberData] = useState(getDepartmentMemberData());
+    let [eachDepartmentMemberData, setEachDepartmentMemberData] = useState([]);
     let [departmentData, setDepartmentData] = useState(getDepartmentData());
 
     let [modalIsOpen, setModalIsOpen] = useState(false);
@@ -114,17 +118,18 @@ const Workspace = function () {
     }
 
     function setDepartmentScreen(departmentId, departmentName) {
-        let departmentUserDataList = [];
+        let eachDepartmentMemberDataList = [];
 
         for (let index = 0; index < departmentMemberData.length; index++){
             if (departmentMemberData[index].departmentId === departmentId){
-                departmentUserDataList.push(departmentMemberData[index]);
+                eachDepartmentMemberDataList.push(departmentMemberData[index]);
             }
         }
+
         setAccessedDepartmentName(departmentName);
         setAccessedDepartmentId(departmentId);
         setChattingDataEachDepartment(departmentId);
-        setDepartmentUserData(departmentUserDataList);
+        setEachDepartmentMemberData(eachDepartmentMemberDataList);
     }
 
     function applyDepartmentList() {
@@ -258,7 +263,7 @@ const Workspace = function () {
                     </div>
 
                     <div className="member-box">
-                        { applyMemberList(departmentUserData) }
+                        { applyMemberList(eachDepartmentMemberData) }
                     </div>
 
                     <div className="bg-gray px-4 py-2 bg-light">
