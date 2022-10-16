@@ -47,3 +47,6 @@ export function getWorkspaceMemberData() {
     return workspaceMemberData;
 }
 
+export function setWorkspaceMemberData(inputWorkspaceMemberData) {
+    workspaceMemberData = inputWorkspaceMemberData;
+}

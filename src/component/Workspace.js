@@ -1,31 +1,64 @@
 import './Workspace.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.min.js';
+import DepartmentAddModal from './DepartmentAddModal';
 import React, { useEffect, useState, useRef } from 'react';
+import Modal from 'react-modal';
+import ListGroup from 'react-bootstrap/ListGroup';
+import Button from 'react-bootstrap/Button';
+
 import { useLocation } from "react-router";
 import { getMemberData, getMemberName } from '../data/MemberData';
 import { getChattingData } from '../data/ChattingData';
-import { getDepartmentData } from '../data/DepartmentData';
+import { getDepartmentData, getDepartmentGoal, getDepartmentDeadLine } from '../data/DepartmentData';
 import { getDepartmentMemberData } from '../data/DepartmentMemberData';
 import { getWorkspaceData } from '../data/WorkspaceData';
 import { getWorkspaceMemberData } from '../data/WorkspaceMemberData';
+import { findByLabelText } from '@testing-library/react';
 
 
 const Workspace = function () {
     let location = useLocation();
     let loginUserName = location.state.loginUserName;
     let loginUserEmail = location.state.loginUserEmail;
+
     let [accessedDepartmentName, setAccessedDepartmentName] = useState("📢 공지방");
     let [accessedDepartmentId, setAccessedDepartmentId] = useState("1");
+
     let [inputChattingContent,  setInputChattingContent] = useState("");
     let [chattingData, setChattingData] = useState(getChattingData());
     let [departmentChattingData, setDepartmentChattingData] = useState([]);
-    let [departmentUserData, setDepartmentUserData] = useState([]);
+
     let workspaceData = getWorkspaceData();
-    let workspaceMemberData = getWorkspaceMemberData();
-    let departmentMemberData = getDepartmentMemberData();
+    let [workspaceMemberData, setWorkspaceMemberData] = useState(getWorkspaceMemberData());
+
+    let [departmentMemberData, setDepartmentMemberData] = useState(getDepartmentMemberData());
+    let [eachDepartmentMemberData, setEachDepartmentMemberData] = useState([]);
+    let [departmentData, setDepartmentData] = useState(getDepartmentData());
+
     let [modalIsOpen, setModalIsOpen] = useState(false);
     const messageEndRef = useRef(null)
+
+    const modalStyles = {
+        content: {
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            marginRight: '-50%',
+            transform: 'translate(-50%, -50%)',
+        },
+    };
+
+    useEffect( () => {
+        setDepartmentScreen(accessedDepartmentId, accessedDepartmentName);
+        setInputChattingContent("");
+        scrollToBottom();
+    }, [chattingData]);
+
+    useEffect( () => {
+        //setDepartmentScreen(accessedDepartmentId, accessedDepartmentName);
+        setModalIsOpen(false);
+    }, [departmentData]);
 
     function scrollToBottom() {
         messageEndRef.current?.scrollIntoView({ behavior: "smooth"})
@@ -53,14 +86,7 @@ const Workspace = function () {
         })
 
         setChattingData(copiedChattingData);
-        // setInputChattingContent("");
     }
-
-    useEffect( () => {
-        setDepartmentScreen(accessedDepartmentId, accessedDepartmentName);
-        setInputChattingContent("");
-        scrollToBottom();
-    }, [chattingData]);
 
     function setChattingDataEachDepartment(targetDepartmentId) {
         let chatContents = [];
@@ -79,13 +105,11 @@ const Workspace = function () {
 
             htmlArrayForDepartmentChat.push(
                 // chat form
-                <div className="media w-50 ml-auto mb-3">
-                    <div className="media-body">
-                        <li className="small text-muted">{ chatSender } { chatDate }</li>
-                        <div className="bg-primary rounded py-2 px-3">
-                            <p className="text-small mb-0 text-white">{ chatContent }</p>
-                        </div>
-                    </div>
+                <div>
+                    <li className="small text-muted">{ chatSender } { chatDate }</li>
+                    <ListGroup.Item action variant="primary" className="rounded">
+                        <span className="small"> { chatContent } </span>
+                    </ListGroup.Item>
                 </div>
                 )
         }
@@ -94,22 +118,22 @@ const Workspace = function () {
     }
 
     function setDepartmentScreen(departmentId, departmentName) {
-        let departmentUserDataList = [];
+        let eachDepartmentMemberDataList = [];
 
         for (let index = 0; index < departmentMemberData.length; index++){
             if (departmentMemberData[index].departmentId === departmentId){
-                departmentUserDataList.push(departmentMemberData[index]);
+                eachDepartmentMemberDataList.push(departmentMemberData[index]);
             }
         }
+
         setAccessedDepartmentName(departmentName);
         setAccessedDepartmentId(departmentId);
         setChattingDataEachDepartment(departmentId);
-        setDepartmentUserData(departmentUserDataList);
+        setEachDepartmentMemberData(eachDepartmentMemberDataList);
     }
 
     function applyDepartmentList() {
         let htmlArrayForDepartmentList = [];
-        let departmentData = getDepartmentData();
 
         for (let index = 0; index < departmentData.length; index++) {
             let departmentName = departmentData[index].departmentName
@@ -117,30 +141,28 @@ const Workspace = function () {
 
             htmlArrayForDepartmentList.push(
                     // departmentList form
-                    <div className="list-group rounded-0">
-                        <a className="list-group-item list-group-item-action active text-white rounded-0">
-                            <h6 className="mb-0" onClick={ () => setDepartmentScreen(departmentId, departmentName) }>{ departmentName }</h6>
-                        </a>
-                    </div>
+                    <ListGroup>
+                        <ListGroup.Item action variant="danger" onClick={ () => setDepartmentScreen(departmentId, departmentName) }>
+                            { departmentName }
+                        </ListGroup.Item>
+                    </ListGroup>
                 )
         }
         return htmlArrayForDepartmentList
     }
 
-    function applyMemberList(userData) {
+    function applyMemberList(memberData) {
         let htmlArrayForWholeMemberList = [];
 
-        for (let index = 0; index < userData.length; index++) {
+        for (let index = 0; index < memberData.length; index++) {
             htmlArrayForWholeMemberList.push(
-                    // userCard form
-                    <div className="list-group rounded-0">
-                        <a className="list-group-item list-group-item-action active text-white rounded-0">
-                            <div className="media">
-                                <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png" alt="user" width="25" className="rounded-circle" />
-                                <span> { userData[index].memberName } </span>
-                            </div>
-                        </a>
-                    </div>
+                    // memberCard form
+                    <ListGroup>
+                        <ListGroup.Item action variant="danger">
+                            <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png" alt="user" width="25" className="rounded-circle" />
+                            <span> { memberData[index].memberName } </span>
+                        </ListGroup.Item>
+                    </ListGroup>
                 )
         }
         return htmlArrayForWholeMemberList
@@ -155,11 +177,6 @@ const Workspace = function () {
     return(
     <div className="maincontainer">
         <div className="container py-5 px-0">
-        
-            {/* <header className="text-center">
-                <h5 className="display-4 text-white"><strong>loginUser: { loginUserName }</strong></h5>
-            </header> */}
-
             <div className="row rounded-lg overflow-hidden shadow">
                 {/* left */}
                 <div className="col-1 px-0">
@@ -168,7 +185,6 @@ const Workspace = function () {
                             <div className="list-group rounded-0">
                             <a className="list-group-item list-group-item-action active text-white rounded-0">
                                 ⚙️
-                                {/* <div className="media"><img src="" alt="chat" width="50" className="rounded-circle" /></div> */}
                             </a>
                             </div>
                         </div>
@@ -183,30 +199,26 @@ const Workspace = function () {
                     </div>
 
                     <div className="left-box">
-                        {/* loginUser info */}
-                        <div className="list-group rounded-0">
-                        <a className="list-group-item list-group-item-action active text-white rounded-0">
-                            <div className="media">
+                        <ListGroup>
+                            <ListGroup.Item action variant="danger">
                                 <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png" alt="user" width="25" className="rounded-circle" />
                                 <span> { loginUserName } </span>
-                            </div>
-                        </a>
-                        </div>
+                            </ListGroup.Item>
+                        </ListGroup>
                     
                         {/* department List */}
                         <div className="bg-gray px-4 py-2 bg-light">
-                            <p className="mb-0 py-1">DepartmentList <button onClick={()=> setModalIsOpen(true)}>+</button> </p>
-                            {/* <Modal isOpen={true}>
-                                This is Modal content
-                                <button onClick={()=> setModalIsOpen(false)}>+</button>
-                            </Modal> */}
+                            <p className="mb-0 py-1">그룹 <button className="add-button" onClick={()=> setModalIsOpen(true)}>+</button> </p>
+                            <Modal isOpen= {modalIsOpen} style={modalStyles} onRequestClose={() => setModalIsOpen(false)}>
+                                <DepartmentAddModal modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen}/>
+                            </Modal>
                         </div>
 
                         { applyDepartmentList() }
                         
                         {/* whole member List */}
                         <div className="bg-gray px-4 py-2 bg-light">
-                            <p className="mb-0 py-1">WholeMemberList</p>
+                            <p className="mb-0 py-1">멤버</p>
                         </div>
                         
                         { applyMemberList(workspaceMemberData) }
@@ -216,12 +228,15 @@ const Workspace = function () {
 
                 {/* right center */}
                 <div className="col-7 px-0">
-                    <div className="bg-gray px-4 py-2 bg-light">
-                        <p className="h5 mb-0 py-1">{ accessedDepartmentName } </p>
+                    <div className="bg-gray px-4 bg-light">
+                        <p className="h5">{ accessedDepartmentName } </p>
+                        <span className="small text-muted">&nbsp;{ getDepartmentGoal(accessedDepartmentId) }</span>
                     </div>
 
-                    <div className="px-4 py-5 chat-box bg-white">
-                        { departmentChattingData }
+                    <div className="px-4 py-3 chat-box bg-white">
+                        <ListGroup>
+                            { departmentChattingData }
+                        </ListGroup>
                         <div className="media w-50 ml-auto mb-3">
                             &nbsp;
                             <div ref={ messageEndRef } />
@@ -231,11 +246,9 @@ const Workspace = function () {
 
                 
                     <div className="input-group">
-                        <input type="text" placeholder="Type a message" aria-describedby="button-addon2" className="form-control rounded-0 border-0 py-3 bg-light" value={ inputChattingContent }
+                        <input type="text" placeholder="Type a message" className="form-control py-3 bg-light" value={ inputChattingContent }
                             onChange={e => setInputChattingContent(e.target.value)} onKeyDown={handleOnKeyPress}/>
-                        <div className="input-group-append">
-                        <button id="button-addon2" type="button" className="btn btn-primary" onClick={ () => addChattingData(inputChattingContent) }> send <i className="fa fa-paper-plane"></i></button>
-                        </div>
+                        <Button onClick={ () => addChattingData(inputChattingContent) }> send </Button>
                     </div>
 
                 </div>
@@ -243,14 +256,14 @@ const Workspace = function () {
                 {/* right */}
                 <div className="col-2 px-0">
                     <div className="bg-gray px-4 py-2 bg-light">
-                        <p className="h5 mb-0 py-1"> D-30 </p>
+                        <p className="h5 mb-0 py-1">&nbsp;{ getDepartmentDeadLine(accessedDepartmentId) }</p>
                     </div>
                     <div className="bg-gray px-4 py-2 bg-light">
                         <p className="mb-0 py-1">참여자</p>
                     </div>
 
                     <div className="member-box">
-                        { applyMemberList(departmentUserData) }
+                        { applyMemberList(eachDepartmentMemberData) }
                     </div>
 
                     <div className="bg-gray px-4 py-2 bg-light">

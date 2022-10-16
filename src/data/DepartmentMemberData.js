@@ -1,7 +1,6 @@
 let departmentMemberData = [
     {
         departmentId: '1',
-        workspaceId: '1',
         memberEmail: 'test1@naver.com',
         memberName: '박대원',
         memberRole: '',
@@ -9,7 +8,6 @@ let departmentMemberData = [
     },
     {
         departmentId: '2',
-        workspaceId: '1',
         memberEmail: 'test1@naver.com',
         memberName: '박대원',
         memberRole: '',
@@ -17,7 +15,6 @@ let departmentMemberData = [
     },
     {
         departmentId: '1',
-        workspaceId: '1',
         memberEmail: 'test2@naver.com',
         memberName: '조형준',
         memberRole: '치타',
@@ -25,7 +22,6 @@ let departmentMemberData = [
     },
     {
         departmentId: '2',
-        workspaceId: '1',
         memberEmail: 'test3@naver.com',
         memberName: '박민지',
         memberRole: '',
@@ -33,7 +29,6 @@ let departmentMemberData = [
     },
     {
         departmentId: '3',
-        workspaceId: '1',
         memberEmail: 'test4@naver.com',
         memberName: '홍영환',
         memberRole: '',
@@ -41,7 +36,6 @@ let departmentMemberData = [
     },
     {
         departmentId: '3',
-        workspaceId: '1',
         memberEmail: 'test5@naver.com',
         memberName: '조준희',
         memberRole: '',
@@ -49,9 +43,15 @@ let departmentMemberData = [
     },
     {
         departmentId: '3',
-        workspaceId: '1',
         memberEmail: 'test6@naver.com',
         memberName: '김영림',
+        memberRole: '',
+        memberGrade: ''
+    },
+    {
+        departmentId: '3',
+        memberEmail: 'test1@naver.com',
+        memberName: '박대원',
         memberRole: '',
         memberGrade: ''
     },
@@ -59,4 +59,8 @@ let departmentMemberData = [
 
 export function getDepartmentMemberData() {
     return departmentMemberData;
+}
+
+export function setDepartmentMemberData(inputDepartmentMemberData) {
+    departmentMemberData = inputDepartmentMemberData;
 }
