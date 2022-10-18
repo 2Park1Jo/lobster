@@ -13,7 +13,6 @@ import { getDepartmentData, getDepartmentGoal, getDepartmentDeadLine } from '../
 import { getDepartmentMemberData } from '../data/DepartmentMemberData';
 import { getWorkspaceData } from '../data/WorkspaceData';
 import { getWorkspaceMemberData } from '../data/WorkspaceMemberData';
-import { findByLabelText } from '@testing-library/react';
 
 
 const Workspace = function () {
@@ -50,17 +49,20 @@ const Workspace = function () {
     };
 
     useEffect( () => {
-        setDepartmentScreen(accessedDepartmentId, accessedDepartmentName);
+        setChattingDataEachDepartment(accessedDepartmentId);
         setInputChattingContent("");
-        scrollToBottom();
     }, [chattingData]);
 
     useEffect( () => {
-        setModalIsOpen(false);
-    }, [departmentData]);
+        scrollToBottom("auto");
+    }, [accessedDepartmentName]);
 
-    function scrollToBottom() {
-        messageEndRef.current?.scrollIntoView({ behavior: "smooth"})
+    useEffect( () => {
+        scrollToBottom("smooth");
+    }, [departmentChattingData])
+
+    function scrollToBottom(behavior) {
+        messageEndRef.current?.scrollIntoView({behavior: behavior})
     }
 
     function addChattingData(chatContent) {
@@ -113,6 +115,10 @@ const Workspace = function () {
                 )
         }
 
+        htmlArrayForDepartmentChat.push(
+            <div ref={ messageEndRef }></div>
+        )
+
         setDepartmentChattingData(htmlArrayForDepartmentChat);
     }
 
@@ -125,9 +131,9 @@ const Workspace = function () {
             }
         }
 
+        setChattingDataEachDepartment(departmentId);
         setAccessedDepartmentName(departmentName);
         setAccessedDepartmentId(departmentId);
-        setChattingDataEachDepartment(departmentId);
         setEachDepartmentMemberData(eachDepartmentMemberDataList);
     }
 
@@ -236,11 +242,6 @@ const Workspace = function () {
                         <ListGroup>
                             { departmentChattingData }
                         </ListGroup>
-                        <div className="media w-50 ml-auto mb-3">
-                            &nbsp;
-                            <div ref={ messageEndRef } />
-                        </div>
-
                     </div>
 
                 
