@@ -17,26 +17,26 @@ import { findByLabelText } from '@testing-library/react';
 
 
 const Workspace = function () {
-    let location = useLocation();
-    let loginUserName = location.state.loginUserName;
-    let loginUserEmail = location.state.loginUserEmail;
+    let location = useLocation(); // 로그인창에서 받아오는 정보
+    let loginUserName = location.state.loginUserName; // 로그인한 유저 이름
+    let loginUserEmail = location.state.loginUserEmail; // 로그인한 유저 이메일
 
-    let [accessedDepartmentName, setAccessedDepartmentName] = useState("📢 공지방");
-    let [accessedDepartmentId, setAccessedDepartmentId] = useState("1");
+    let [accessedDepartmentName, setAccessedDepartmentName] = useState("📢 공지방"); // 접속중인 부서 명
+    let [accessedDepartmentId, setAccessedDepartmentId] = useState("1"); // 접속중인 부서 아이디
 
-    let [inputChattingContent,  setInputChattingContent] = useState("");
-    let [chattingData, setChattingData] = useState(getChattingData());
-    let [departmentChattingData, setDepartmentChattingData] = useState([]);
+    let [inputChattingContent,  setInputChattingContent] = useState(""); // 사용자가 입력한 채팅 컨텐츠 데이터
+    let [chattingData, setChattingData] = useState(getChattingData()); // 전체 채팅 데이터
+    let [departmentChattingData, setDepartmentChattingData] = useState([]); // 각 부서별 채팅 데이터 -> 각 부서별 화면에 뿌려주기 용
 
-    let workspaceData = getWorkspaceData();
-    let [workspaceMemberData, setWorkspaceMemberData] = useState(getWorkspaceMemberData());
+    let workspaceData = getWorkspaceData(); // 워크스페이스 정보
+    let [workspaceMemberData, setWorkspaceMemberData] = useState(getWorkspaceMemberData()); // 워크스페이스에 가입되어있는 멤버 데이터
 
-    let [departmentMemberData, setDepartmentMemberData] = useState(getDepartmentMemberData());
-    let [eachDepartmentMemberData, setEachDepartmentMemberData] = useState([]);
-    let [departmentData, setDepartmentData] = useState(getDepartmentData());
+    let [departmentMemberData, setDepartmentMemberData] = useState(getDepartmentMemberData()); // 전체 부서 멤버 정보
+    let [eachDepartmentMemberData, setEachDepartmentMemberData] = useState([]); // 각 부서별 멤버 정보 -> 화면에 뿌려주기 용
+    let [departmentData, setDepartmentData] = useState(getDepartmentData()); // 부서정보
 
-    let [modalIsOpen, setModalIsOpen] = useState(false);
-    const messageEndRef = useRef(null)
+    let [modalIsOpen, setModalIsOpen] = useState(false); // 모달관리 
+    const messageEndRef = useRef(null) // 채팅메세지의 마지막
 
     const modalStyles = {
         content: {
@@ -56,7 +56,6 @@ const Workspace = function () {
     }, [chattingData]);
 
     useEffect( () => {
-        //setDepartmentScreen(accessedDepartmentId, accessedDepartmentName);
         setModalIsOpen(false);
     }, [departmentData]);
 
