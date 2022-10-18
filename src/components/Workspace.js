@@ -72,7 +72,8 @@ const Workspace = function () {
         let minutes = String(date.getMinutes()).padStart(2, "0");
         let currentTime = houres + ':' + minutes;
 
-        if (chatContent === ""){
+        if (chatContent.replace(/ /g,"") === ""){
+            setInputChattingContent("");
             return;
         }
         
@@ -244,7 +245,6 @@ const Workspace = function () {
                         </ListGroup>
                     </div>
 
-                
                     <div className="input-group">
                         <input type="text" placeholder="Type a message" className="form-control py-3 bg-light" value={ inputChattingContent }
                             onChange={e => setInputChattingContent(e.target.value)} onKeyPress={handleOnKeyPress}/>
