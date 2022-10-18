@@ -247,7 +247,7 @@ const Workspace = function () {
                 
                     <div className="input-group">
                         <input type="text" placeholder="Type a message" className="form-control py-3 bg-light" value={ inputChattingContent }
-                            onChange={e => setInputChattingContent(e.target.value)} onKeyDown={handleOnKeyPress}/>
+                            onChange={e => setInputChattingContent(e.target.value)} onKeyPress={handleOnKeyPress}/>
                         <Button onClick={ () => addChattingData(inputChattingContent) }> send </Button>
                     </div>
 
