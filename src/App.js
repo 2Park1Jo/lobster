@@ -1,7 +1,7 @@
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Login from './component/Login';
-import Workspace from './component/Workspace';
+import Login from './components/Login';
+import Workspace from './components/Workspace';
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
