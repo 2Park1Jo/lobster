@@ -49,7 +49,7 @@ const Workspace = function () {
     };
 
     useEffect( () => {
-        setChattingDataEachDepartment(accessedDepartmentId);
+        setDepartmentScreen(accessedDepartmentId);
         setInputChattingContent("");
     }, [chattingData]);
 
