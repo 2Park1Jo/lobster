@@ -14,6 +14,7 @@ import { getDepartmentMemberData } from '../data/DepartmentMemberData';
 import { getWorkspaceData } from '../data/WorkspaceData';
 import { getWorkspaceMemberData } from '../data/WorkspaceMemberData';
 
+import { getWaitResources } from '../api/MemberAPI';
 
 const Workspace = function () {
     let location = useLocation(); // 로그인창에서 받아오는 정보
@@ -28,14 +29,22 @@ const Workspace = function () {
     let [departmentChattingData, setDepartmentChattingData] = useState([]); // 각 부서별 채팅 데이터 -> 각 부서별 화면에 뿌려주기 용
 
     let workspaceData = getWorkspaceData(); // 워크스페이스 정보
-    let [workspaceMemberData, setWorkspaceMemberData] = useState(getWorkspaceMemberData()); // 워크스페이스에 가입되어있는 멤버 데이터
+    let [workspaceMemberData, setWorkspaceMemberData] = useState(getWaitResources()); // 워크스페이스에 가입되어있는 멤버 데이터
+    console.log(workspaceData)
 
     let [departmentMemberData, setDepartmentMemberData] = useState(getDepartmentMemberData()); // 전체 부서 멤버 정보
     let [eachDepartmentMemberData, setEachDepartmentMemberData] = useState([]); // 각 부서별 멤버 정보 -> 화면에 뿌려주기 용
     let [departmentData, setDepartmentData] = useState(getDepartmentData()); // 부서정보
 
     let [modalIsOpen, setModalIsOpen] = useState(false); // 모달관리 
+
     const messageEndRef = useRef(null) // 채팅메세지의 마지막
+
+    // const $websocket = useRef(null)
+
+    // useEffect( () => {
+    //     setCurrentSocket(socketIOClient("localhost:8080"));
+    // }, []);
 
     const modalStyles = {
         content: {
