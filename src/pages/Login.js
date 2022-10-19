@@ -13,7 +13,7 @@ const Login = function () {
         let userData = getMemberData();
 
         for (let userIndex = 0; userIndex < userData.length; userIndex++) {
-            if (email == userData[userIndex].memberEmail && password === userData[userIndex].memberPassword){
+            if (email === userData[userIndex].memberEmail && password === userData[userIndex].memberPassword){
                 navigate("/workSpace", { state:
                     {   
                         loginUserEmail : userData[userIndex].memberEmail,
@@ -28,7 +28,7 @@ const Login = function () {
 
     return(
         <div className="Auth-form-container">
-            <form className="Auth-form">
+            <div className="Auth-form">
             <h3 className="Auth-form-title">Lobster</h3>
                 <div className="Auth-form-content">
                     <div className="form-group mt-3">
@@ -51,18 +51,20 @@ const Login = function () {
                             onChange={e => setPassword(e.target.value)}
                         />
                     </div>
-                    <div className="d-grid gap-2 mt-3">
+                    <div className="d-grid gap-2 mt-5">
                 
-                    <button type="submit" className="btn btn-primary" onClick={ checkLoginSuccess }>
+                    <button className="btn btn-primary btn-lg" onClick={ checkLoginSuccess }>
                         로그인
                     </button>
                 
                     </div>
-                    <p className="forgot-password text-right mt-2">
-                        <a href="#">비밀번호를 잊어버리셨습니까?</a>
-                    </p>
+                    
+                    <div className="mt-3 col">
+                    <span style={{fontSize:'14px'}}>계정이 없으신가요? </span>
+                        <a href='/signup'>회원가입</a>
+                    </div>
                 </div>
-            </form>
+            </div>
         </div>
     );
 }

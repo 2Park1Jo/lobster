@@ -1,6 +1,6 @@
 import './Workspace.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import DepartmentAddModal from './DepartmentAddModal';
+import DepartmentAddModal from '../components/DepartmentAddModal';
 import React, { useEffect, useState, useRef } from 'react';
 import Modal from 'react-modal';
 import ListGroup from 'react-bootstrap/ListGroup';
