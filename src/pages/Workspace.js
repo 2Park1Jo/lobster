@@ -5,6 +5,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import Modal from 'react-modal';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Button from 'react-bootstrap/Button';
+import SockJsClient from "react-stomp";
 
 import { useLocation } from "react-router";
 import { getMemberData, getMemberName } from '../data/MemberData';
@@ -14,7 +15,7 @@ import { getDepartmentMemberData } from '../data/DepartmentMemberData';
 import { getWorkspaceData } from '../data/WorkspaceData';
 import { getWorkspaceMemberData } from '../data/WorkspaceMemberData';
 
-import { getWaitResources } from '../api/MemberAPI';
+import { getAllMemberData } from '../api/MemberAPI';
 
 const Workspace = function () {
     let location = useLocation(); // 로그인창에서 받아오는 정보
@@ -29,14 +30,15 @@ const Workspace = function () {
     let [departmentChattingData, setDepartmentChattingData] = useState([]); // 각 부서별 채팅 데이터 -> 각 부서별 화면에 뿌려주기 용
 
     let workspaceData = getWorkspaceData(); // 워크스페이스 정보
-    let [workspaceMemberData, setWorkspaceMemberData] = useState(getWaitResources()); // 워크스페이스에 가입되어있는 멤버 데이터
-    console.log(workspaceData)
+    let [workspaceMemberData, setWorkspaceMemberData] = useState(getWorkspaceMemberData()); // 워크스페이스에 가입되어있는 멤버 데이터
 
     let [departmentMemberData, setDepartmentMemberData] = useState(getDepartmentMemberData()); // 전체 부서 멤버 정보
     let [eachDepartmentMemberData, setEachDepartmentMemberData] = useState([]); // 각 부서별 멤버 정보 -> 화면에 뿌려주기 용
     let [departmentData, setDepartmentData] = useState(getDepartmentData()); // 부서정보
 
     let [modalIsOpen, setModalIsOpen] = useState(false); // 모달관리 
+
+    let [socketState, setSocketState] = useState(false); // web socket
 
     const messageEndRef = useRef(null) // 채팅메세지의 마지막
 
@@ -58,7 +60,7 @@ const Workspace = function () {
     };
 
     useEffect( () => {
-        setDepartmentScreen(accessedDepartmentId);
+        setDepartmentScreen(accessedDepartmentId, accessedDepartmentName);
         setInputChattingContent("");
     }, [chattingData]);
 
@@ -175,7 +177,7 @@ const Workspace = function () {
                     <ListGroup>
                         <ListGroup.Item action variant="danger">
                             <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png" alt="user" width="25" className="rounded-circle" />
-                            <span> { memberData[index].memberName } </span>
+                            <span> { memberData[index].name } </span>
                         </ListGroup.Item>
                     </ListGroup>
                 )
@@ -186,8 +188,18 @@ const Workspace = function () {
     const handleOnKeyPress = e => {
         if (e.key === 'Enter') {
             addChattingData(inputChattingContent); // Enter 입력이 되면 클릭 이벤트 실행
+
+            // getAllMemberData()
+            // .then(
+            //     (res) => {
+            //         setWorkspaceMemberData(res)
+            //     }
+            // )
         }
     };
+
+
+    const socketUrl = "";
 
     return(
     <div className="maincontainer">
@@ -288,7 +300,6 @@ const Workspace = function () {
 
             </div>
         </div>
-
     </div>
     );
 }

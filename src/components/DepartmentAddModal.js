@@ -62,8 +62,8 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen}) => {
         let htmlArrayForDepartmentMember = [];
 
         for (let index = 0; index < workspaceMemberData.length; index++) {
-            let memberName = workspaceMemberData[index].memberName
-            let memberEmail = workspaceMemberData[index].memberEmail
+            let memberName = workspaceMemberData[index].name
+            let memberEmail = workspaceMemberData[index].email
 
             htmlArrayForDepartmentMember.push(
                 <Dropdown.Item eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName }</Dropdown.Item>
@@ -76,14 +76,14 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen}) => {
         let copiedMemberData = [...inputDepartmentMemberData];
 
         for (let index = 0; index < copiedMemberData.length; index++){
-            if (copiedMemberData[index].memberEmail === memberEmail && copiedMemberData[index].memberName === memberName){
+            if (copiedMemberData[index].email === memberEmail && copiedMemberData[index].name === memberName){
                 return;
             }
         }
         copiedMemberData.push(
             {
-                memberEmail: memberEmail,
-                memberName: memberName,
+                email: memberEmail,
+                name: memberName,
             }
         )
         setInputDepartmentMemberData(copiedMemberData)
@@ -93,7 +93,7 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen}) => {
         let selectedMemberNameList = [];
 
         for (let index = 0; index < inputDepartmentMemberData.length; index++){
-            selectedMemberNameList.push(inputDepartmentMemberData[index].memberName)
+            selectedMemberNameList.push(inputDepartmentMemberData[index].name)
         }
 
         return selectedMemberNameList;
@@ -123,10 +123,10 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen}) => {
             newDepartmentMemberData.push(
                 {
                     departmentId: randomDepartmentId,
-                    memberEmail: inputDepartmentMemberData[index].memberEmail,
-                    memberName: inputDepartmentMemberData[index].memberName,
-                    memberRole: '',
-                    memberGrade: ''
+                    email: inputDepartmentMemberData[index].email,
+                    name: inputDepartmentMemberData[index].name,
+                    role: '',
+                    grade: ''
                 },
             )
         }
