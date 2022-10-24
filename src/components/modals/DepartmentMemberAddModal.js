@@ -3,9 +3,8 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import Form from 'react-bootstrap/Form';
 
 import './Modal.css';
-import { getDepartmentData, setDepartmentData } from '../data/DepartmentData';
-import { getDepartmentMemberData, setDepartmentMemberData } from '../data/DepartmentMemberData';
-import { getWorkspaceMemberData, setWorkspaceMemberData } from '../data/WorkspaceMemberData';
+import { getDepartmentMemberData, setDepartmentMemberData } from '../../data/DepartmentMemberData';
+import { getWorkspaceMemberData } from '../../data/WorkspaceMemberData';
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 <a
@@ -50,11 +49,7 @@ const CustomMenu = React.forwardRef(
 },
 );
 
-const DepartmentAddModal = ({modalIsOpen, setModalIsOpen}) => {
-
-    let [inputDepartmentName, setInputDepartmentName] = useState("");
-    let [inputDepartmentGoal, setInputDepartmentGoal] = useState("");
-    let [inputDepartmentDeadLine, setInputDepartmentDeadLine] = useState("");
+const DepartmentMemberAddModal = ({modalIsOpen, setModalIsOpen, accessedDepartmentId}) => {
     let [inputDepartmentMemberData, setInputDepartmentMemberData] = useState([]);
     let workspaceMemberData = getWorkspaceMemberData();
 
@@ -62,8 +57,8 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen}) => {
         let htmlArrayForDepartmentMember = [];
 
         for (let index = 0; index < workspaceMemberData.length; index++) {
-            let memberName = workspaceMemberData[index].memberName
-            let memberEmail = workspaceMemberData[index].memberEmail
+            let memberName = workspaceMemberData[index].name
+            let memberEmail = workspaceMemberData[index].email
 
             htmlArrayForDepartmentMember.push(
                 <Dropdown.Item eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName }</Dropdown.Item>
@@ -76,14 +71,14 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen}) => {
         let copiedMemberData = [...inputDepartmentMemberData];
 
         for (let index = 0; index < copiedMemberData.length; index++){
-            if (copiedMemberData[index].memberEmail === memberEmail && copiedMemberData[index].memberName === memberName){
+            if (copiedMemberData[index].email === memberEmail && copiedMemberData[index].name === memberName){
                 return;
             }
         }
         copiedMemberData.push(
             {
-                memberEmail: memberEmail,
-                memberName: memberName,
+                email: memberEmail,
+                name: memberName,
             }
         )
         setInputDepartmentMemberData(copiedMemberData)
@@ -93,7 +88,7 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen}) => {
         let selectedMemberNameList = [];
 
         for (let index = 0; index < inputDepartmentMemberData.length; index++){
-            selectedMemberNameList.push(inputDepartmentMemberData[index].memberName)
+            selectedMemberNameList.push(inputDepartmentMemberData[index].name)
         }
 
         return selectedMemberNameList;
@@ -101,37 +96,23 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen}) => {
 
     function addDepartmentData() {
         let selectedMemberLength = getSelectedMemberName().length;
-        if (inputDepartmentDeadLine === "" || inputDepartmentGoal === "" || inputDepartmentName === "" || selectedMemberLength === 0){
-            alert("모든정보를 입력해주세요")
+        if (selectedMemberLength === 0){
+            alert("추가할 멤버를 선택해주세요")
             return
         }
-
-        let randomDepartmentId = String(Math.random());
-
-        let newDepartmentData = getDepartmentData();
-        newDepartmentData.push(
-            {
-                departmentId:  randomDepartmentId,
-                departmentName: inputDepartmentName,
-                departmentGoal: inputDepartmentGoal,
-                departmentDeadLine: String(inputDepartmentDeadLine)
-            },
-        )
 
         let newDepartmentMemberData = getDepartmentMemberData();
         for (let index = 0; index < inputDepartmentMemberData.length; index++){
             newDepartmentMemberData.push(
                 {
-                    departmentId: randomDepartmentId,
-                    memberEmail: inputDepartmentMemberData[index].memberEmail,
-                    memberName: inputDepartmentMemberData[index].memberName,
-                    memberRole: '',
-                    memberGrade: ''
+                    departmentId: accessedDepartmentId,
+                    email: inputDepartmentMemberData[index].email,
+                    name: inputDepartmentMemberData[index].name,
+                    role: '',
+                    grade: ''
                 },
             )
         }
-
-        setDepartmentData(newDepartmentData);
         setDepartmentMemberData(newDepartmentMemberData);
         setModalIsOpen(false);
     }
@@ -139,38 +120,7 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen}) => {
     return(
         <div>
             <button className="modal-close" type="button" onClick={() => setModalIsOpen(false)}>X</button>
-            <h3 className="Auth-form-title">그룹추가하기</h3>
-            <div className="form-group mt-3">
-                <label>그룹명</label>
-                <input
-                    type="text"
-                    className="form-control mt-1"
-                    placeholder="그룹명을 입력해주세요"
-                    value={ inputDepartmentName }
-                    onChange={e => setInputDepartmentName(e.target.value)}
-                />
-            </div>
-            <div className="form-group mt-3">
-                <label>목적</label>
-                <input
-                    type="text"
-                    className="form-control mt-1"
-                    placeholder="목적을 입력해주세요"
-                    value={ inputDepartmentGoal }
-                    onChange={e => setInputDepartmentGoal(e.target.value)}
-                />
-            </div>
-            <div className="form-group mt-3">
-                <label>마감일</label>
-                <input
-                    type="date"
-                    className="form-control mt-1"
-                    placeholder="마감일을 입력해주세요"
-                    value={ inputDepartmentDeadLine }
-                    onChange={e => setInputDepartmentDeadLine(e.target.value)}
-                />
-            </div>
-            
+            <h3 className="Auth-form-title">멤버추가</h3>
             <div className="form-group mt-3">
                 <label>멤버추가</label>
                 <input
@@ -179,7 +129,6 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen}) => {
                     disabled="disabled"
                     placeholder="멤버를 추가해주세요"
                     value={ getSelectedMemberName() }
-                    // onChange={e => set(e.target.value)}
                 />
                 <Dropdown>
                     <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
@@ -200,4 +149,4 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen}) => {
     );
 }
 
-export default DepartmentAddModal;
+export default DepartmentMemberAddModal;

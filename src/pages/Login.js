@@ -1,23 +1,24 @@
 import './Login.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { getMemberData } from '../data/MemberData.js';
+import { getAllMemberData } from '../api/MemberAPI';
 
 const Login = function () {
 
     let [email, setEmail] = useState("");
     let [password, setPassword] = useState("");
+
+    let [allMemberData, setAllMemberData] = useState([]);
     let navigate = useNavigate();
 
     function checkLoginSuccess() {
-        let userData = getMemberData();
-
-        for (let userIndex = 0; userIndex < userData.length; userIndex++) {
-            if (email === userData[userIndex].memberEmail && password === userData[userIndex].memberPassword){
+        for (let userIndex = 0; userIndex < allMemberData.length; userIndex++) {
+            if (email == allMemberData[userIndex].email && password === allMemberData[userIndex].password){
                 navigate("/workSpace", { state:
                     {   
-                        loginUserEmail : userData[userIndex].memberEmail,
-                        loginUserName: userData[userIndex].memberName
+                        loginUserEmail : allMemberData[userIndex].email,
+                        loginUserName: allMemberData[userIndex].name
                     } 
                 })
                 return;
@@ -25,6 +26,21 @@ const Login = function () {
         }
         alert("올바른 정보를 입력해주세요")
     }
+
+    const handleOnKeyPress = e => {
+        if (e.key === 'Enter') {
+            checkLoginSuccess();
+        }
+    };
+
+    useEffect( () => {
+        getAllMemberData()
+        .then(
+            (res) => {
+                setAllMemberData(res)
+            }
+        )
+    },[])
 
     return(
         <div className="Auth-form-container">
@@ -53,7 +69,7 @@ const Login = function () {
                     </div>
                     <div className="d-grid gap-2 mt-5">
                 
-                    <button className="btn btn-primary btn-lg" onClick={ checkLoginSuccess }>
+                    <button className="btn btn-primary btn-lg" onClick={ checkLoginSuccess } onKeyPress={ handleOnKeyPress }>
                         로그인
                     </button>
                 

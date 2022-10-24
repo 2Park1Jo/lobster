@@ -1,59 +1,59 @@
 let departmentMemberData = [
     {
         departmentId: '1',
-        memberEmail: 'test1@naver.com',
-        memberName: '박대원',
-        memberRole: '',
-        memberGrade: ''
+        email: 'test1@naver.com',
+        name: '박대원',
+        role: '',
+        grade: ''
     },
     {
         departmentId: '2',
-        memberEmail: 'test1@naver.com',
-        memberName: '박대원',
-        memberRole: '',
-        memberGrade: ''
+        email: 'test1@naver.com',
+        name: '박대원',
+        role: '',
+        grade: ''
     },
     {
         departmentId: '1',
-        memberEmail: 'test2@naver.com',
-        memberName: '조형준',
-        memberRole: '치타',
-        memberGrade: ''
+        email: 'test2@naver.com',
+        name: '조형준',
+        role: '치타',
+        grade: ''
     },
     {
         departmentId: '2',
-        memberEmail: 'test3@naver.com',
-        memberName: '박민지',
-        memberRole: '',
-        memberGrade: ''
+        email: 'test3@naver.com',
+        name: '박민지',
+        role: '',
+        grade: ''
     },
     {
         departmentId: '3',
-        memberEmail: 'test4@naver.com',
-        memberName: '홍영환',
-        memberRole: '',
-        memberGrade: ''
+        email: 'test4@naver.com',
+        name: '홍영환',
+        role: '',
+        grade: ''
     },
     {
         departmentId: '3',
-        memberEmail: 'test5@naver.com',
-        memberName: '조준희',
-        memberRole: '',
-        memberGrade: ''
+        email: 'test5@naver.com',
+        name: '조준희',
+        role: '',
+        grade: ''
     },
     {
         departmentId: '3',
-        memberEmail: 'test6@naver.com',
-        memberName: '김영림',
-        memberRole: '',
-        memberGrade: ''
+        email: 'test6@naver.com',
+        name: '김영림',
+        role: '',
+        grade: ''
     },
     {
         departmentId: '3',
-        memberEmail: 'test1@naver.com',
-        memberName: '박대원',
-        memberRole: '',
-        memberGrade: ''
+        email: 'test1@naver.com',
+        name: '박대원',
+        role: '',
+        grade: ''
     },
 ];
 

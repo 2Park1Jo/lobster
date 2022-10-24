@@ -1,6 +1,8 @@
 import './Workspace.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import DepartmentAddModal from '../components/DepartmentAddModal';
+import Card from '../components/Card';
+import DepartmentAddModal from '../components/modals/DepartmentAddModal'
+import DepartmentMemberAddModal from '../components/modals/DepartmentMemberAddModal';
 import React, { useEffect, useState, useRef } from 'react';
 import Modal from 'react-modal';
 import ListGroup from 'react-bootstrap/ListGroup';
@@ -13,7 +15,7 @@ import { getDepartmentData, getDepartmentGoal, getDepartmentDeadLine } from '../
 import { getDepartmentMemberData } from '../data/DepartmentMemberData';
 import { getWorkspaceData } from '../data/WorkspaceData';
 import { getWorkspaceMemberData } from '../data/WorkspaceMemberData';
-
+import { getAllMemberData } from '../api/MemberAPI';
 
 const Workspace = function () {
     let location = useLocation(); // 로그인창에서 받아오는 정보
@@ -35,7 +37,17 @@ const Workspace = function () {
     let [departmentData, setDepartmentData] = useState(getDepartmentData()); // 부서정보
 
     let [modalIsOpen, setModalIsOpen] = useState(false); // 모달관리 
+    let [modal2IsOpen, setModal2IsOpen] = useState(false);
+
+    let [socketState, setSocketState] = useState(false); // web socket
+
     const messageEndRef = useRef(null) // 채팅메세지의 마지막
+
+    // const $websocket = useRef(null)
+
+    // useEffect( () => {
+    //     setCurrentSocket(socketIOClient("localhost:8080"));
+    // }, []);
 
     const modalStyles = {
         content: {
@@ -49,9 +61,9 @@ const Workspace = function () {
     };
 
     useEffect( () => {
-        setDepartmentScreen(accessedDepartmentId);
+        setDepartmentScreen(accessedDepartmentId, accessedDepartmentName);
         setInputChattingContent("");
-    }, [chattingData]);
+    }, [chattingData], [departmentMemberData]);
 
     useEffect( () => {
         scrollToBottom("auto");
@@ -160,25 +172,33 @@ const Workspace = function () {
     function applyMemberList(memberData) {
         let htmlArrayForWholeMemberList = [];
 
-        for (let index = 0; index < memberData.length; index++) {
+
+        memberData.map( (member) => {
             htmlArrayForWholeMemberList.push(
-                    // memberCard form
-                    <ListGroup>
-                        <ListGroup.Item action variant="danger">
-                            <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png" alt="user" width="25" className="rounded-circle" />
-                            <span> { memberData[index].memberName } </span>
-                        </ListGroup.Item>
-                    </ListGroup>
-                )
-        }
+                <Card
+                    profilePicture='https://therichpost.com/wp-content/uploads/2020/06/avatar2.png'
+                    name={member.name}
+                    role={member.role}
+                    onClicked={() => alert(member.name)}
+                />
+            )
+        })
+
         return htmlArrayForWholeMemberList
     }
 
     const handleOnKeyPress = e => {
         if (e.key === 'Enter') {
             addChattingData(inputChattingContent); // Enter 입력이 되면 클릭 이벤트 실행
+            // getAllMemberData()
+            // .then(
+            //     (res) => {
+            //         setWorkspaceMemberData(res)
+            //     }
+            // )
         }
     };
+
 
     return(
     <div className="maincontainer">
@@ -258,8 +278,13 @@ const Workspace = function () {
                     <div className="bg-gray px-4 py-2 bg-light">
                         <p className="h5 mb-0 py-1">&nbsp;{ getDepartmentDeadLine(accessedDepartmentId) }</p>
                     </div>
+
                     <div className="bg-gray px-4 py-2 bg-light">
-                        <p className="mb-0 py-1">참여자</p>
+                        <p className="mb-0 py-1">참여자<button className="add-button" onClick={()=> setModal2IsOpen(true)}>+</button> </p>
+                        <Modal isOpen= {modal2IsOpen} style={modalStyles} onRequestClose={() => setModal2IsOpen(false)}>
+                            <DepartmentMemberAddModal modalIsOpen={modal2IsOpen} setModalIsOpen={setModal2IsOpen} accessedDepartmentId={accessedDepartmentId}/>
+                        </Modal>
+
                     </div>
 
                     <div className="member-box">
