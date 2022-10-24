@@ -65,11 +65,12 @@ const Login = function () {
                             placeholder="비밀번호를 입력해주세요"
                             value={ password }
                             onChange={e => setPassword(e.target.value)}
+                            onKeyPress={ handleOnKeyPress }
                         />
                     </div>
                     <div className="d-grid gap-2 mt-5">
                 
-                    <button className="btn btn-primary btn-lg" onClick={ checkLoginSuccess } onKeyPress={ handleOnKeyPress }>
+                    <button className="btn btn-primary btn-lg" onClick={ checkLoginSuccess }>
                         로그인
                     </button>
                 

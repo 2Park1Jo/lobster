@@ -18,9 +18,11 @@ import { getWorkspaceMemberData } from '../data/WorkspaceMemberData';
 import { getAllMemberData } from '../api/MemberAPI';
 
 const Workspace = function () {
-    let location = useLocation(); // 로그인창에서 받아오는 정보
-    let loginUserName = location.state.loginUserName; // 로그인한 유저 이름
-    let loginUserEmail = location.state.loginUserEmail; // 로그인한 유저 이메일
+    // let location = useLocation(); // 로그인창에서 받아오는 정보
+    // let loginUserName = location.state.loginUserName; // 로그인한 유저 이름
+    // let loginUserEmail = location.state.loginUserEmail; // 로그인한 유저 이메일
+    let loginUserName = "test"
+    let loginUserEmail = "test"
 
     let [accessedDepartmentName, setAccessedDepartmentName] = useState("📢 공지방"); // 접속중인 부서 명
     let [accessedDepartmentId, setAccessedDepartmentId] = useState("1"); // 접속중인 부서 아이디
