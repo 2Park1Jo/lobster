@@ -4,6 +4,8 @@ import {isCorrectEmail,isCorrectPassword,isCorrectName} from '../utils/Regex.js'
 import { useNavigate } from "react-router-dom";
 import {isDepulicatedId,registerUser} from '../api/memberAPI.js'
 import axios from "axios"
+import '../utils/Constant.js'
+import { errorText } from '../utils/Constant.js';
 
 
 const Signup=function(){
@@ -30,20 +32,34 @@ const Signup=function(){
             //return sentence;
         }
         else{
-            let result=Promise.resolve(isDepulicatedId(email))
+            setems(<span style={{color:'orange', fontSize : '14px'}}>중복검사중입니다...</span>)
+            let result=isDepulicatedId(email)
             result.then(value=>{
-                if(value){
+                console.log(result)
+                //console.log(Promise.resolve(result))
+                //console.log(value)
+                if(value===true){
                     setems(<span style={{color:'red', fontSize : '14px'}}>이미 등록된 email주소입니다.</span>)
                     isIdconfirmed=false;
                     console.log(true)
                     //return sentence;
                 }
-                else{
+                else if(value===false){
                     setems(<span style={{color:'green', fontSize : '14px'}}>사용가능한 email주소입니다.</span>)
                     isIdconfirmed=true;
                     console.log(false)
                     //return sentence;
                 }
+                else {
+                    //console.log(result)
+                    setems(<span style={{color:'red', fontSize : '14px'}}>서버에 에러가 발생했습니다.</span>)
+                    isIdconfirmed=false;
+                }
+            }).catch(error=>{
+                //console.log(result)
+                setems(<span style={{color:'red', fontSize : '14px'}}>서버에 에러가 발생했습니다.</span>)
+                isIdconfirmed=true;
+                //console.log(false)
             })
         }
     }
@@ -104,10 +120,19 @@ const Signup=function(){
 
     function signUpBtnClicked(){
         if(isIdconfirmed===true&&isPwconfirmed===true&&isPwCheckconfirmed===true&&isNameconfirmed===true){
-            console.log(email,password,name)
-            registerUser(email,password,name)
-            alert("가입이 완료되었습니다!")
-            navigate("/")
+            //console.log(email,password,name)
+            let result=registerUser(email,password,name)
+            result.then(value=>{
+                if(value){
+                    alert("가입이 완료되었습니다!")
+                    navigate("/")
+                }
+                else{
+                    alert("서버에 에러가 발생했습니다!")
+                }
+            }).catch(error=>{
+                alert("서버에 에러가 발생했습니다!")
+            })
         }
         else{
             alert("회원가입 양식에 맞게 입력해주세요!")

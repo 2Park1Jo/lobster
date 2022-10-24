@@ -1,6 +1,8 @@
 import axios from "axios"
-
+import '../utils/Constant.js'
+import { errorText } from "../utils/Constant.js";
 axios.defaults.withCredentials = true;
+axios.defaults.timeout=4000;
 
 export const isDepulicatedId=async function(email){
     const response=await axios.get(
@@ -17,12 +19,18 @@ export const isDepulicatedId=async function(email){
             withCredentials: true
         
         }).then(res=>{
-            if(res.data===true){
-                return true
-            }
-            return false
+            console.log(res);
+            return res.data;
+            // if(res.data===true){
+            //     return true
+            // }
+            // else if(res.data===false){
+            //     return false
+            // }
+            // else{
+            //     return errorText;
+            // }
         })
-    return response
 }
 
 export const registerUser=async function(email,password,name){
@@ -40,10 +48,11 @@ export const registerUser=async function(email,password,name){
         
         }).then(response=>{
             if(response.status===200){
-                console.log("Ok")
+                return true
             }
             else{
                 console.log(response)
+                return false
             }
         }).catch(error=>{
             console.log(error)
