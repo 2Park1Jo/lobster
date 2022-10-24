@@ -1,6 +1,8 @@
 import './Workspace.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import DepartmentAddModal from '../components/DepartmentAddModal';
+import Card from '../components/Card';
+import DepartmentAddModal from '../components/modals/DepartmentAddModal'
+import DepartmentMemberAddModal from '../components/modals/DepartmentMemberAddModal';
 import React, { useEffect, useState, useRef } from 'react';
 import Modal from 'react-modal';
 import ListGroup from 'react-bootstrap/ListGroup';
@@ -37,6 +39,7 @@ const Workspace = function () {
     let [departmentData, setDepartmentData] = useState(getDepartmentData()); // 부서정보
 
     let [modalIsOpen, setModalIsOpen] = useState(false); // 모달관리 
+    let [modal2IsOpen, setModal2IsOpen] = useState(false);
 
     let [socketState, setSocketState] = useState(false); // web socket
 
@@ -62,7 +65,7 @@ const Workspace = function () {
     useEffect( () => {
         setDepartmentScreen(accessedDepartmentId, accessedDepartmentName);
         setInputChattingContent("");
-    }, [chattingData]);
+    }, [chattingData], [departmentMemberData]);
 
     useEffect( () => {
         scrollToBottom("auto");
@@ -171,17 +174,17 @@ const Workspace = function () {
     function applyMemberList(memberData) {
         let htmlArrayForWholeMemberList = [];
 
-        for (let index = 0; index < memberData.length; index++) {
+        memberData.map( (member) => {
             htmlArrayForWholeMemberList.push(
-                    // memberCard form
-                    <ListGroup>
-                        <ListGroup.Item action variant="danger">
-                            <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png" alt="user" width="25" className="rounded-circle" />
-                            <span> { memberData[index].name } </span>
-                        </ListGroup.Item>
-                    </ListGroup>
-                )
-        }
+                <Card
+                    profilePicture='https://therichpost.com/wp-content/uploads/2020/06/avatar2.png'
+                    name={member.name}
+                    role={member.role}
+                    onClicked={() => alert(member.name)}
+                />
+            )
+        })
+
         return htmlArrayForWholeMemberList
     }
 
@@ -279,8 +282,12 @@ const Workspace = function () {
                     <div className="bg-gray px-4 py-2 bg-light">
                         <p className="h5 mb-0 py-1">&nbsp;{ getDepartmentDeadLine(accessedDepartmentId) }</p>
                     </div>
+
                     <div className="bg-gray px-4 py-2 bg-light">
-                        <p className="mb-0 py-1">참여자</p>
+                        <p className="mb-0 py-1">참여자<button className="add-button" onClick={()=> setModal2IsOpen(true)}>+</button> </p>
+                        <Modal isOpen= {modal2IsOpen} style={modalStyles} onRequestClose={() => setModal2IsOpen(false)}>
+                            <DepartmentMemberAddModal modalIsOpen={modal2IsOpen} setModalIsOpen={setModal2IsOpen} accessedDepartmentId={accessedDepartmentId}/>
+                        </Modal>
                     </div>
 
                     <div className="member-box">
