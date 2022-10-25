@@ -2,12 +2,6 @@ import React from "react";
 import Carousel from "react-3-carousel";
 import "./WorkspaceBanner.css"
 
-const breakPoints = [
-    { width: 1, itemsToShow: 1 },
-    { width: 550, itemsToShow: 2 },
-    { width: 768, itemsToShow: 3 },
-];
-
 const WorkspaceBanner = () =>{
     return (
         <div className="banner-container">
