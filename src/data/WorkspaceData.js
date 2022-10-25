@@ -37,6 +37,15 @@ let workspaceData = [
     },
 ];
 
-export function getWorkspaceData() {
+export function getAllWorkspaceData() {
     return workspaceData;
+}
+
+export function getWorkspaceData(workspaceId) {
+    for (let index = 0; index < workspaceData.length; index++){
+        if (workspaceData[index].workspaceId === workspaceId){
+            return workspaceData[index];
+        }
+    }
+    return workspaceData[0];
 }

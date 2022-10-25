@@ -1,16 +1,21 @@
 import WorkspcaeCard from "./WorkspcaeCard";
 import WorkspaceCarousel from "./WorkspaceCarousel";
-import { getWorkspaceData } from "../../data/WorkspaceData"
+import { getAllWorkspaceData } from "../../data/WorkspaceData"
 
 export default function workSpaceBanner() {
-    let workspaceData = getWorkspaceData()
+    let workspaceData = getAllWorkspaceData()
     let cards = []
 
     workspaceData.map( (workspace) => {
         cards.push(
             {
                 key: workspace.workspaceId,
-                content: <WorkspcaeCard image={"https://picsum.photos/500/300?img="+workspace.workspaceId} overline={workspace.workspaceDeadline} heading={workspace.workspaceName} body={workspace.workspaceGoal}/>
+                content: 
+                <WorkspcaeCard 
+                    image={"https://picsum.photos/500/300?img="+workspace.workspaceId} 
+                    overline={workspace.workspaceDeadline} 
+                    heading={workspace.workspaceName} 
+                    body={workspace.workspaceGoal}/>
             },
         )
     })

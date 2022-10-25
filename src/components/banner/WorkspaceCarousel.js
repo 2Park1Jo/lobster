@@ -2,6 +2,8 @@ import Carousel from "react-spring-3d-carousel";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { config } from "react-spring";
+import { useRecoilState } from "recoil";
+import { WORKSPACE_ID } from "../../recoil/Atoms";
 
 export default function WorkspaceCarousel(props) {
     const table = props.cards.map((element, index) => {
@@ -13,11 +15,13 @@ export default function WorkspaceCarousel(props) {
     const [goToSlide, setGoToSlide] = useState(0);
     const [cards] = useState(table);
     const currentSlide = useRef(goToSlide);
+    const [workspaceId, setWorkspaceId] = useRecoilState(WORKSPACE_ID);
     const navigate = useNavigate();
 
     function onClickCard(index){
         if (currentSlide.current === index){
             // alert(table[index].key) // workspaceId
+            setWorkspaceId(table[index].key)
             navigate("/workSpace") // 로그인한 유저 정보, 워크스페이스 정보 state 넘기기 or recoil
         }
         else{

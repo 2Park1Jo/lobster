@@ -7,6 +7,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import Modal from 'react-modal';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Button from 'react-bootstrap/Button';
+import { useRecoilState } from "recoil";
 
 import { useLocation } from "react-router";
 import { getMemberData, getMemberName } from '../data/MemberData';
@@ -16,11 +17,13 @@ import { getDepartmentMemberData } from '../data/DepartmentMemberData';
 import { getWorkspaceData } from '../data/WorkspaceData';
 import { getWorkspaceMemberData } from '../data/WorkspaceMemberData';
 import { getAllMemberData } from '../api/MemberAPI';
+import { WORKSPACE_ID } from '../recoil/Atoms';
 
 const Workspace = function () {
     // let location = useLocation(); // 로그인창에서 받아오는 정보
     // let loginUserName = location.state.loginUserName; // 로그인한 유저 이름
     // let loginUserEmail = location.state.loginUserEmail; // 로그인한 유저 이메일
+    
     let loginUserName = "test"
     let loginUserEmail = "test"
 
@@ -31,7 +34,8 @@ const Workspace = function () {
     let [chattingData, setChattingData] = useState(getChattingData()); // 전체 채팅 데이터
     let [departmentChattingData, setDepartmentChattingData] = useState([]); // 각 부서별 채팅 데이터 -> 각 부서별 화면에 뿌려주기 용
 
-    let workspaceData = getWorkspaceData(); // 워크스페이스 정보
+    let [workspaceId, setWorkspaceId] = useRecoilState(WORKSPACE_ID);
+    let workspaceData = getWorkspaceData(workspaceId); // 워크스페이스 정보
     let [workspaceMemberData, setWorkspaceMemberData] = useState(getWorkspaceMemberData()); // 워크스페이스에 가입되어있는 멤버 데이터
 
     let [departmentMemberData, setDepartmentMemberData] = useState(getDepartmentMemberData()); // 전체 부서 멤버 정보
@@ -223,7 +227,7 @@ const Workspace = function () {
                 <div className="col-2 px-0">
                     {/* workspace info */}
                     <div className="bg-gray px-4 py-2 bg-light">
-                        <p className="h5 mb-0 py-1">{ workspaceData[0].workspaceName }</p>
+                        <p className="h5 mb-0 py-1">{ workspaceData.workspaceName }</p>
                     </div>
 
                     <div className="left-box">

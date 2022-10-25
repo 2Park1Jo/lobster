@@ -9,3 +9,8 @@ export const MEMBER_LIST = atom({
         name: "test",
     }],
 });
+
+export const WORKSPACE_ID = atom({
+    key : 'accessedWorkspaceId',
+    default : "",
+});
