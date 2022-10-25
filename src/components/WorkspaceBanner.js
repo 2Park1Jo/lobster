@@ -1,6 +1,5 @@
 import React from "react";
 import Carousel from "react-3-carousel";
-import WorkspaceProfile from "./WorkspaceProfile";
 import "./WorkspaceBanner.css"
 
 const breakPoints = [
@@ -11,29 +10,27 @@ const breakPoints = [
 
 const WorkspaceBanner = () =>{
     return (
-        <>
+        <div className="banner-container">
             <h1 style={ { textAlign:"center" } }>LOBSTER</h1>
-            <div className="workspace">
+            <div className="banner">
                 <Carousel
                     titles={[
-                        "SLIDE ONE",
-                        "SLIDE TWO",
-                        "SLIDE THREE",
-                        "SLIDE FOUR",
-                        "SLIDE FIVE",
+                        "ONE",
+                        "TWO",
+                        "THREE",
+                        "FOUR",
+                        "FIVE",
                     ]}
                     descriptions={[
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                        " Etiam mollis ex dolor, eget gravida felis blandit id. Curabitur congue nibh et gravida volutpat.",
-                        "Integer tincidunt lorem non lacus laoreet, sed porta dui porttitor. ",
-                        "Vestibulum suscipit vel dolor sit amet bibendum.",
-                        "Nam ipsum enim, rutrum nec lectus eu, imperdiet dictum quam. ",
+                        "목표 && 마감일",
+                        "목표: 오픈소스 프로젝트 완성 마감일: 2022/10/10",
+                        "목표 && 마감일",
+                        "목표 && 마감일",
+                        "목표 && 마감일",
                     ]}
-                >
-
-                </Carousel>
+                />
             </div>
-        </>
+        </div>
     );
 }
 

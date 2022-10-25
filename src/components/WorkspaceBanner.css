@@ -1,9 +1,12 @@
-.workspace {
-    font-family: sans-serif;
-    display: flex;
-    align-items: center;
+.banner-container {
     justify-content: center;
+    align-items: center;
+    width: 100vw;
     height: 100vh;
+}
+
+.banner {
+    display: flex;
 }
 
 .image-slide-left .card,
