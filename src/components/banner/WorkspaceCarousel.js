@@ -17,7 +17,8 @@ export default function WorkspaceCarousel(props) {
 
     function onClickCard(index){
         if (currentSlide.current === index){
-            navigate("/workSpace") // recoil 에서 로그인한 유저 정보, 워크스페이스 정보 state 넘기기
+            // alert(table[index].key) // workspaceId
+            navigate("/workSpace") // 로그인한 유저 정보, 워크스페이스 정보 state 넘기기 or recoil
         }
         else{
             setGoToSlide(index)

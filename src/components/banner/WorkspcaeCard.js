@@ -46,7 +46,7 @@ export default function WorkspaceCard({image, overline, heading, body}) {
             <CardContent className={styles.content}>
                 <TextInfoContent
                     classes={textCardContentStyles}
-                    overline={overline}
+                    overline={"마감일 : " + overline}
                     heading={heading}
                     body={body}
                     />
