@@ -1,10 +1,5 @@
 import React from "react";
-// import { Carousel } from 'react-bootstrap';
-// import 'bootstrap/dist/css/bootstrap.min.css';
-// import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
-// import { Carousel } from 'react-responsive-carousel';
-
-import Carousel from "react-elastic-carousel";
+import Carousel from "react-3-carousel";
 import WorkspaceProfile from "./WorkspaceProfile";
 import "./WorkspaceBanner.css"
 
@@ -17,17 +12,25 @@ const breakPoints = [
 const WorkspaceBanner = () =>{
     return (
         <>
-            <h1 className="workspace-banner-top" style={{ textAlign: "center" }}>LOBSTER</h1>
+            <h1 style={ { textAlign:"center" } }>LOBSTER</h1>
             <div className="workspace">
-                <Carousel breakPoints={breakPoints}>
-                    <WorkspaceProfile>One</WorkspaceProfile>
-                    <WorkspaceProfile>Two</WorkspaceProfile>
-                    <WorkspaceProfile>Three</WorkspaceProfile>
-                    <WorkspaceProfile>Four</WorkspaceProfile>
-                    <WorkspaceProfile>Five</WorkspaceProfile>
-                    <WorkspaceProfile>Six</WorkspaceProfile>
-                    <WorkspaceProfile>Seven</WorkspaceProfile>
-                    <WorkspaceProfile>Eight</WorkspaceProfile>
+                <Carousel
+                    titles={[
+                        "SLIDE ONE",
+                        "SLIDE TWO",
+                        "SLIDE THREE",
+                        "SLIDE FOUR",
+                        "SLIDE FIVE",
+                    ]}
+                    descriptions={[
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                        " Etiam mollis ex dolor, eget gravida felis blandit id. Curabitur congue nibh et gravida volutpat.",
+                        "Integer tincidunt lorem non lacus laoreet, sed porta dui porttitor. ",
+                        "Vestibulum suscipit vel dolor sit amet bibendum.",
+                        "Nam ipsum enim, rutrum nec lectus eu, imperdiet dictum quam. ",
+                    ]}
+                >
+
                 </Carousel>
             </div>
         </>

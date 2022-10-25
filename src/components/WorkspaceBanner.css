@@ -6,6 +6,11 @@
     height: 100vh;
 }
 
-.workspace-banner-top{
-    text-align: "center" ;
+.image-slide-left .card,
+.image-slide-right .card {
+    background-color: #0e97b9e5 !important;
+}
+
+.image-slide-center .card {
+    background-color: white !important;
 }
