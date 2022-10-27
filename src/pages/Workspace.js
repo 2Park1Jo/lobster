@@ -83,6 +83,28 @@ const Workspace = function () {
         messageEndRef.current?.scrollIntoView({behavior: behavior})
     }
 
+    function getDDay(deadLine){
+        let today = new Date();
+        let deadLineData = new Date(deadLine);
+        let gap = deadLineData.getTime() - today.getTime();
+        let dDay = Math.ceil(gap / (1000 * 60 * 60 * 24));
+
+        if (dDay < 0){
+            dDay = "+" + (dDay * -1);
+        }
+        else if (dDay > 0){
+            dDay = "-" + dDay;
+        }
+        
+        if (dDay === 0){
+            return "D-day"
+        }
+
+        if (!isNaN(dDay)){
+            return "D" + dDay;
+        }
+    }
+
     function addChattingData(chatContent) {
         let copiedChattingData = [...chattingData];
         let date = new Date();
@@ -282,7 +304,7 @@ const Workspace = function () {
                 {/* right */}
                 <div className="col-2 px-0">
                     <div className="bg-gray px-4 py-2 bg-light">
-                        <p className="h5 mb-0 py-1">&nbsp;{ getDepartmentDeadLine(accessedDepartmentId) }</p>
+                        <p className="h5 mb-0 py-1">&nbsp;{ getDDay(getDepartmentDeadLine(accessedDepartmentId)) }</p>
                     </div>
 
                     <div className="bg-gray px-4 py-2 bg-light">
