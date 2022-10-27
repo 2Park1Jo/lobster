@@ -22,7 +22,7 @@ export default function WorkspaceCarousel(props) {
         if (currentSlide.current === index){
             // alert(table[index].key) // workspaceId
             setWorkspaceId(table[index].key)
-            navigate("/workSpace") // 로그인한 유저 정보, 워크스페이스 정보 state 넘기기 or recoil
+            navigate("/workSpace/" + table[index].key) // 로그인한 유저 정보, 워크스페이스 정보 state 넘기기 or recoil
         }
         else{
             setGoToSlide(index)
