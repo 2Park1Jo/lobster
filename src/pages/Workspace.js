@@ -7,6 +7,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import Modal from 'react-modal';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Button from 'react-bootstrap/Button';
+import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 
 import { useLocation } from "react-router";
@@ -20,6 +21,7 @@ import { getAllMemberData } from '../api/MemberAPI';
 import { WORKSPACE_ID } from '../recoil/Atoms';
 
 const Workspace = function () {
+    let navigate = useNavigate();
     // let location = useLocation(); // 로그인창에서 받아오는 정보
     // let loginUserName = location.state.loginUserName; // 로그인한 유저 이름
     // let loginUserEmail = location.state.loginUserEmail; // 로그인한 유저 이메일
@@ -172,6 +174,7 @@ const Workspace = function () {
             }
         }
 
+        navigate(workspaceId + "/department/" + departmentId)
         setChattingDataEachDepartment(departmentId);
         setAccessedDepartmentName(departmentName);
         setAccessedDepartmentId(departmentId);
