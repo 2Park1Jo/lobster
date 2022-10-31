@@ -1,12 +1,10 @@
 import WorkspcaeCard from "./WorkspcaeCard";
 import WorkspaceCarousel from "./WorkspaceCarousel";
-import { getAllWorkspaceData } from "../../data/WorkspaceData"
 
-export default function workSpaceBanner() {
-    let workspaceData = getAllWorkspaceData()
+export default function workSpaceBanner({ allWorkspace }) {
     let cards = []
 
-    workspaceData.map( (workspace) => {
+    allWorkspace.map( (workspace) => {
         cards.push(
             {
                 key: workspace.workspaceId,

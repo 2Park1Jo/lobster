@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { getMemberData } from '../data/MemberData.js';
 import { useRecoilState } from 'recoil';
 import { getAllMemberData } from '../api/MemberAPI';
-import { Member } from '../models/model/Member'
+import { MemberViewModel } from '../models/view-model/MemberViewModel';
+import { Member } from '../models/model/Member';
 import { LOGIN_MEMBER } from '../recoil/Atoms';
 
 const Login = function () {
@@ -15,7 +16,8 @@ const Login = function () {
     let [allMemberData, setAllMemberData] = useState([]);
     let navigate = useNavigate();
     let [loginMember, setLoginMember] = useRecoilState(LOGIN_MEMBER);
-    let member = new Member();
+    const member = new Member();
+    const memberViewModel = new MemberViewModel(member);
 
     function checkLoginSuccess() {
         for (let userIndex = 0; userIndex < allMemberData.length; userIndex++) {
@@ -39,8 +41,8 @@ const Login = function () {
 
     useEffect( () => {
         
-        member.updateModel(getMemberData());
-        setAllMemberData(member.getMember())
+        memberViewModel.update(getMemberData());
+        setAllMemberData(memberViewModel.getAll());
         // getAllMemberData()
         // .then(
         //     (res) => {

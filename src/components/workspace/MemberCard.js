@@ -2,7 +2,7 @@ import React from 'react'
 import { ListGroup } from 'react-bootstrap'
 
 
-const Card = ({ profilePicture, name, role, onClicked}) => {
+export default function MemberCard({ profilePicture, name, role, onClicked}){
     return(
         <ListGroup>
             <ListGroup.Item action variant="danger" onClick={ onClicked }>
@@ -12,5 +12,3 @@ const Card = ({ profilePicture, name, role, onClicked}) => {
         </ListGroup>
     )
 }
-
-export default Card

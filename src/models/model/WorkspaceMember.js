@@ -1,8 +1,9 @@
-export class Member{
+export class WorkspaceMember{
     #members = [{
         email: "",
-        password: "",
+        workspaceId: "",
         name: "",
+        grade: "",
     }]
 
     updateModel(updatedModel){

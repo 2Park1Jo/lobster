@@ -1,8 +1,10 @@
-export class Member{
+export class DepartmentMember{
     #members = [{
+        departmentId: "",
         email: "",
-        password: "",
         name: "",
+        role: "",
+        grade: ""
     }]
 
     updateModel(updatedModel){

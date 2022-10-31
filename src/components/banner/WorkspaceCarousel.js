@@ -2,8 +2,8 @@ import Carousel from "react-spring-3d-carousel";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { config } from "react-spring";
-import { useRecoilState } from "recoil";
-import { WORKSPACE_ID } from "../../recoil/Atoms";
+import { useSetRecoilState } from "recoil";
+import { ACCESSED_DEPARTMENT, WORKSPACE_ID } from "../../recoil/Atoms";
 
 export default function WorkspaceCarousel(props) {
     const table = props.cards.map((element, index) => {
@@ -15,14 +15,19 @@ export default function WorkspaceCarousel(props) {
     const [goToSlide, setGoToSlide] = useState(0);
     const [cards] = useState(table);
     const currentSlide = useRef(goToSlide);
-    const [workspaceId, setWorkspaceId] = useRecoilState(WORKSPACE_ID);
+    const setWorkspaceId = useSetRecoilState(WORKSPACE_ID);
+    const setAccessedDepartment = useSetRecoilState(ACCESSED_DEPARTMENT);
     const navigate = useNavigate();
 
     function onClickCard(index){
         if (currentSlide.current === index){
             // alert(table[index].key) // workspaceId
-            setWorkspaceId(table[index].key)
-            navigate("/workSpace/" + table[index].key) // 로그인한 유저 정보, 워크스페이스 정보 state 넘기기 or recoil
+            setWorkspaceId(cards[index].key)
+            setAccessedDepartment({
+                id: "1",
+                name: "📢 공지방"
+            })
+            navigate("/workspace/" + cards[index].key + "/chat/department/1") // 로그인한 유저 정보, 워크스페이스 정보 state 넘기기 or recoil
         }
         else{
             setGoToSlide(index)
