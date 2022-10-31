@@ -1,12 +1,11 @@
 import {atom} from 'recoil';
 
 
-export const MEMBER_LIST = atom({
-	key : 'memberState',
+export const LOGIN_MEMBER = atom({
+	key : 'loginMember',
     default : [{
         email: "",
-        password: "",
-        name: "test",
+        name: "",
     }],
 });
 
