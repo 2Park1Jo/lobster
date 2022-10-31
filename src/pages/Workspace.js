@@ -7,6 +7,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import Modal from 'react-modal';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Button from 'react-bootstrap/Button';
+import { Member } from '../models/model/Member'
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 
@@ -18,16 +19,16 @@ import { getDepartmentMemberData } from '../data/DepartmentMemberData';
 import { getWorkspaceData } from '../data/WorkspaceData';
 import { getWorkspaceMemberData } from '../data/WorkspaceMemberData';
 import { getAllMemberData } from '../api/MemberAPI';
-import { WORKSPACE_ID } from '../recoil/Atoms';
+import { LOGIN_MEMBER, WORKSPACE_ID } from '../recoil/Atoms';
 
 const Workspace = function () {
     let navigate = useNavigate();
+
+    let [loginMember, setLoginMember] = useRecoilState(LOGIN_MEMBER);
+
     // let location = useLocation(); // 로그인창에서 받아오는 정보
     // let loginUserName = location.state.loginUserName; // 로그인한 유저 이름
     // let loginUserEmail = location.state.loginUserEmail; // 로그인한 유저 이메일
-    
-    let loginUserName = "test"
-    let loginUserEmail = "test"
 
     let [accessedDepartmentName, setAccessedDepartmentName] = useState("📢 공지방"); // 접속중인 부서 명
     let [accessedDepartmentId, setAccessedDepartmentId] = useState("1"); // 접속중인 부서 아이디
@@ -67,7 +68,6 @@ const Workspace = function () {
             transform: 'translate(-50%, -50%)',
         },
     };
-
     useEffect( () => {
         setDepartmentScreen(accessedDepartmentId, accessedDepartmentName);
         setInputChattingContent("");
@@ -122,7 +122,7 @@ const Workspace = function () {
         copiedChattingData.push({
             workspaceId: "1",
             departmentId: accessedDepartmentId, 
-            memberEmail: loginUserEmail,
+            memberEmail: loginMember.email,
             content: chatContent,
             date: currentTime,
             content_type: "TEXT",
@@ -221,6 +221,7 @@ const Workspace = function () {
     const handleOnKeyPress = e => {
         if (e.key === 'Enter') {
             addChattingData(inputChattingContent); // Enter 입력이 되면 클릭 이벤트 실행
+            console.log(Member.getMembers())
             // getAllMemberData()
             // .then(
             //     (res) => {
@@ -259,7 +260,7 @@ const Workspace = function () {
                         <ListGroup>
                             <ListGroup.Item action variant="danger">
                                 <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png" alt="user" width="25" className="rounded-circle" />
-                                <span> { loginUserName } </span>
+                                <span> { loginMember.name } </span>
                             </ListGroup.Item>
                         </ListGroup>
                     
