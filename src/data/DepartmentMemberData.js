@@ -3,7 +3,7 @@ let departmentMemberData = [
         departmentId: '1',
         email: 'test1@naver.com',
         name: '박대원',
-        role: '',
+        role: '꿀벌',
         grade: ''
     },
     {
@@ -18,6 +18,13 @@ let departmentMemberData = [
         email: 'test2@naver.com',
         name: '조형준',
         role: '치타',
+        grade: ''
+    },
+    {
+        departmentId: '1',
+        email: 'test3@naver.com',
+        name: '박민지',
+        role: '에이스',
         grade: ''
     },
     {
