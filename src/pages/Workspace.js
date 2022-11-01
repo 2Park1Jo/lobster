@@ -26,6 +26,7 @@ import { DepartmentMember } from '../models/model/DepartmentMember';
 import { DepartmentMemberViewModel } from '../models/view-model/DepartmentMemberViewModel';
 import { Chat } from '../models/model/Chat';
 import { ChatViewModel } from '../models/view-model/ChatViewModel';
+import { Department } from '../models/model/Department';
 
 const Workspace = function () {
     let loginMember = useRecoilValue(LOGIN_MEMBER);
@@ -45,7 +46,9 @@ const Workspace = function () {
     const workspaceMemberViewModel = new WorkspaceMemberViewModel(workspaceMember);
     workspaceMemberViewModel.update(getWorkspaceMemberData());
 
-    const departmentViewModel = new DepartmentViewModel(getDepartmentData());
+    const department = new Department();
+    const departmentViewModel = new DepartmentViewModel(department);
+    departmentViewModel.update(getDepartmentData());
 
     const departmentMember = new DepartmentMember();
     const departmentMemberViewModel = new DepartmentMemberViewModel(departmentMember);
@@ -65,7 +68,7 @@ const Workspace = function () {
             transform: 'translate(-50%, -50%)',
         },
     };
-    
+
     return(
     <div className="maincontainer">
         <div className="container py-5 px-0">

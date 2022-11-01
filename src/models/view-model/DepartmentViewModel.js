@@ -14,7 +14,7 @@ export class DepartmentViewModel{
     }
     
     getGoal(departmentId) {
-        this.model.map((department) => {
+        this.getAll().map((department) => {
             if (department.departmentId === departmentId){
                 return department.departmentGoal;
             }
@@ -22,11 +22,14 @@ export class DepartmentViewModel{
     }
     
     getDeadLine(departmentId) {
-        this.model.map((department) => {
+        let deadLine = "";
+
+        this.getAll().map((department) => {
             if (department.departmentId === departmentId){
-                return department.departmentDeadLine;
+                deadLine = department.departmentDeadLine;
             }
         })
+        return deadLine;
     }
 
     getDDay(departmentId){
