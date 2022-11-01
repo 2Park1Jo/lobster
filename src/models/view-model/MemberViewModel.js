@@ -13,7 +13,7 @@ export class MemberViewModel{
     }
 
     getName(email){
-        this.model.map((member) => {
+        this.getAll().map((member) => {
             if (member.email === email){
                 return member.name;
             }

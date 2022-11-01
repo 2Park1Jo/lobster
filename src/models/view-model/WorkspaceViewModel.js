@@ -14,7 +14,7 @@ export class WorkspaceViewModel{
     }
 
     getDeadLine(workspaceId){
-        this.model.map((workspace) => {
+        this.getAll().map((workspace) => {
             if (workspace.workspaceId === workspaceId){
                 return workspace.workspaceDeadline;
             }
@@ -22,7 +22,7 @@ export class WorkspaceViewModel{
     }
 
     getGoal(workspaceId){
-        this.model.map((workspace) => {
+        this.getAll().map((workspace) => {
             if (workspace.workspaceId === workspaceId){
                 return workspace.workspaceGoal;
             }
@@ -30,7 +30,7 @@ export class WorkspaceViewModel{
     }
 
     getName(workspaceId){
-        this.model.map((workspace) => {
+        this.getAll().map((workspace) => {
             if (workspace.workspaceId === workspaceId){
                 return workspace.workspaceName;
             }
