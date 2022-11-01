@@ -22,4 +22,16 @@ export class DepartmentMemberViewModel{
         return filteredDepartmentMember;
     }
 
+    getMemberName(memberEmail){
+        let memberName = "";
+
+        this.getAll().map((member) => {
+            if (member.email === memberEmail){
+                memberName = member.name;
+            }
+        })
+
+        return memberName;
+    }
+
 }

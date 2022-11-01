@@ -3,13 +3,12 @@ import ChatInputBox from "./ChatInputBox";
 import { ListGroup } from 'react-bootstrap'
 
 export default function ChatBox(props){
-
     let chats = [];
-
+    
     props.chats.map( (chat, index) => {
         chats.push(
             <Message
-                chatSender={chat.memberEmail}
+                chatSender={ props.departmentMemberViewModel.getMemberName(chat.memberEmail) } // 이름으로 바꿔야함
                 chatDate={chat.date}
                 chatContent={chat.content}
                 key = {index}

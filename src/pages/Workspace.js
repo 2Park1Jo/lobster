@@ -132,6 +132,7 @@ const Workspace = function () {
                     </div>
 
                     <ChatBox
+                        departmentMemberViewModel = {departmentMemberViewModel}
                         chatViewModel = {chatViewModel}
                         departmentId = {accessedDepartment.id}
                         loginMemberEmail = {loginMember.email}
