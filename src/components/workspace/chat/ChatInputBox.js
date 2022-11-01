@@ -22,7 +22,7 @@ export default function ChatInputBox(props){
         copiedChattingData.push({
             workspaceId: "1",
             departmentId: props.departmentId, 
-            memberEmail: props.loginMemberEmail,
+            memberEmail: props.memberEmail,
             content: chatContent,
             date: currentTime,
             content_type: "TEXT",
@@ -36,6 +36,7 @@ export default function ChatInputBox(props){
     const handleOnKeyPress = e => {
         if (e.key === 'Enter') {
             addChattingData(inputChattingContent); // Enter 입력이 되면 클릭 이벤트 실행
+            setInputChattingContent("");
         }
     };
 

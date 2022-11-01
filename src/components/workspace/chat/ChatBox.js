@@ -4,7 +4,7 @@ import { ListGroup } from 'react-bootstrap'
 
 export default function ChatBox(props){
     let chats = [];
-    
+
     props.chats.map( (chat, index) => {
         chats.push(
             <Message
@@ -26,6 +26,8 @@ export default function ChatBox(props){
             </div>
             <ChatInputBox 
                 chatViewModel = {props.chatViewModel}
+                departmentId = {props.departmentId}
+                memberEmail = {props.loginMemberEmail}
             />
         </>
     );
