@@ -11,8 +11,12 @@ export const getAllMemberData = async () =>{
     return responose.data;
 }
 
-export const isSuccessedLogin = async () =>{
-    const responose = await axios.get(BACK_BASE_URL + '/member/login')
+export const isSuccessedLogin = async (email, password) =>{
+    const responose = await axios.post(BACK_BASE_URL + '/member/login',
+    {
+        email:email,
+        password:password,
+    })
     return responose.data;
 }
 
