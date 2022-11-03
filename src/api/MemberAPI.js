@@ -11,10 +11,14 @@ export const getAllMemberData = async () =>{
     return responose.data;
 }
 
+export const isSuccessedLogin = async () =>{
+    const responose = await axios.get(BACK_BASE_URL + '/member/login')
+    return responose.data;
+}
 
 export const isDepulicatedId=async function(email){
     const response=await axios.get(
-        'http://13.125.252.42:8080/member/duplicateid',
+        BACK_BASE_URL + '/member/duplicateid',
         {
             params:{
                 email:email
@@ -42,7 +46,7 @@ export const isDepulicatedId=async function(email){
 }
 
 export const registerUser=async function(email,password,name){
-    const request=await axios.post('http://13.125.252.42:8080/member/signup',
+    const request=await axios.post(BACK_BASE_URL + '/member/signup',
         {
             email:email,
             password:password,
