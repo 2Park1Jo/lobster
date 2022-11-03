@@ -2,11 +2,33 @@
 .App {
     background-color: white;
 }
-
+.top{
+    margin-top: 100px;
+}
+.tail{
+    display: flex;
+    justify-content: center;
+}
+.Logo-style{
+    height:150px;
+    width: 420px;
+}
+.Login-sentence{
+    font-size: 50px;
+    font-weight: bolder;
+    color: rgb(153, 14, 14);
+    text-align: center;
+}
+.Signup-sentence{
+    font-size: 40px;
+    font-weight: bolder;
+    color: rgb(153, 14, 14);
+    text-align: center;
+}
 .Auth-form-container {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     width: 100vw;
     height: 100vh;
 }

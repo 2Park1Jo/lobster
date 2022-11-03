@@ -1,18 +1,18 @@
 import axios from "axios"
 import '../utils/Constant.js'
-import { errorText } from "../utils/Constant.js";
+import { serverURL } from "../utils/Constant.js";
 axios.defaults.withCredentials = true;
 axios.defaults.timeout=4000;
 
 export const getAllMemberData = async () =>{
-    const responose = await axios.get('http://ec2-13-125-252-42.ap-northeast-2.compute.amazonaws.com:8080/member/allmember')
+    const responose = await axios.get(serverURL+'/member/allmember')
     return responose.data;
 }
 
 
 export const isDepulicatedId=async function(email){
-    const response=await axios.get(
-        'http://13.125.252.42:8080/member/duplicateid',
+    const data=await axios.get(
+        serverURL+'/member/duplicateid',
         {
             params:{
                 email:email
@@ -24,23 +24,16 @@ export const isDepulicatedId=async function(email){
             },
             withCredentials: true
         
-        }).then(res=>{
-            console.log(res);
-            return res.data;
-            // if(res.data===true){
-            //     return true
-            // }
-            // else if(res.data===false){
-            //     return false
-            // }
-            // else{
-            //     return errorText;
-            // }
-        });
+        }).then(response=>{
+            return response.data;
+        }).catch(error=>{
+            console.log(error)
+        })
+    return data
 }
 
 export const registerUser=async function(email,password,name){
-    const request=await axios.post('http://13.125.252.42:8080/member/signup',
+    const data=await axios.post(serverURL+'/member/signup',
         {
             email:email,
             password:password,
@@ -53,6 +46,7 @@ export const registerUser=async function(email,password,name){
             withCredentials: true
         
         }).then(response=>{
+            console.log(response)
             if(response.status===200){
                 return true
             }
@@ -63,5 +57,5 @@ export const registerUser=async function(email,password,name){
         }).catch(error=>{
             console.log(error)
         })
-
+    return data;
 }

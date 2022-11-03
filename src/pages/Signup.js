@@ -1,5 +1,5 @@
 import { useState,useEffect} from 'react';
-import './Signup.css';
+import './Login.css';
 import {isCorrectEmail,isCorrectPassword,isCorrectName} from '../utils/Regex.js'
 import { useNavigate } from "react-router-dom";
 import {isDepulicatedId,registerUser} from '../api/MemberAPI'
@@ -33,33 +33,23 @@ const Signup=function(){
         }
         else{
             setems(<span style={{color:'orange', fontSize : '14px'}}>중복검사중입니다...</span>)
-            let result=isDepulicatedId(email)
+            let result=Promise.resolve(isDepulicatedId(email))
             result.then(value=>{
-                console.log(result)
-                //console.log(Promise.resolve(result))
-                //console.log(value)
-                if(value===true){
+                if(value){
                     setems(<span style={{color:'red', fontSize : '14px'}}>이미 등록된 email주소입니다.</span>)
                     isIdconfirmed=false;
-                    console.log(true)
-                    //return sentence;
                 }
                 else if(value===false){
                     setems(<span style={{color:'green', fontSize : '14px'}}>사용가능한 email주소입니다.</span>)
                     isIdconfirmed=true;
-                    console.log(false)
-                    //return sentence;
                 }
                 else {
-                    //console.log(result)
                     setems(<span style={{color:'red', fontSize : '14px'}}>서버에 에러가 발생했습니다.</span>)
                     isIdconfirmed=false;
                 }
             }).catch(error=>{
-                //console.log(result)
                 setems(<span style={{color:'red', fontSize : '14px'}}>서버에 에러가 발생했습니다.</span>)
                 isIdconfirmed=true;
-                //console.log(false)
             })
         }
     }
@@ -86,7 +76,7 @@ const Signup=function(){
 
     function detectPasswordCheck(){
         let sentence=""
-        if(passwordCheck===""){
+        if(passwordCheck===""||isPwconfirmed===false){
             sentence="";
             isPwCheckconfirmed=false;
         }
@@ -140,72 +130,84 @@ const Signup=function(){
     }
 
     return(
-        
-        <div className="Auth-form-container">
-            <div className="Auth-form">
-            <h3 className="Auth-form-title">회원가입</h3>
-                <div className="Auth-form-content">
-                    <div className="form-group mt-3">
-                        <label>이메일</label>
-                        <input maxLength='30'
-                            type="email"
-                            className="form-control mt-1"
-                            placeholder="이메일을 입력해주세요"
-                            value={ email }
-                            onChange={e => setEmail(e.target.value)}
-                        />
-                        { ems }
+        <div>
+            <div className="top">
+            </div>
+            <div className="Auth-form-container">
+                <img src="assets/images/leftCrab.png" width="150px"/>
+                <div>
+                    <div className="Logo-style">
+                        <p className="Signup-sentence">Welcome to Lobster!</p>
                     </div>
+                    <div className="Auth-form">
+                        <h3 className="Auth-form-title">회원가입</h3>
+                        <div className="Auth-form-content">
+                            <div className="form-group mt-3">
+                                <label>이메일</label>
+                                <input maxLength='30'
+                                    type="email"
+                                    className="form-control mt-1"
+                                    placeholder="이메일을 입력해주세요"
+                                    value={ email }
+                                    onChange={e => setEmail(e.target.value)}
+                                />
+                                { ems }
+                            </div>
 
-                    <div className="form-group mt-3">
-                        <label>비밀번호</label>
-                        <input maxLength='20'
-                            type="password"
-                            className="form-control mt-1"
-                            placeholder="비밀번호를 입력해주세요"
-                            value={ password }
-                            onChange={e => setPassword(e.target.value)}
-                        />
-                        {detectPassword()}
-                    </div>
+                            <div className="form-group mt-3">
+                                <label>비밀번호</label>
+                                <input maxLength='20'
+                                    type="password"
+                                    className="form-control mt-1"
+                                    placeholder="비밀번호를 입력해주세요"
+                                    value={ password }
+                                    onChange={e => setPassword(e.target.value)}
+                                />
+                                {detectPassword()}
+                            </div>
 
-                    <div className="form-group mt-3">
-                        <label>비밀번호 확인</label>
-                        <input maxLength='20'
-                            type="password"
-                            className="form-control mt-1"
-                            placeholder="비밀번호를 한번 더 입력해주세요."
-                            value={ passwordCheck }
-                            onChange={e => setPasswordCheck(e.target.value)}
-                        />
-                        {detectPasswordCheck()}
-                    </div>
+                            <div className="form-group mt-3">
+                                <label>비밀번호 확인</label>
+                                <input maxLength='20'
+                                    type="password"
+                                    className="form-control mt-1"
+                                    placeholder="비밀번호를 한번 더 입력해주세요."
+                                    value={ passwordCheck }
+                                    onChange={e => setPasswordCheck(e.target.value)}
+                                />
+                                {detectPasswordCheck()}
+                            </div>
 
-                    <div className="form-group mt-3">
-                        <label>이름</label>
+                            <div className="form-group mt-3">
+                                <label>이름</label>
 
-                        <input maxLength='5'
-                            type="name"
-                            className="form-control mt-1"
-                            placeholder="이름을 입력해주세요"
-                            value={ name }
-                            onChange={e => setName(e.target.value)}
-                        />
-                        {detectName()}
-                    </div>
-                    <div></div>
-                    <div className="d-grid gap-2 mt-4">
-                    
-                    <button className="btn btn-primary btn-lg" onClick={signUpBtnClicked} >
-                        가입하기
-                    </button>
-                    </div>
-                    <div className="mt-3 col" >
-                            <span style={{fontSize:'14px'}}>계정이 이미 있으신가요? </span>
-                            <a href="/" style={{fontSize:'14px'}}>로그인하기</a>
+                                <input maxLength='5'
+                                    type="name"
+                                    className="form-control mt-1"
+                                    placeholder="이름을 입력해주세요"
+                                    value={ name }
+                                    onChange={e => setName(e.target.value)}
+                                />
+                                {detectName()}
+                            </div>
+                            <div></div>
+                            <div className="d-grid gap-2 mt-4">
+                            
+                            <button className="btn btn-primary btn-lg" onClick={signUpBtnClicked} >
+                                가입하기
+                            </button>
+                            </div>
+                            <div className="mt-3 col" >
+                                    <span style={{fontSize:'14px'}}>계정이 이미 있으신가요? </span>
+                                    <a href="/" style={{fontSize:'14px'}}>로그인하기</a>
+                            </div>  
                         </div>
-                    
+                    </div>
+                    <div className='tail'>
+                        <img src="assets/images/tail.png" width="300px"/>
+                    </div>
                 </div>
+                <img src="assets/images/rightCrab.png" width="140px"/>
             </div>
         </div>
     );
