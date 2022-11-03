@@ -28,6 +28,24 @@ import { Chat } from '../models/model/Chat';
 import { ChatViewModel } from '../models/view-model/ChatViewModel';
 import { Department } from '../models/model/Department';
 
+
+const workspaceMember = new WorkspaceMember();
+const workspaceMemberViewModel = new WorkspaceMemberViewModel(workspaceMember);
+workspaceMemberViewModel.update(getWorkspaceMemberData());
+
+const department = new Department();
+const departmentViewModel = new DepartmentViewModel(department);
+departmentViewModel.update(getDepartmentData());
+
+const departmentMember = new DepartmentMember();
+const departmentMemberViewModel = new DepartmentMemberViewModel(departmentMember);
+departmentMemberViewModel.update(getDepartmentMemberData());
+
+const chat = new Chat();
+const chatViewModel = new ChatViewModel(chat);
+console.log("초기값")
+chatViewModel.update(getChattingData())
+
 const Workspace = function () {
     let loginMember = useRecoilValue(LOGIN_MEMBER);
     let accessedDepartment = useRecoilValue(ACCESSED_DEPARTMENT);
@@ -42,21 +60,7 @@ const Workspace = function () {
 
     const messageEndRef = useRef(null); // 채팅메세지의 마지막
     
-    const workspaceMember = new WorkspaceMember();
-    const workspaceMemberViewModel = new WorkspaceMemberViewModel(workspaceMember);
-    workspaceMemberViewModel.update(getWorkspaceMemberData());
-
-    const department = new Department();
-    const departmentViewModel = new DepartmentViewModel(department);
-    departmentViewModel.update(getDepartmentData());
-
-    const departmentMember = new DepartmentMember();
-    const departmentMemberViewModel = new DepartmentMemberViewModel(departmentMember);
-    departmentMemberViewModel.update(getDepartmentMemberData());
-
-    const chat = new Chat();
-    const chatViewModel = new ChatViewModel(chat);
-    chatViewModel.update(getChattingData())
+    let [chatUpdateState, setChatUpdateState] = useState("");
 
     const modalStyles = {
         content: {
@@ -68,6 +72,12 @@ const Workspace = function () {
             transform: 'translate(-50%, -50%)',
         },
     };
+
+    // useEffect( () => {
+    //     console.log("chat updated!")
+    //     console.log(chatViewModel)
+    //     console.log(chatViewModel.getAll())
+    // }, [chatUpdateState])
 
     return(
     <div className="maincontainer">
@@ -137,7 +147,9 @@ const Workspace = function () {
                         departmentId = {accessedDepartment.id}
                         loginMemberEmail = {loginMember.email}
                         chats = {chatViewModel.getChats(accessedDepartment.id)}//chatViewModel.getChats(accessedDepartmentId)
-                        messageEnd = {messageEndRef}
+                        chatUpdateState = {chatUpdateState}
+                        setChatUpdateState = {setChatUpdateState}
+                        // messageEnd = {messageEndRef}
                     />
                 </div>
                 
