@@ -18,7 +18,7 @@ const Login = function () {
     let [loginMember, setLoginMember] = useRecoilState(LOGIN_MEMBER);
     const member = new Member();
     const memberViewModel = new MemberViewModel(member);
-
+    
     function checkLoginSuccess() {
         for (let userIndex = 0; userIndex < allMemberData.length; userIndex++) {
             if (email == allMemberData[userIndex].email && password === allMemberData[userIndex].password){
@@ -42,13 +42,15 @@ const Login = function () {
     useEffect( () => {
         
         memberViewModel.update(getMemberData());
-        setAllMemberData(memberViewModel.getAll());
-        // getAllMemberData()
-        // .then(
-        //     (res) => {
-        //         setAllMemberData(res)
-        //     }
-        // )
+        // setAllMemberData(memberViewModel.getAll());
+        getAllMemberData()
+        .then(
+            (res) => {
+                setAllMemberData(res)
+            }
+        )
+
+        console.log(allMemberData)
     },[])
 
     return(
