@@ -2,7 +2,7 @@ import './Login.css';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { getMemberData } from '../data/MemberData.js';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from "recoil";
 import { getAllMemberData } from '../api/MemberAPI';
 import { MemberViewModel } from '../models/view-model/MemberViewModel';
 import { Member } from '../models/model/Member';
@@ -15,7 +15,7 @@ const Login = function () {
 
     let [allMemberData, setAllMemberData] = useState([]);
     let navigate = useNavigate();
-    let [loginMember, setLoginMember] = useRecoilState(LOGIN_MEMBER);
+    let setLoginMember = useSetRecoilState(LOGIN_MEMBER);
     const member = new Member();
     const memberViewModel = new MemberViewModel(member);
     
@@ -46,11 +46,10 @@ const Login = function () {
         getAllMemberData()
         .then(
             (res) => {
+                console.log(res)
                 setAllMemberData(res)
             }
         )
-
-        console.log(allMemberData)
     },[])
 
     return(
