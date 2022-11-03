@@ -14,27 +14,39 @@ export class WorkspaceViewModel{
     }
 
     getDeadLine(workspaceId){
+        let workspaceDeadline = "";
+
         this.getAll().map((workspace) => {
             if (workspace.workspaceId === workspaceId){
-                return workspace.workspaceDeadline;
+                workspaceDeadline = workspace.workspaceDeadline;
             }
         })
+
+        return workspaceDeadline;
     }
 
     getGoal(workspaceId){
+        let workspaceGoal = "";
+
         this.getAll().map((workspace) => {
             if (workspace.workspaceId === workspaceId){
-                return workspace.workspaceGoal;
+                workspaceGoal = workspace.workspaceGoal;
             }
         })
+
+        return workspaceGoal;
     }
 
     getName(workspaceId){
+        let workspaceName = "";
+
         this.getAll().map((workspace) => {
             if (workspace.workspaceId === workspaceId){
-                return workspace.workspaceName;
+                workspaceName = workspace.workspaceName;
             }
         })
+
+        return workspaceName;
     }
 
     getDDay(workspaceId){

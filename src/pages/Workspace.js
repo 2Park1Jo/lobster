@@ -3,14 +3,14 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import MemberCard from '../components/workspace/MemberCard';
 import DepartmentAddModal from '../components/modals/DepartmentAddModal'
 import DepartmentMemberAddModal from '../components/modals/DepartmentMemberAddModal';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState } from 'react';
 import Modal from 'react-modal';
 import { useRecoilValue } from "recoil";
 
 import { getChattingData } from '../data/ChattingData';
 import { getDepartmentData, getDepartmentGoal, getDepartmentDeadLine } from '../data/DepartmentData';
 import { getDepartmentMemberData } from '../data/DepartmentMemberData';
-import { getWorkspaceData, getAllWorkspaceData } from '../data/WorkspaceData';
+import { getAllWorkspaceData } from '../data/WorkspaceData';
 import { getWorkspaceMemberData } from '../data/WorkspaceMemberData';
 import { ACCESSED_DEPARTMENT, LOGIN_MEMBER, WORKSPACE_ID } from '../recoil/Atoms';
 
@@ -18,6 +18,7 @@ import MemberList from '../components/workspace/MemberList';
 import DepartmentList from '../components/workspace/DepartmentList';
 import ChatBox from '../components/workspace/chat/ChatBox';
 
+import { WorkspaceModel } from '../models/model/Workspace';
 import { WorkspaceViewModel } from '../models/view-model/WorkspaceViewModel';
 import { WorkspaceMember } from '../models/model/WorkspaceMember';
 import { WorkspaceMemberViewModel } from '../models/view-model/WorkspaceMemberViewModel';
@@ -28,6 +29,9 @@ import { Chat } from '../models/model/Chat';
 import { ChatViewModel } from '../models/view-model/ChatViewModel';
 import { Department } from '../models/model/Department';
 
+const workspace = new WorkspaceModel();
+const workspaceViewModel = new WorkspaceViewModel(workspace);
+workspaceViewModel.update(getAllWorkspaceData());
 
 const workspaceMember = new WorkspaceMember();
 const workspaceMemberViewModel = new WorkspaceMemberViewModel(workspaceMember);
@@ -43,7 +47,6 @@ departmentMemberViewModel.update(getDepartmentMemberData());
 
 const chat = new Chat();
 const chatViewModel = new ChatViewModel(chat);
-console.log("초기값")
 chatViewModel.update(getChattingData())
 
 const Workspace = function () {
@@ -51,15 +54,8 @@ const Workspace = function () {
     let accessedDepartment = useRecoilValue(ACCESSED_DEPARTMENT);
     let workspaceId = useRecoilValue(WORKSPACE_ID);
 
-    let workspaceData = getWorkspaceData(workspaceId); // 워크스페이스 정보
-
-    let [departmentData, setDepartmentData] = useState(getDepartmentData()); // 부서정보
-
-    let [modalIsOpen, setModalIsOpen] = useState(false); // 모달관리 
-    let [modal2IsOpen, setModal2IsOpen] = useState(false);
-
-    const messageEndRef = useRef(null); // 채팅메세지의 마지막
-    
+    let [modalIsOpen, setModalIsOpen] = useState(false);
+    let [modal2IsOpen, setModal2IsOpen] = useState(false);    
     let [chatUpdateState, setChatUpdateState] = useState("");
 
     const modalStyles = {
@@ -72,12 +68,6 @@ const Workspace = function () {
             transform: 'translate(-50%, -50%)',
         },
     };
-
-    // useEffect( () => {
-    //     console.log("chat updated!")
-    //     console.log(chatViewModel)
-    //     console.log(chatViewModel.getAll())
-    // }, [chatUpdateState])
 
     return(
     <div className="maincontainer">
@@ -100,7 +90,7 @@ const Workspace = function () {
                 <div className="col-2 px-0">
                     {/* workspace info */}
                     <div className="bg-gray px-4 py-2 bg-light">
-                        <p className="h5 mb-0 py-1">{ workspaceData.workspaceName }</p>
+                        <p className="h5 mb-0 py-1">{ workspaceViewModel.getName(workspaceId) }</p>
                     </div>
 
                     <div className="left-box">
@@ -120,7 +110,7 @@ const Workspace = function () {
 
                         <DepartmentList 
                             workspaceId = {workspaceId}
-                            departments = {departmentData}
+                            departments = {departmentViewModel.getAll()}
                         />
                         
                         {/* workspace member List */}   
@@ -146,10 +136,9 @@ const Workspace = function () {
                         chatViewModel = {chatViewModel}
                         departmentId = {accessedDepartment.id}
                         loginMemberEmail = {loginMember.email}
-                        chats = {chatViewModel.getChats(accessedDepartment.id)}//chatViewModel.getChats(accessedDepartmentId)
+                        chats = {chatViewModel.getChats(accessedDepartment.id)}
                         chatUpdateState = {chatUpdateState}
                         setChatUpdateState = {setChatUpdateState}
-                        // messageEnd = {messageEndRef}
                     />
                 </div>
                 
