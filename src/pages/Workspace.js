@@ -110,7 +110,7 @@ const Workspace = function () {
 
                         <DepartmentList 
                             workspaceId = {workspaceId}
-                            departments = {departmentViewModel.getAll()}
+                            departments = {departmentViewModel.get(workspaceId)}
                         />
                         
                         {/* workspace member List */}   

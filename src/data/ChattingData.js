@@ -1,7 +1,7 @@
 let chattingData = [
 {
     workspaceId: "1",
-    departmentId: "1",
+    departmentId: "1_1",
     memberEmail: "test1@naver.com",
     content: "TEST CHAT1",
     date: "20:30",
@@ -10,7 +10,7 @@ let chattingData = [
 },
 {
     workspaceId: "1", 
-    departmentId: "1",
+    departmentId: "1_1",
     memberEmail: "test1@naver.com",
     content: "TEST CHAT2",
     date: "20:30",
@@ -19,7 +19,7 @@ let chattingData = [
 },
 {
     workspaceId: "1", 
-    departmentId: "2",
+    departmentId: "1_2",
     memberEmail: "test1@naver.com",
     content: "TEST CHAT3",
     date: "20:30",
@@ -28,7 +28,7 @@ let chattingData = [
 },        
 {
     workspaceId: "1", 
-    departmentId: "2", 
+    departmentId: "1_2", 
     memberEmail: "test1@naver.com",
     content: "TEST CHAT4",
     date: "20:30",
@@ -37,7 +37,7 @@ let chattingData = [
 },        
 {
     workspaceId: "1", 
-    departmentId: "3", 
+    departmentId: "1_3", 
     memberEmail: "test1@naver.com",
     content: "TEST CHAT5",
     date: "20:30",

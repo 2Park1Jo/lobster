@@ -24,10 +24,10 @@ export default function WorkspaceCarousel(props) {
             // alert(table[index].key) // workspaceId
             setWorkspaceId(cards[index].key)
             setAccessedDepartment({
-                id: "1",
+                id: cards[index].key  + "_1",
                 name: "📢 공지방"
             })
-            navigate("/workspace/" + cards[index].key + "/chat/department/1") // 로그인한 유저 정보, 워크스페이스 정보 state 넘기기 or recoil
+            navigate("/workspace/" + cards[index].key + "/chat/department/" + cards[index].key + "_1") // 로그인한 유저 정보, 워크스페이스 정보 state 넘기기 or recoil
         }
         else{
             setGoToSlide(index)
