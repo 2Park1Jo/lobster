@@ -1,11 +1,13 @@
 import axios from "axios"
 import '../utils/Constant.js'
+import '../Config.js'
 import { errorText } from "../utils/Constant.js";
+import { BACK_BASE_URL } from "../Config.js";
 axios.defaults.withCredentials = true;
 axios.defaults.timeout=4000;
 
 export const getAllMemberData = async () =>{
-    const responose = await axios.get('http://ec2-13-125-252-42.ap-northeast-2.compute.amazonaws.com:8080/member/allmember')
+    const responose = await axios.get(BACK_BASE_URL + '/member/allmember')
     return responose.data;
 }
 
