@@ -1,55 +1,62 @@
 import './Workspace.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Card from '../components/Card';
+import MemberCard from '../components/workspace/MemberCard';
 import DepartmentAddModal from '../components/modals/DepartmentAddModal'
 import DepartmentMemberAddModal from '../components/modals/DepartmentMemberAddModal';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState } from 'react';
 import Modal from 'react-modal';
-import ListGroup from 'react-bootstrap/ListGroup';
-import Button from 'react-bootstrap/Button';
+import { useRecoilValue } from "recoil";
 
-import { useLocation } from "react-router";
-import { getMemberData, getMemberName } from '../data/MemberData';
 import { getChattingData } from '../data/ChattingData';
 import { getDepartmentData, getDepartmentGoal, getDepartmentDeadLine } from '../data/DepartmentData';
 import { getDepartmentMemberData } from '../data/DepartmentMemberData';
-import { getWorkspaceData } from '../data/WorkspaceData';
+import { getAllWorkspaceData } from '../data/WorkspaceData';
 import { getWorkspaceMemberData } from '../data/WorkspaceMemberData';
-import { getAllMemberData } from '../api/MemberAPI';
+import { ACCESSED_DEPARTMENT, LOGIN_MEMBER, WORKSPACE_ID } from '../recoil/Atoms';
+
+import MemberList from '../components/workspace/MemberList';
+import DepartmentList from '../components/workspace/DepartmentList';
+import ChatBox from '../components/workspace/chat/ChatBox';
+
+import { WorkspaceModel } from '../models/model/Workspace';
+import { WorkspaceViewModel } from '../models/view-model/WorkspaceViewModel';
+import { WorkspaceMember } from '../models/model/WorkspaceMember';
+import { WorkspaceMemberViewModel } from '../models/view-model/WorkspaceMemberViewModel';
+import { DepartmentViewModel } from '../models/view-model/DepartmentViewModel';
+import { DepartmentMember } from '../models/model/DepartmentMember';
+import { DepartmentMemberViewModel } from '../models/view-model/DepartmentMemberViewModel';
+import { Chat } from '../models/model/Chat';
+import { ChatViewModel } from '../models/view-model/ChatViewModel';
+import { Department } from '../models/model/Department';
+
+const workspace = new WorkspaceModel();
+const workspaceViewModel = new WorkspaceViewModel(workspace);
+workspaceViewModel.update(getAllWorkspaceData());
+
+const workspaceMember = new WorkspaceMember();
+const workspaceMemberViewModel = new WorkspaceMemberViewModel(workspaceMember);
+workspaceMemberViewModel.update(getWorkspaceMemberData());
+
+const department = new Department();
+const departmentViewModel = new DepartmentViewModel(department);
+departmentViewModel.update(getDepartmentData());
+
+const departmentMember = new DepartmentMember();
+const departmentMemberViewModel = new DepartmentMemberViewModel(departmentMember);
+departmentMemberViewModel.update(getDepartmentMemberData());
+
+const chat = new Chat();
+const chatViewModel = new ChatViewModel(chat);
+chatViewModel.update(getChattingData())
 
 const Workspace = function () {
-    // let location = useLocation(); // 로그인창에서 받아오는 정보
-    // let loginUserName = location.state.loginUserName; // 로그인한 유저 이름
-    // let loginUserEmail = location.state.loginUserEmail; // 로그인한 유저 이메일
-    let loginUserName = "test"
-    let loginUserEmail = "test"
+    let loginMember = useRecoilValue(LOGIN_MEMBER);
+    let accessedDepartment = useRecoilValue(ACCESSED_DEPARTMENT);
+    let workspaceId = useRecoilValue(WORKSPACE_ID);
 
-    let [accessedDepartmentName, setAccessedDepartmentName] = useState("📢 공지방"); // 접속중인 부서 명
-    let [accessedDepartmentId, setAccessedDepartmentId] = useState("1"); // 접속중인 부서 아이디
-
-    let [inputChattingContent,  setInputChattingContent] = useState(""); // 사용자가 입력한 채팅 컨텐츠 데이터
-    let [chattingData, setChattingData] = useState(getChattingData()); // 전체 채팅 데이터
-    let [departmentChattingData, setDepartmentChattingData] = useState([]); // 각 부서별 채팅 데이터 -> 각 부서별 화면에 뿌려주기 용
-
-    let workspaceData = getWorkspaceData(); // 워크스페이스 정보
-    let [workspaceMemberData, setWorkspaceMemberData] = useState(getWorkspaceMemberData()); // 워크스페이스에 가입되어있는 멤버 데이터
-
-    let [departmentMemberData, setDepartmentMemberData] = useState(getDepartmentMemberData()); // 전체 부서 멤버 정보
-    let [eachDepartmentMemberData, setEachDepartmentMemberData] = useState([]); // 각 부서별 멤버 정보 -> 화면에 뿌려주기 용
-    let [departmentData, setDepartmentData] = useState(getDepartmentData()); // 부서정보
-
-    let [modalIsOpen, setModalIsOpen] = useState(false); // 모달관리 
-    let [modal2IsOpen, setModal2IsOpen] = useState(false);
-
-    let [socketState, setSocketState] = useState(false); // web socket
-
-    const messageEndRef = useRef(null) // 채팅메세지의 마지막
-
-    // const $websocket = useRef(null)
-
-    // useEffect( () => {
-    //     setCurrentSocket(socketIOClient("localhost:8080"));
-    // }, []);
+    let [modalIsOpen, setModalIsOpen] = useState(false);
+    let [modal2IsOpen, setModal2IsOpen] = useState(false);    
+    let [chatUpdateState, setChatUpdateState] = useState("");
 
     const modalStyles = {
         content: {
@@ -61,146 +68,6 @@ const Workspace = function () {
             transform: 'translate(-50%, -50%)',
         },
     };
-
-    useEffect( () => {
-        setDepartmentScreen(accessedDepartmentId, accessedDepartmentName);
-        setInputChattingContent("");
-    }, [chattingData], [departmentMemberData]);
-
-    useEffect( () => {
-        scrollToBottom("auto");
-    }, [accessedDepartmentName]);
-
-    useEffect( () => {
-        scrollToBottom("smooth");
-    }, [departmentChattingData])
-
-    function scrollToBottom(behavior) {
-        messageEndRef.current?.scrollIntoView({behavior: behavior})
-    }
-
-    function addChattingData(chatContent) {
-        let copiedChattingData = [...chattingData];
-        let date = new Date();
-        let houres = String(date.getHours()).padStart(2, "0");
-        let minutes = String(date.getMinutes()).padStart(2, "0");
-        let currentTime = houres + ':' + minutes;
-
-        if (chatContent.replace(/ /g,"") === ""){
-            setInputChattingContent("");
-            return;
-        }
-        
-        copiedChattingData.push({
-            workspaceId: "1",
-            departmentId: accessedDepartmentId, 
-            memberEmail: loginUserEmail,
-            content: chatContent,
-            date: currentTime,
-            content_type: "TEXT",
-            link: "",
-        })
-
-        setChattingData(copiedChattingData);
-    }
-
-    function setChattingDataEachDepartment(targetDepartmentId) {
-        let chatContents = [];
-        for (let index = 0; index < chattingData.length; index++){
-            if (chattingData[index].departmentId === targetDepartmentId){
-                chatContents.push(chattingData[index]);
-            }
-        }
-
-        let htmlArrayForDepartmentChat = [];
-
-        for (let index = 0; index < chatContents.length; index++){
-            let chatContent = chatContents[index].content;
-            let chatDate = chatContents[index].date;
-            let chatSender = getMemberName(chatContents[index].memberEmail);
-
-            htmlArrayForDepartmentChat.push(
-                // chat form
-                <div>
-                    <li className="small text-muted">{ chatSender } { chatDate }</li>
-                    <ListGroup.Item action variant="primary" className="rounded">
-                        <span className="small"> { chatContent } </span>
-                    </ListGroup.Item>
-                </div>
-                )
-        }
-
-        htmlArrayForDepartmentChat.push(
-            <div ref={ messageEndRef }></div>
-        )
-
-        setDepartmentChattingData(htmlArrayForDepartmentChat);
-    }
-
-    function setDepartmentScreen(departmentId, departmentName) {
-        let eachDepartmentMemberDataList = [];
-
-        for (let index = 0; index < departmentMemberData.length; index++){
-            if (departmentMemberData[index].departmentId === departmentId){
-                eachDepartmentMemberDataList.push(departmentMemberData[index]);
-            }
-        }
-
-        setChattingDataEachDepartment(departmentId);
-        setAccessedDepartmentName(departmentName);
-        setAccessedDepartmentId(departmentId);
-        setEachDepartmentMemberData(eachDepartmentMemberDataList);
-    }
-
-    function applyDepartmentList() {
-        let htmlArrayForDepartmentList = [];
-
-        for (let index = 0; index < departmentData.length; index++) {
-            let departmentName = departmentData[index].departmentName
-            let departmentId = departmentData[index].departmentId
-
-            htmlArrayForDepartmentList.push(
-                    // departmentList form
-                    <ListGroup>
-                        <ListGroup.Item action variant="danger" onClick={ () => setDepartmentScreen(departmentId, departmentName) }>
-                            { departmentName }
-                        </ListGroup.Item>
-                    </ListGroup>
-                )
-        }
-        return htmlArrayForDepartmentList
-    }
-
-    function applyMemberList(memberData) {
-        let htmlArrayForWholeMemberList = [];
-
-
-        memberData.map( (member) => {
-            htmlArrayForWholeMemberList.push(
-                <Card
-                    profilePicture='https://therichpost.com/wp-content/uploads/2020/06/avatar2.png'
-                    name={member.name}
-                    role={member.role}
-                    onClicked={() => alert(member.name)}
-                />
-            )
-        })
-
-        return htmlArrayForWholeMemberList
-    }
-
-    const handleOnKeyPress = e => {
-        if (e.key === 'Enter') {
-            addChattingData(inputChattingContent); // Enter 입력이 되면 클릭 이벤트 실행
-            // getAllMemberData()
-            // .then(
-            //     (res) => {
-            //         setWorkspaceMemberData(res)
-            //     }
-            // )
-        }
-    };
-
 
     return(
     <div className="maincontainer">
@@ -223,16 +90,15 @@ const Workspace = function () {
                 <div className="col-2 px-0">
                     {/* workspace info */}
                     <div className="bg-gray px-4 py-2 bg-light">
-                        <p className="h5 mb-0 py-1">{ workspaceData[0].workspaceName }</p>
+                        <p className="h5 mb-0 py-1">{ workspaceViewModel.getName(workspaceId) }</p>
                     </div>
 
                     <div className="left-box">
-                        <ListGroup>
-                            <ListGroup.Item action variant="danger">
-                                <img src="https://therichpost.com/wp-content/uploads/2020/06/avatar2.png" alt="user" width="25" className="rounded-circle" />
-                                <span> { loginUserName } </span>
-                            </ListGroup.Item>
-                        </ListGroup>
+                        <MemberCard 
+                            profilePicture='https://therichpost.com/wp-content/uploads/2020/06/avatar2.png'
+                            name={loginMember.name}
+                            onClicked={() => alert(loginMember.name)}
+                        />
                     
                         {/* department List */}
                         <div className="bg-gray px-4 py-2 bg-light">
@@ -242,14 +108,18 @@ const Workspace = function () {
                             </Modal>
                         </div>
 
-                        { applyDepartmentList() }
+                        <DepartmentList 
+                            workspaceId = {workspaceId}
+                            departments = {departmentViewModel.get(workspaceId)}
+                        />
                         
-                        {/* whole member List */}
+                        {/* workspace member List */}   
                         <div className="bg-gray px-4 py-2 bg-light">
                             <p className="mb-0 py-1">멤버</p>
-                        </div>
-                        
-                        { applyMemberList(workspaceMemberData) }
+                        </div>                    
+                        <MemberList 
+                            members = {workspaceMemberViewModel.getMembers(workspaceId)}
+                        />
                         
                     </div>
                 </div>
@@ -257,41 +127,39 @@ const Workspace = function () {
                 {/* right center */}
                 <div className="col-7 px-0">
                     <div className="bg-gray px-4 bg-light">
-                        <p className="h5">{ accessedDepartmentName } </p>
-                        <span className="small text-muted">&nbsp;{ getDepartmentGoal(accessedDepartmentId) }</span>
+                        <p className="h5">{ accessedDepartment.name } </p>
+                        <span className="small text-muted">&nbsp;{ getDepartmentGoal(accessedDepartment.id) }</span>
                     </div>
 
-                    <div className="px-4 py-3 chat-box bg-white">
-                        <ListGroup>
-                            { departmentChattingData }
-                        </ListGroup>
-                    </div>
-
-                    <div className="input-group">
-                        <input type="text" placeholder="Type a message" className="form-control py-3 bg-light" value={ inputChattingContent }
-                            onChange={e => setInputChattingContent(e.target.value)} onKeyPress={handleOnKeyPress}/>
-                        <Button onClick={ () => addChattingData(inputChattingContent) }> send </Button>
-                    </div>
-
+                    <ChatBox
+                        departmentMemberViewModel = {departmentMemberViewModel}
+                        chatViewModel = {chatViewModel}
+                        departmentId = {accessedDepartment.id}
+                        loginMemberEmail = {loginMember.email}
+                        chats = {chatViewModel.getChats(accessedDepartment.id)}
+                        chatUpdateState = {chatUpdateState}
+                        setChatUpdateState = {setChatUpdateState}
+                    />
                 </div>
                 
                 {/* right */}
                 <div className="col-2 px-0">
                     <div className="bg-gray px-4 py-2 bg-light">
-                        <p className="h5 mb-0 py-1">&nbsp;{ getDepartmentDeadLine(accessedDepartmentId) }</p>
+                        <span>{ departmentViewModel.getDeadLine(accessedDepartment.id) }</span>
+                        <p className="h5 mb-0 py-1">&nbsp;{ departmentViewModel.getDDay(accessedDepartment.id) }</p>
                     </div>
 
                     <div className="bg-gray px-4 py-2 bg-light">
                         <p className="mb-0 py-1">참여자<button className="add-button" onClick={()=> setModal2IsOpen(true)}>+</button> </p>
                         <Modal isOpen= {modal2IsOpen} style={modalStyles} onRequestClose={() => setModal2IsOpen(false)}>
-                            <DepartmentMemberAddModal modalIsOpen={modal2IsOpen} setModalIsOpen={setModal2IsOpen} accessedDepartmentId={accessedDepartmentId}/>
+                            <DepartmentMemberAddModal modalIsOpen={modal2IsOpen} setModalIsOpen={setModal2IsOpen} accessedDepartmentId={accessedDepartment.id}/>
                         </Modal>
 
                     </div>
 
-                    <div className="member-box">
-                        { applyMemberList(eachDepartmentMemberData) }
-                    </div>
+                    <MemberList 
+                        members = {departmentMemberViewModel.getMembers(accessedDepartment.id)}
+                    />
 
                     <div className="bg-gray px-4 py-2 bg-light">
                         <p className="mb-0 py-1">역할정하기</p>

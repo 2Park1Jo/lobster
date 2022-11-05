@@ -1,11 +1,23 @@
 import {atom} from 'recoil';
 
 
-export const MEMBER_LIST = atom({
-	key : 'memberState',
+export const LOGIN_MEMBER = atom({
+	key : 'loginMember',
     default : [{
         email: "",
-        password: "",
-        name: "test",
+        name: "",
+    }],
+});
+
+export const WORKSPACE_ID = atom({
+    key : 'accessedWorkspaceId',
+    default : "",
+});
+
+export const ACCESSED_DEPARTMENT = atom({
+    key : 'accessedDepartment',
+    default : [{
+        id: "1",
+        name: "공지방",
     }],
 });

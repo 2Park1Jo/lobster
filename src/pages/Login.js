@@ -2,7 +2,11 @@ import './Login.css';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { getMemberData } from '../data/MemberData.js';
+import { useSetRecoilState } from "recoil";
 import { getAllMemberData } from '../api/MemberAPI';
+import { MemberViewModel } from '../models/view-model/MemberViewModel';
+import { Member } from '../models/model/Member';
+import { LOGIN_MEMBER } from '../recoil/Atoms';
 
 const Login = function () {
 
@@ -11,16 +15,18 @@ const Login = function () {
 
     let [allMemberData, setAllMemberData] = useState([]);
     let navigate = useNavigate();
-
+    let setLoginMember = useSetRecoilState(LOGIN_MEMBER);
+    const member = new Member();
+    const memberViewModel = new MemberViewModel(member);
+    
     function checkLoginSuccess() {
         for (let userIndex = 0; userIndex < allMemberData.length; userIndex++) {
             if (email == allMemberData[userIndex].email && password === allMemberData[userIndex].password){
-                navigate("/workSpace", { state:
-                    {   
-                        loginUserEmail : allMemberData[userIndex].email,
-                        loginUserName: allMemberData[userIndex].name
-                    } 
+                setLoginMember({
+                    email: allMemberData[userIndex].email,
+                    name: allMemberData[userIndex].name
                 })
+                navigate("/workSpaceBanner")
                 return;
             }
         }
@@ -34,9 +40,13 @@ const Login = function () {
     };
 
     useEffect( () => {
+        
+        memberViewModel.update(getMemberData());
+        // setAllMemberData(memberViewModel.getAll());
         getAllMemberData()
         .then(
             (res) => {
+                console.log(res)
                 setAllMemberData(res)
             }
         )

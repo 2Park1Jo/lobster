@@ -1,18 +1,28 @@
 import axios from "axios"
 import '../utils/Constant.js'
+import '../Config.js'
 import { errorText } from "../utils/Constant.js";
+import { BACK_BASE_URL } from "../Config.js";
 axios.defaults.withCredentials = true;
 axios.defaults.timeout=4000;
 
 export const getAllMemberData = async () =>{
-    const responose = await axios.get('http://ec2-13-125-252-42.ap-northeast-2.compute.amazonaws.com:8080/member/allmember')
+    const responose = await axios.get(BACK_BASE_URL + '/member/allmember')
     return responose.data;
 }
 
+export const isSuccessedLogin = async (email, password) =>{
+    const responose = await axios.post(BACK_BASE_URL + '/member/login',
+    {
+        email:email,
+        password:password,
+    })
+    return responose.data;
+}
 
 export const isDepulicatedId=async function(email){
     const response=await axios.get(
-        'http://13.125.252.42:8080/member/duplicateid',
+        BACK_BASE_URL + '/member/duplicateid',
         {
             params:{
                 email:email
@@ -40,7 +50,7 @@ export const isDepulicatedId=async function(email){
 }
 
 export const registerUser=async function(email,password,name){
-    const request=await axios.post('http://13.125.252.42:8080/member/signup',
+    const request=await axios.post(BACK_BASE_URL + '/member/signup',
         {
             email:email,
             password:password,
