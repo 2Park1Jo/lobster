@@ -1,28 +1,18 @@
 import axios from "axios"
 import '../utils/Constant.js'
 import '../Config.js'
-import { errorText } from "../utils/Constant.js";
 import { BACK_BASE_URL } from "../Config.js";
 axios.defaults.withCredentials = true;
 axios.defaults.timeout=4000;
 
 export const getAllMemberData = async () =>{
-    const responose = await axios.get(BACK_BASE_URL + '/member/allmember')
+    const responose = await axios.get(BACK_BASE_URL + 'member/allmember')
     return responose.data;
 }
 
-export const isSuccessedLogin = async (email, password) =>{
-    const responose = await axios.post(BACK_BASE_URL + '/member/login',
-    {
-        email:email,
-        password:password,
-    })
-    return responose.data;
-}
-
-export const isDepulicatedId=async function(email){
-    const response=await axios.get(
-        BACK_BASE_URL + '/member/duplicateid',
+export const isDuplicatedId=async function(email){
+    const data=await axios.get(
+        BACK_BASE_URL+'member/duplicateid',
         {
             params:{
                 email:email
@@ -35,6 +25,7 @@ export const isDepulicatedId=async function(email){
             withCredentials: true
         
         }).then(response=>{
+            console.log(response)
             return response.data;
         }).catch(error=>{
             console.log(error)
@@ -43,7 +34,7 @@ export const isDepulicatedId=async function(email){
 }
 
 export const registerUser=async function(email,password,name){
-    const request=await axios.post(BACK_BASE_URL + '/member/signup',
+    const data=await axios.post(BACK_BASE_URL+'member/signup',
         {
             email:email,
             password:password,
@@ -56,19 +47,18 @@ export const registerUser=async function(email,password,name){
             withCredentials: true
         
         }).then(response=>{
-            console.log(response)
-            if(response.status===200){
-                return "sucess"
-            }
-            else if(response.status===409){
-                return "depulicated"
-            }
-            else{
-                console.log(response)
-                return "error"
+            console.log(response.status)
+            if(response.status===201){
+                return "success"
             }
         }).catch(error=>{
-            return "error"
+            console.log(error.response.status)
+            if(error.response.status===409){
+                return "duplicated"
+            }
+            else{
+                return "error"
+            }
         })
     return data;
 }
