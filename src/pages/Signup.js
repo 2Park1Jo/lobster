@@ -32,20 +32,18 @@ const Signup=function(){
             //return sentence;
         }
         else{
+            isIdconfirmed=true;
             setems(<span style={{color:'orange', fontSize : '14px'}}>중복검사중입니다...</span>)
             let result=Promise.resolve(isDepulicatedId(email))
             result.then(value=>{
                 if(value){
                     setems(<span style={{color:'red', fontSize : '14px'}}>이미 등록된 email주소입니다.</span>)
-                    isIdconfirmed=false;
                 }
                 else if(value===false){
                     setems(<span style={{color:'green', fontSize : '14px'}}>사용가능한 email주소입니다.</span>)
-                    isIdconfirmed=true;
                 }
                 else {
                     setems(<span style={{color:'red', fontSize : '14px'}}>서버에 에러가 발생했습니다.</span>)
-                    isIdconfirmed=false;
                 }
             }).catch(error=>{
                 setems(<span style={{color:'red', fontSize : '14px'}}>서버에 에러가 발생했습니다.</span>)
@@ -113,9 +111,13 @@ const Signup=function(){
             //console.log(email,password,name)
             let result=registerUser(email,password,name)
             result.then(value=>{
-                if(value){
+                console.log(value)
+                if(value=="sucess"){
                     alert("가입이 완료되었습니다!")
                     navigate("/")
+                }
+                else if(value){
+                    alert("이미 가입이 완료된 사용자 입니다!")
                 }
                 else{
                     alert("서버에 에러가 발생했습니다!")

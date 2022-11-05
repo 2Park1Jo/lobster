@@ -143,12 +143,12 @@ const Workspace = function () {
                 
                 {/* right */}
                 <div className="col-2 px-0">
-                    <div className="bg-gray px-4 py-2 bg-light">
+                    <div className="right-component-form">
                         <span>{ departmentViewModel.getDeadLine(accessedDepartment.id) }</span>
                         <p className="h5 mb-0 py-1">&nbsp;{ departmentViewModel.getDDay(accessedDepartment.id) }</p>
                     </div>
 
-                    <div className="bg-gray px-4 py-2 bg-light">
+                    <div className="right-component-form">
                         <p className="mb-0 py-1">참여자<button className="add-button" onClick={()=> setModal2IsOpen(true)}>+</button> </p>
                         <Modal isOpen= {modal2IsOpen} style={modalStyles} onRequestClose={() => setModal2IsOpen(false)}>
                             <DepartmentMemberAddModal modalIsOpen={modal2IsOpen} setModalIsOpen={setModal2IsOpen} accessedDepartmentId={accessedDepartment.id}/>

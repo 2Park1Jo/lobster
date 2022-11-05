@@ -58,4 +58,18 @@ input::placeholder {
     font-size: 0.9rem;
     color: #999;
 }
+
+.right-column{
+    justify-content: center;
+}
+
+.right-component-form {
+    width: 100px;
+    box-shadow: rgb(0 0 0 / 16%) 1px 1px 10px;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 8px;
+    background-color: white;
+    border:10px, solid, rgb(1, 19, 26);
+}
 /* strong{color: blue;} */

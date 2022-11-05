@@ -48,14 +48,17 @@ export const registerUser=async function(email,password,name){
         }).then(response=>{
             console.log(response)
             if(response.status===200){
-                return true
+                return "sucess"
+            }
+            else if(response.status===409){
+                return "depulicated"
             }
             else{
                 console.log(response)
-                return false
+                return "error"
             }
         }).catch(error=>{
-            console.log(error)
+            return "error"
         })
     return data;
 }
