@@ -1,38 +1,39 @@
+
 let memberData = [
     {
-        memberEmail: 'test1@naver.com',
-        memberPassword: 'qwe123!',
-        memberName: '박대원'
+        email: 'test1@naver.com',
+        password: 'qwe123!',
+        name: '박대원'
     },
     {
-        memberEmail: 'test2@naver.com',
-        memberPassword: 'qwe123@',
-        memberName: '조형준'
+        email: 'test2@naver.com',
+        password: 'qwe123@',
+        name: '조형준'
     },
     {
-        memberEmail: 'test3@naver.com',
-        memberPassword: 'qwe123#',
-        memberName: '박민지'
+        email: 'test3@naver.com',
+        password: 'qwe123#',
+        name: '박민지'
     },
     {
-        memberEmail: 'test4@naver.com',
-        memberPassword: 'qwe123$',
-        memberName: '홍영환'
+        email: 'test4@naver.com',
+        password: 'qwe123$',
+        name: '홍영환'
     },
     {
-        memberEmail: 'test5@naver.com',
-        memberPassword: 'qwe123%',
-        memberName: '조준희'
+        email: 'test5@naver.com',
+        password: 'qwe123%',
+        name: '조준희'
     },
     {
-        memberEmail: 'test6@naver.com',
-        memberPassword: 'qwe123^',
-        memberName: '김영림'
+        email: 'test6@naver.com',
+        password: 'qwe123^',
+        name: '김영림'
     },
     {
-        memberEmail: 'test7@naver.com',
-        memberPassword: 'qwe123&',
-        memberName: '테스터'
+        email: 'test7@naver.com',
+        password: 'qwe123&',
+        name: '테스터'
     },
 ];
 
@@ -40,10 +41,10 @@ export function getMemberData() {
     return memberData;
 }
 
-export function getMemberName(memberEmail) {
+export function getMemberName(email) {
     for (let index = 0; index < memberData.length; index++){
-        if (memberData[index].memberEmail === memberEmail){
-            return memberData[index].memberName;
+        if (memberData[index].email === email){
+            return memberData[index].name;
         }
     }
     return "";
