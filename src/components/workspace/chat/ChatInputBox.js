@@ -1,11 +1,19 @@
 import React from 'react'
 import Button from 'react-bootstrap/Button';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 
 export default function ChatInputBox(props){
 
     let [inputChattingContent, setInputChattingContent] = useState(""); // 사용자가 입력한 채팅 컨텐츠 데이터
+
+    function scrollToBottom(behavior) {
+        props.messageEnd.current?.scrollIntoView({behavior: behavior})
+    }
+
+    useEffect( () => {
+        scrollToBottom("smooth");
+    }, [props.chatUpdateState])
 
     function addChattingData(chatContent) {
         let copiedChattingData = [...props.chatViewModel.getAll()];
@@ -29,8 +37,8 @@ export default function ChatInputBox(props){
             link: "",
         })
 
-        console.log(copiedChattingData)
-        props.chatViewModel.update(copiedChattingData); // 수정해야함
+        props.chatViewModel.update(copiedChattingData);
+        props.setChatUpdateState(copiedChattingData);
     }
 
     const handleOnKeyPress = e => {

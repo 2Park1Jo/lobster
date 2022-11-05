@@ -1,4 +1,4 @@
-export class Workspace{
+export class WorkspaceModel{
     #workspaces = [{
         workspaceId: "",
         workspaceName: "",

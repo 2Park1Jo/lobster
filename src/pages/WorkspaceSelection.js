@@ -1,11 +1,11 @@
 import "./WorkspaceSelection.css"
 import WorkSpaceBanner from "../components/banner/WorkspaceBanner";
 import { getAllWorkspaceData } from "../data/WorkspaceData"
-import { Workspace } from "../models/model/Workspace";
+import { WorkspaceModel } from "../models/model/Workspace";
 import { WorkspaceViewModel } from "../models/view-model/WorkspaceViewModel";
 
 export default function WorkspaceSelection() {
-    const workspace = new Workspace()
+    const workspace = new WorkspaceModel()
     const workspaceViewModel = new WorkspaceViewModel(workspace);
     workspaceViewModel.update(getAllWorkspaceData());
 
