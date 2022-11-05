@@ -34,19 +34,12 @@ export const isDepulicatedId=async function(email){
             },
             withCredentials: true
         
-        }).then(res=>{
-            console.log(res);
-            return res.data;
-            // if(res.data===true){
-            //     return true
-            // }
-            // else if(res.data===false){
-            //     return false
-            // }
-            // else{
-            //     return errorText;
-            // }
-        });
+        }).then(response=>{
+            return response.data;
+        }).catch(error=>{
+            console.log(error)
+        })
+    return data
 }
 
 export const registerUser=async function(email,password,name){
@@ -63,15 +56,19 @@ export const registerUser=async function(email,password,name){
             withCredentials: true
         
         }).then(response=>{
+            console.log(response)
             if(response.status===200){
-                return true
+                return "sucess"
+            }
+            else if(response.status===409){
+                return "depulicated"
             }
             else{
                 console.log(response)
-                return false
+                return "error"
             }
         }).catch(error=>{
-            console.log(error)
+            return "error"
         })
-
+    return data;
 }
