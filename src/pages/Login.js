@@ -18,15 +18,19 @@ const Login = function () {
     let setLoginMember = useSetRecoilState(LOGIN_MEMBER);
     const member = new Member();
     const memberViewModel = new MemberViewModel(member);
-    
+
     function checkLoginSuccess() {
         for (let userIndex = 0; userIndex < allMemberData.length; userIndex++) {
             if (email == allMemberData[userIndex].email && password === allMemberData[userIndex].password){
                 setLoginMember({
                     email: allMemberData[userIndex].email,
-                    name: allMemberData[userIndex].name
+                    name: allMemberData[userIndex].name,
                 })
-                navigate("/workSpaceBanner")
+                navigate("/workSpaceBanner", {
+                    state: {
+                        memberViewModel: memberViewModel,
+                    }
+                });
                 return;
             }
         }
@@ -42,14 +46,14 @@ const Login = function () {
     useEffect( () => {
         
         memberViewModel.update(getMemberData());
-        // setAllMemberData(memberViewModel.getAll());
-        getAllMemberData()
-        .then(
-            (res) => {
-                console.log(res)
-                setAllMemberData(res)
-            }
-        )
+        setAllMemberData(memberViewModel.getAll());
+        // getAllMemberData()
+        // .then(
+        //     (res) => {
+        //         console.log(res)
+        //         setAllMemberData(res)
+        //     }
+        // )
     },[])
 
     return(

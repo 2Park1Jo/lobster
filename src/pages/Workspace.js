@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import MemberCard from '../components/workspace/MemberCard';
 import DepartmentAddModal from '../components/modals/DepartmentAddModal'
 import DepartmentMemberAddModal from '../components/modals/DepartmentMemberAddModal';
+
 import React, { useState, useRef } from 'react';
 import Modal from 'react-modal';
 import { useRecoilValue } from "recoil";
