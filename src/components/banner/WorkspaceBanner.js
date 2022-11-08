@@ -28,7 +28,6 @@ export default function workSpaceBanner({ allWorkspace }) {
                     heading="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;워크스페이스 추가하기"
                     overline={WORKSPACE_ADD_KEY}
                 />
-
         },
     )
 

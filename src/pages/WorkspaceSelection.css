@@ -11,6 +11,11 @@
     text-align: center;
 }
 
+.banner-body{
+    position: relative;
+    z-index: 0;
+}
+
 .banner-bottom {
     text-align: center;
 }

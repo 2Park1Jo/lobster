@@ -59,9 +59,28 @@ export default function WorkspaceSelection() {
         navigate('/')
     }
 
+    const openModal = () => {
+        setModalIsOpen(true);
+        document.body.style.overflow = "hidden";
+    };
+    const closeModal = () => {
+        setModalIsOpen(false);
+        document.body.style.overflow = "unset";
+    };
+
 
     return(
         <div className="banner-container">
+
+            <Modal isOpen= {modalIsOpen} style={modalStyles} onRequestClose={() => closeModal()}>
+                <WorkspaceAddModal 
+                    modalIsOpen = {modalIsOpen} 
+                    setModalIsOpen = {setModalIsOpen}
+                    allMemberViewModel = {memberViewModel}
+                    workspaceViewModel = {workspaceViewModel}
+                    workspaceMemberViewModel = {workspaceMemberViewModel}
+                />
+            </Modal>
             <div className="banner-top">
                 <h2>LOBSTER</h2>
             </div>
@@ -73,20 +92,9 @@ export default function WorkspaceSelection() {
             </div>
 
             <div className="banner-bottom">
-                <button className="add-button" onClick={()=> setModalIsOpen(true)}> + </button>
-
+                <button className="add-button" onClick={()=> openModal()}> + </button>
                 <button className="add-button" onClick={()=> logout()}> Logout </button>
             </div>
-
-            <Modal isOpen= {modalIsOpen} style={modalStyles} onRequestClose={() => setModalIsOpen(false)}>
-                <WorkspaceAddModal 
-                    modalIsOpen = {modalIsOpen} 
-                    setModalIsOpen = {setModalIsOpen}
-                    allMemberViewModel = {memberViewModel}
-                    workspaceViewModel = {workspaceViewModel}
-                    workspaceMemberViewModel = {workspaceMemberViewModel}
-                />
-            </Modal>
         </div>
     );
 }
