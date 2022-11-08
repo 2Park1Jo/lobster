@@ -24,7 +24,11 @@ export default function workSpaceBanner({ allWorkspace }) {
             key: WORKSPACE_ADD_KEY,
             content: 
                 <WorkspcaeCard 
-                    image="assets/images/plus.png"/>
+                    image="assets/images/plus.png"
+                    heading="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;워크스페이스 추가하기"
+                    overline={WORKSPACE_ADD_KEY}
+                />
+
         },
     )
 

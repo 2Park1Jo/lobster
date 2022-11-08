@@ -9,9 +9,17 @@ import ChevronRightRounded from "@material-ui/icons/ChevronRightRounded";
 import TextInfoContent from "@mui-treasury/components/content/textInfo";
 import { useN01TextInfoContentStyles } from "@mui-treasury/styles/textInfoContent/n01";
 import { useBouncyShadowStyles } from "@mui-treasury/styles/shadow/bouncy";
+import { WORKSPACE_ADD_KEY } from "../../utils/Constant";
 
 const useStyles = makeStyles(() => ({
 root: {
+    maxWidth: 304,
+    width: 400,
+    margin: "auto",
+    boxShadow: "none",
+    borderRadius: 30
+},
+plusRoot: {
     maxWidth: 304,
     width: 400,
     margin: "auto",
@@ -31,7 +39,10 @@ media: {
     marginTop:'30'
 },
 plus: {
-    height : 0,
+    height : '128px',
+    width : '128px',
+    padding: '30%',
+    margin: '60px'
 },
 }));
 
@@ -44,23 +55,19 @@ export default function WorkspaceCard({image, overline, heading, body}) {
 
         <div>
             {
-            overline === undefined ? 
-            <Card className={clsx(styles.root, shadowStyles.root)}>
+            overline ===  WORKSPACE_ADD_KEY? 
+            <Card className={clsx(styles.plusRoot, shadowStyles.root)}>
                 <CardMedia
-                    style={{
-                        width: "auto",
-                        maxHeight: "100px"
-                    }}
-                    component="img"
+                    className={styles.plus}
                     image={image}
                 />
-                <CardContent>
+                <CardContent className={styles.content}>
                     <TextInfoContent
-                        // classes={textCardContentStyles}
-                        body={body}
+                        classes={textCardContentStyles}
+                        heading={heading}
                         />
                 </CardContent>
-            </Card> 
+            </Card>
             :        
             <Card className={clsx(styles.root, shadowStyles.root)}>
                 <CardMedia
