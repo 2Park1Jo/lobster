@@ -47,7 +47,7 @@ export default function WorkspaceSelection() {
         getAllMemberData()
         .then(
             (res) => {
-                console.log(res)
+                // console.log(res)
                 // setAllMemberData(res)
                 memberViewModel.update(res);
             }

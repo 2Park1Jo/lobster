@@ -32,6 +32,8 @@ export default function WorkspaceCarousel(props) {
                     id: cards[index].key  + "_1",
                     name: "📢 공지방"
                 })
+                localStorage.setItem('accessedWorkspaceId', cards[index].key)
+                localStorage.setItem('accessedDepartmentId', cards[index].key + "_1")
                 navigate("/workspace/" + cards[index].key + "/chat/department/" + cards[index].key + "_1") // 로그인한 유저 정보, 워크스페이스 정보 state 넘기기 or recoil
             }
         }

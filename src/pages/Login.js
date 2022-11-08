@@ -1,8 +1,9 @@
 import './Login.css';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import { useSetRecoilState } from 'recoil';
 import { getMemberData } from '../data/MemberData.js';
-import { useSetRecoilState } from "recoil";
+import { WORKSPACE_ID, ACCESSED_DEPARTMENT } from '../recoil/Atoms';
 import { getAllMemberData, isLoginSuccessed } from '../api/MemberAPI';
 import { MemberViewModel } from '../models/view-model/MemberViewModel';
 import { Member } from '../models/model/Member';
@@ -13,6 +14,8 @@ const Login = function () {
     let [email, setEmail] = useState("");
     let [password, setPassword] = useState("");
 
+    const setWorkspaceId = useSetRecoilState(WORKSPACE_ID);
+    const setAccessedDepartment = useSetRecoilState(ACCESSED_DEPARTMENT);
     let navigate = useNavigate();
 
     function checkLoginSuccess() {
@@ -44,7 +47,18 @@ const Login = function () {
 
     useEffect(() => {
         if(localStorage.length > 0){
-            navigate("/workSpaceBanner")
+            if (!localStorage.getItem('accessedWorkspaceId')){
+                navigate("/workSpaceBanner")
+            }
+            else{
+                setWorkspaceId(localStorage.getItem('accessedWorkspaceId'))
+                setAccessedDepartment({
+                    id: localStorage.getItem('accessedDepartmentId'),
+                    name: localStorage.getItem('accessedDepartmentName')
+                })
+                navigate("/workspace/" + localStorage.getItem('accessedWorkspaceId') 
+                + "/chat/department/" + localStorage.getItem('accessedDepartmentId'))
+            }
         }
     }, []); 
 
