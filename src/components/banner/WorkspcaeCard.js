@@ -30,6 +30,9 @@ media: {
     paddingTop: '56.25%', // 16:9,
     marginTop:'30'
 },
+plus: {
+    height : 0,
+},
 }));
 
 export default function WorkspaceCard({image, overline, heading, body}) {
@@ -38,22 +41,64 @@ export default function WorkspaceCard({image, overline, heading, body}) {
     const shadowStyles = useBouncyShadowStyles();
 
     return (
-        <Card className={clsx(styles.root, shadowStyles.root)}>
-            <CardMedia
-                className={styles.media}
-                image={image}
-            />
-            <CardContent className={styles.content}>
-                <TextInfoContent
-                    classes={textCardContentStyles}
-                    overline={"마감일 : " + overline}
-                    heading={heading}
-                    body={body}
-                    />
-                    <Button color={"primary"} fullWidth className={styles.cta}>
-                        Find Out More <ChevronRightRounded />
-                    </Button>
-            </CardContent>
-        </Card>
+
+        <div>
+            {
+            overline === undefined ? 
+            <Card className={clsx(styles.root, shadowStyles.root)}>
+                <CardMedia
+                    style={{
+                        width: "auto",
+                        maxHeight: "100px"
+                    }}
+                    component="img"
+                    image={image}
+                />
+                <CardContent>
+                    <TextInfoContent
+                        // classes={textCardContentStyles}
+                        body={body}
+                        />
+                </CardContent>
+            </Card> 
+            :        
+            <Card className={clsx(styles.root, shadowStyles.root)}>
+                <CardMedia
+                    className={styles.media}
+                    image={image}
+                />
+                <CardContent className={styles.content}>
+                    <TextInfoContent
+                        classes={textCardContentStyles}
+                        overline={"마감일 : " + overline}
+                        heading={heading}
+                        body={body}
+                        />
+                        <Button color={"primary"} fullWidth className={styles.cta}>
+                            Find Out More <ChevronRightRounded />
+                        </Button>
+                </CardContent>
+            </Card>
+            }
+        </div>
+
+
+        // <Card className={clsx(styles.root, shadowStyles.root)}>
+        //     <CardMedia
+        //         className={styles.media}
+        //         image={image}
+        //     />
+        //     <CardContent className={styles.content}>
+        //         <TextInfoContent
+        //             classes={textCardContentStyles}
+        //             overline={"마감일 : " + overline}
+        //             heading={heading}
+        //             body={body}
+        //             />
+        //             <Button color={"primary"} fullWidth className={styles.cta}>
+        //                 Find Out More <ChevronRightRounded />
+        //             </Button>
+        //     </CardContent>
+        // </Card>
     );
 };

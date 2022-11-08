@@ -10,6 +10,22 @@ export const getAllMemberData = async () =>{
     return responose.data;
 }
 
+export const isLoginSuccessed =async function(email,password){
+    const data=await axios.post(BACK_BASE_URL+'member/login',
+        {
+            email:email,
+            password:password,
+        },
+        {
+            headers: {
+            'Access-Control-Allow-Origin': '*',
+            },
+            withCredentials: true
+        
+        })
+    return data;
+}
+
 export const isDuplicatedId=async function(email){
     const data=await axios.get(
         BACK_BASE_URL+'member/duplicateid',

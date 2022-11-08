@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { getMemberData } from '../data/MemberData.js';
 import { useSetRecoilState } from "recoil";
-import { getAllMemberData } from '../api/MemberAPI';
+import { getAllMemberData, isLoginSuccessed } from '../api/MemberAPI';
 import { MemberViewModel } from '../models/view-model/MemberViewModel';
 import { Member } from '../models/model/Member';
 import { LOGIN_MEMBER } from '../recoil/Atoms';
@@ -13,28 +13,27 @@ const Login = function () {
     let [email, setEmail] = useState("");
     let [password, setPassword] = useState("");
 
-    let [allMemberData, setAllMemberData] = useState([]);
     let navigate = useNavigate();
-    let setLoginMember = useSetRecoilState(LOGIN_MEMBER);
-    const member = new Member();
-    const memberViewModel = new MemberViewModel(member);
 
     function checkLoginSuccess() {
-        for (let userIndex = 0; userIndex < allMemberData.length; userIndex++) {
-            if (email == allMemberData[userIndex].email && password === allMemberData[userIndex].password){
-                setLoginMember({
-                    email: allMemberData[userIndex].email,
-                    name: allMemberData[userIndex].name,
-                })
-                navigate("/workSpaceBanner", {
-                    state: {
-                        memberViewModel: memberViewModel,
-                    }
-                });
-                return;
+
+        isLoginSuccessed(email, password)
+        .then(response => {
+            if(response.status === 200){
+                localStorage.clear()
+                localStorage.setItem('loginMemberEmail', email)
+                // localStorage.setItem('token', res.data.token)
+                navigate("/workSpaceBanner")
             }
-        }
-        alert("올바른 정보를 입력해주세요")
+        })
+        .catch(error=>{
+            if (error.response.status === 404){
+                alert("올바른 정보를 입력해주세요")
+            }
+            else{
+                alert("현재 서버에 이상이 있습니다. 관리자에게 문의하세요")
+            }
+        })
     }
 
     const handleOnKeyPress = e => {
@@ -43,18 +42,11 @@ const Login = function () {
         }
     };
 
-    useEffect( () => {
-        
-        memberViewModel.update(getMemberData());
-        setAllMemberData(memberViewModel.getAll());
-        // getAllMemberData()
-        // .then(
-        //     (res) => {
-        //         console.log(res)
-        //         setAllMemberData(res)
-        //     }
-        // )
-    },[])
+    useEffect(() => {
+        if(localStorage.length > 0){
+            navigate("/workSpaceBanner")
+        }
+    }, []); 
 
     return(
         <div>

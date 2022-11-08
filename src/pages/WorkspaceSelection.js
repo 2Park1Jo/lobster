@@ -1,16 +1,18 @@
 import "./WorkspaceSelection.css"
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import WorkSpaceBanner from "../components/banner/WorkspaceBanner";
 import { getAllWorkspaceData } from "../data/WorkspaceData";
 import { getWorkspaceMemberData } from "../data/WorkspaceMemberData";
 import { WorkspaceModel } from "../models/model/Workspace";
 import { WorkspaceViewModel } from "../models/view-model/WorkspaceViewModel";
-import { useLocation } from "react-router-dom";
+import { getAllMemberData } from "../api/MemberAPI"
 
 import WorkspaceAddModal from "../components/modals/WorkspaceAddModal";
 import Modal from 'react-modal';
 import { WorkspaceMember } from "../models/model/WorkspaceMember";
 import { WorkspaceMemberViewModel } from "../models/view-model/WorkspaceMemberViewModel";
+import { Member } from "../models/model/Member";
 import { MemberViewModel } from "../models/view-model/MemberViewModel";
 
 const workspace = new WorkspaceModel();
@@ -21,12 +23,13 @@ const workspaceMember = new WorkspaceMember();
 const workspaceMemberViewModel = new WorkspaceMemberViewModel(workspaceMember);
 workspaceMemberViewModel.update(getWorkspaceMemberData());
 
+const member = new Member();
+const memberViewModel = new MemberViewModel(member);
+
 export default function WorkspaceSelection() {
     let [modalIsOpen, setModalIsOpen] = useState(false);
-    let location = useLocation();
+    let navigate = useNavigate();
     
-    const memberViewModel = location.state.memberViewModel;
-
     const modalStyles = {
         content: {
             top: '50%',
@@ -37,6 +40,24 @@ export default function WorkspaceSelection() {
             transform: 'translate(-50%, -50%)',
         },
     };
+
+
+    useEffect( () => {
+        // setAllMemberData(memberViewModel.getAll());
+        getAllMemberData()
+        .then(
+            (res) => {
+                console.log(res)
+                // setAllMemberData(res)
+                memberViewModel.update(res);
+            }
+        )
+    },[])
+
+    function logout(){
+        localStorage.clear();
+        navigate('/')
+    }
 
 
     return(
@@ -53,6 +74,8 @@ export default function WorkspaceSelection() {
 
             <div className="banner-bottom">
                 <button className="add-button" onClick={()=> setModalIsOpen(true)}> + </button>
+
+                <button className="add-button" onClick={()=> logout()}> Logout </button>
             </div>
 
             <Modal isOpen= {modalIsOpen} style={modalStyles} onRequestClose={() => setModalIsOpen(false)}>

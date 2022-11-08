@@ -1,5 +1,6 @@
 import WorkspcaeCard from "./WorkspcaeCard";
 import WorkspaceCarousel from "./WorkspaceCarousel";
+import { WORKSPACE_ADD_KEY } from "../../utils/Constant";
 
 export default function workSpaceBanner({ allWorkspace }) {
     let cards = []
@@ -17,6 +18,15 @@ export default function workSpaceBanner({ allWorkspace }) {
             },
         )
     })
+
+    cards.push(
+        {
+            key: WORKSPACE_ADD_KEY,
+            content: 
+                <WorkspcaeCard 
+                    image="assets/images/plus.png"/>
+        },
+    )
 
     return (
         <WorkspaceCarousel
