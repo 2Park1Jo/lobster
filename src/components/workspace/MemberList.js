@@ -1,3 +1,4 @@
+import { ListGroup } from "react-bootstrap";
 import MemberCard from "./MemberCard";
 
 export default function MemberList(props){
@@ -16,5 +17,6 @@ export default function MemberList(props){
         )
     })
 
-    return memberCards;
+
+    return (<ListGroup variant="flush"> {memberCards} </ListGroup>);
 }
