@@ -23,7 +23,8 @@ export default function WorkspaceCarousel(props) {
     function onClickCard(index){
         if (currentSlide.current === index){
             if (cards[index].key === WORKSPACE_ADD_KEY){
-                console.log("add")
+                props.setModalIsOpen(true)
+                document.body.style.overflow = "hidden";
             }
             else {
                 // alert(table[index].key) // workspaceId
