@@ -3,7 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import MemberCard from '../components/workspace/MemberCard';
 import DepartmentAddModal from '../components/modals/DepartmentAddModal'
 import DepartmentMemberAddModal from '../components/modals/DepartmentMemberAddModal';
-import React, { useState } from 'react';
+
+import React, { useState, useRef } from 'react';
 import Modal from 'react-modal';
 import { useRecoilValue } from "recoil";
 
@@ -17,6 +18,7 @@ import { ACCESSED_DEPARTMENT, LOGIN_MEMBER, WORKSPACE_ID } from '../recoil/Atoms
 import MemberList from '../components/workspace/MemberList';
 import DepartmentList from '../components/workspace/DepartmentList';
 import ChatBox from '../components/workspace/chat/ChatBox';
+import ChatInputBox from '../components/workspace/chat/ChatInputBox';
 
 import { WorkspaceModel } from '../models/model/Workspace';
 import { WorkspaceViewModel } from '../models/view-model/WorkspaceViewModel';
@@ -50,6 +52,8 @@ const chatViewModel = new ChatViewModel(chat);
 chatViewModel.update(getChattingData())
 
 const Workspace = function () {
+    const messageEndRef = useRef(null); // 채팅메세지의 마지막
+
     let loginMember = useRecoilValue(LOGIN_MEMBER);
     let accessedDepartment = useRecoilValue(ACCESSED_DEPARTMENT);
     let workspaceId = useRecoilValue(WORKSPACE_ID);
@@ -71,110 +75,113 @@ const Workspace = function () {
 
     return(
     <div className="maincontainer">
-        <div className="container py-5 px-0">
-            <div className="row rounded-lg overflow-hidden shadow">
-                {/* left */}
-                <div className="col-1 px-0">
-                    <div className="bg-white">
-                        <div className="messages-box">
-                            <div className="list-group rounded-0">
-                            <a className="list-group-item list-group-item-action active text-white rounded-0">
-                                ⚙️
-                            </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* left center */}
-                <div className="col-2 px-0">
-                    {/* workspace info */}
-                    <div className="bg-gray px-4 py-2 bg-light">
-                        <p className="h5 mb-0 py-1">{ workspaceViewModel.getName(workspaceId) }</p>
-                    </div>
-
-                    <div className="left-box">
-                        <MemberCard 
-                            profilePicture='https://therichpost.com/wp-content/uploads/2020/06/avatar2.png'
-                            name={loginMember.name}
-                            onClicked={() => alert(loginMember.name)}
-                        />
-                    
-                        {/* department List */}
-                        <div className="bg-gray px-4 py-2 bg-light">
-                            <p className="mb-0 py-1">그룹 <button className="add-button" onClick={()=> setModalIsOpen(true)}>+</button> </p>
-                            <Modal isOpen= {modalIsOpen} style={modalStyles} onRequestClose={() => setModalIsOpen(false)}>
-                                <DepartmentAddModal modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen}/>
-                            </Modal>
-                        </div>
-
-                        <DepartmentList 
-                            workspaceId = {workspaceId}
-                            departments = {departmentViewModel.get(workspaceId)}
-                        />
-                        
-                        {/* workspace member List */}   
-                        <div className="bg-gray px-4 py-2 bg-light">
-                            <p className="mb-0 py-1">멤버</p>
-                        </div>                    
-                        <MemberList 
-                            members = {workspaceMemberViewModel.getMembers(workspaceId)}
-                        />
-                        
-                    </div>
-                </div>
-
-                {/* right center */}
-                <div className="col-7 px-0">
-                    <div className="bg-gray px-4 bg-light">
-                        <p className="h5">{ accessedDepartment.name } </p>
-                        <span className="small text-muted">&nbsp;{ getDepartmentGoal(accessedDepartment.id) }</span>
-                    </div>
-
-                    <ChatBox
-                        departmentMemberViewModel = {departmentMemberViewModel}
-                        chatViewModel = {chatViewModel}
-                        departmentId = {accessedDepartment.id}
-                        loginMemberEmail = {loginMember.email}
-                        chats = {chatViewModel.getChats(accessedDepartment.id)}
-                        chatUpdateState = {chatUpdateState}
-                        setChatUpdateState = {setChatUpdateState}
-                    />
-                </div>
-                
-                {/* right */}
-                <div className="col-2 px-0">
-                    <div className="right-component-form">
-                        <span>{ departmentViewModel.getDeadLine(accessedDepartment.id) }</span>
-                        <p className="h5 mb-0 py-1">&nbsp;{ departmentViewModel.getDDay(accessedDepartment.id) }</p>
-                    </div>
-
-                    <div className="right-component-form">
-                        <p className="mb-0 py-1">참여자<button className="add-button" onClick={()=> setModal2IsOpen(true)}>+</button> </p>
-                        <Modal isOpen= {modal2IsOpen} style={modalStyles} onRequestClose={() => setModal2IsOpen(false)}>
-                            <DepartmentMemberAddModal modalIsOpen={modal2IsOpen} setModalIsOpen={setModal2IsOpen} accessedDepartmentId={accessedDepartment.id}/>
-                        </Modal>
-
-                    </div>
-
-                    <MemberList 
-                        members = {departmentMemberViewModel.getMembers(accessedDepartment.id)}
-                    />
-
-                    <div className="bg-gray px-4 py-2 bg-light">
-                        <p className="mb-0 py-1">역할정하기</p>
-                    </div>
-                    <div className="bg-gray px-4 py-2 bg-light">
-                        <p className="mb-0 py-1">파일함</p>
-                    </div>
-                    <div className="bg-gray px-4 py-2 bg-light">
-                        <p className="mb-0 py-1">버킷</p>
-                    </div>
-                </div>
-
+        <div className='first-col'>
+            <div className='first-col-Workspace'>
+                workSpace버튼
+            </div>
+            <div className='first-col-Bucket'>
+                버켓버튼
             </div>
         </div>
 
+        <div className='second-col'>
+            <div className='second-col-WorkspaceInfo'>
+                { workspaceViewModel.getName(workspaceId) }
+            </div>
+            <div className='second-col-UserInfo'>
+                <MemberCard 
+                    profilePicture='https://therichpost.com/wp-content/uploads/2020/06/avatar2.png'
+                    name={departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail'))}
+                    onClicked={() => alert(departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail')))}
+                />
+            </div>
+            
+            <div className='add-button-title'>
+                <p>그룹 <button className="add-button" onClick={()=> setModalIsOpen(true)}>+</button> </p>
+                <Modal isOpen= {modalIsOpen} style={modalStyles} onRequestClose={() => setModalIsOpen(false)}>
+                    <DepartmentAddModal modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen}/>
+                </Modal>
+            </div>
+
+            <div className='second-col-DPList'>
+                <DepartmentList 
+                    workspaceId = {workspaceId}
+                    departments = {departmentViewModel.get(workspaceId)}
+                />
+            </div>
+
+            <div className='add-button-title'>
+                <p>멤버 <button className="add-button" onClick={()=> alert("member + button")}>+</button> </p>
+            </div>
+
+            <div className='second-col-WholeMemberList'>
+                <MemberList 
+                    members = {workspaceMemberViewModel.getMembers(workspaceId)}
+                />
+            </div>
+        </div>
+
+        <div className='third-col'>
+            <div className='third-col-DepartmentInfo'>
+                <p className="h5">{ accessedDepartment.name } </p>
+                <span className="small text-muted">&nbsp;{ getDepartmentGoal(accessedDepartment.id) }</span>
+            </div>
+            
+            <div className='third-col-ChatList'>
+                <ChatBox
+                    departmentMemberViewModel = {departmentMemberViewModel}
+                    chatViewModel = {chatViewModel}
+                    departmentId = {accessedDepartment.id}
+                    loginMemberEmail = {loginMember.email}
+                    chats = {chatViewModel.getChats(accessedDepartment.id)}//chatViewModel.getChats(accessedDepartmentId)
+                    messageEnd = {messageEndRef}
+                />
+            </div>
+            <div className='third-col-ChatInput'>
+                <ChatInputBox 
+                    chatViewModel = {chatViewModel}
+                    departmentId = {accessedDepartment.id}
+                    memberEmail = {loginMember.email}
+                    chatUpdateState = {chatUpdateState}
+                    setChatUpdateState = {setChatUpdateState}
+                    messageEnd = {messageEndRef}
+                    // chatUpdateState = {props.chatUpdateState}
+                    // setChatUpdateState = {props.setChatUpdateState}
+                />
+            </div>
+        </div>
+
+        <div className='fourth-col'>
+            <div className='fourth-col-DepartmentInfo'>
+                <span>{ departmentViewModel.getDeadLine(accessedDepartment.id) }</span>
+                <p className="h5 mb-0 py-1">&nbsp;{ departmentViewModel.getDDay(accessedDepartment.id) }</p>
+            </div>
+
+            <div className='add-button-title'>
+                <p>참여자<button className="add-button" onClick={()=> setModal2IsOpen(true)}>+</button> </p>
+                <Modal isOpen= {modal2IsOpen} style={modalStyles} onRequestClose={() => setModal2IsOpen(false)}>
+                    <DepartmentMemberAddModal modalIsOpen={modal2IsOpen} setModalIsOpen={setModal2IsOpen} accessedDepartmentId={accessedDepartment.id}/>
+                </Modal>
+            </div>
+
+            <div className='fourth-col-DPMemberList'>
+                <MemberList 
+                    members = {departmentMemberViewModel.getMembers(accessedDepartment.id)}
+                />
+            </div>
+            <div className='fourth-col-RoleDetermine'>
+                역할정하기
+            </div>
+            <div className='fourth-col-UploadedFile'>
+                파일목록
+            </div>
+            <div className='fourth-col-DPModify'>
+                DP수정
+            </div>
+            <div className='fourth-col-Bucket'>
+                버켓
+            </div>
+        </div>
     </div>
     );
 }

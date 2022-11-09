@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 
 export default function ChatBox(props){
     let chats = [];
-    const messageEndRef = useRef(null); // 채팅메세지의 마지막
+    // const messageEndRef = useRef(null); // 채팅메세지의 마지막
 
     props.chats.map( (chat, index) => {
         chats.push(
@@ -19,25 +19,15 @@ export default function ChatBox(props){
     })
 
     useEffect( () => {
-        messageEndRef.current?.scrollIntoView({behavior: "auto"})
+        props.messageEnd.current?.scrollIntoView({behavior: "auto"})
     }, [props.departmentId])
 
     return (
-        <>
-            <div className="px-4 py-3 chat-box bg-white">
-                <ListGroup>
-                    { chats }
-                    <div ref={ messageEndRef }></div>
-                </ListGroup>
-            </div>
-            <ChatInputBox 
-                chatViewModel = {props.chatViewModel}
-                departmentId = {props.departmentId}
-                memberEmail = {props.loginMemberEmail}
-                messageEnd = {messageEndRef}
-                chatUpdateState = {props.chatUpdateState}
-                setChatUpdateState = {props.setChatUpdateState}
-            />
-        </>
+        <div className="px-4 py-3 bg-white">
+            <ListGroup>
+                { chats }
+                <div ref={ props.messageEnd }></div>
+            </ListGroup>
+        </div>
     );
 }
