@@ -88,11 +88,12 @@ export default function WorkspaceSelection() {
             <div className="banner-body">
                 <WorkSpaceBanner 
                     allWorkspace={ workspaceViewModel.getAll() }
+                    modalIsOpen={modalIsOpen} 
+                    setModalIsOpen={setModalIsOpen}
                 />
             </div>
 
             <div className="banner-bottom">
-                <button className="add-button" onClick={()=> openModal()}> + </button>
                 <button className="add-button" onClick={()=> logout()}> Logout </button>
             </div>
         </div>
