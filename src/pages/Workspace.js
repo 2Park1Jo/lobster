@@ -4,7 +4,7 @@ import MemberCard from '../components/workspace/MemberCard';
 import DepartmentAddModal from '../components/modals/DepartmentAddModal'
 import DepartmentMemberAddModal from '../components/modals/DepartmentMemberAddModal';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Modal from 'react-modal';
 import { useRecoilValue } from "recoil";
 
@@ -31,6 +31,10 @@ import { Chat } from '../models/model/Chat';
 import { ChatViewModel } from '../models/view-model/ChatViewModel';
 import { Department } from '../models/model/Department';
 
+import { FaPowerOff } from "react-icons/fa";
+import { BsGearFill } from "react-icons/bs";
+import { BiChevronsDown,BiChevronsUp,BiUserPlus } from "react-icons/bi";
+import { ListGroup } from 'react-bootstrap';
 const workspace = new WorkspaceModel();
 const workspaceViewModel = new WorkspaceViewModel(workspace);
 workspaceViewModel.update(getAllWorkspaceData());
@@ -53,7 +57,6 @@ chatViewModel.update(getChattingData())
 
 const Workspace = function () {
     const messageEndRef = useRef(null); // 채팅메세지의 마지막
-
     let loginMember = useRecoilValue(LOGIN_MEMBER);
     let accessedDepartment = useRecoilValue(ACCESSED_DEPARTMENT);
     let workspaceId = useRecoilValue(WORKSPACE_ID);
@@ -61,6 +64,7 @@ const Workspace = function () {
     let [modalIsOpen, setModalIsOpen] = useState(false);
     let [modal2IsOpen, setModal2IsOpen] = useState(false);    
     let [chatUpdateState, setChatUpdateState] = useState("");
+    let [isShowDPmemberList,setIsShowDPmemberList]=useState(true);
 
     const modalStyles = {
         content: {
@@ -72,6 +76,8 @@ const Workspace = function () {
             transform: 'translate(-50%, -50%)',
         },
     };
+
+
 
     return(
     <div className="maincontainer">
@@ -89,29 +95,31 @@ const Workspace = function () {
                 { workspaceViewModel.getName(workspaceId) }
             </div>
             <div className='second-col-UserInfo'>
-                <MemberCard 
-                    profilePicture='https://therichpost.com/wp-content/uploads/2020/06/avatar2.png'
-                    name={departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail'))}
-                    onClicked={() => alert(departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail')))}
-                />
+                <ListGroup variant='flush'>
+                    <MemberCard 
+                        profilePicture='https://therichpost.com/wp-content/uploads/2020/06/avatar2.png'
+                        name={departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail'))}
+                        onClicked={() => alert(departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail')))}
+                    />
+                </ListGroup>
             </div>
             
-            <div className='add-button-title'>
-                <p>그룹 <button className="add-button" onClick={()=> setModalIsOpen(true)}>+</button> </p>
+            <div className='container-top'>
+                <p>그룹 <BiUserPlus className="button" onClick={()=> setModalIsOpen(true)}/> </p>
                 <Modal isOpen= {modalIsOpen} style={modalStyles} onRequestClose={() => setModalIsOpen(false)}>
                     <DepartmentAddModal modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen}/>
                 </Modal>
             </div>
 
             <div className='second-col-DPList'>
-                <DepartmentList 
+                <DepartmentList
                     workspaceId = {workspaceId}
                     departments = {departmentViewModel.get(workspaceId)}
                 />
             </div>
 
-            <div className='add-button-title'>
-                <p>멤버 <button className="add-button" onClick={()=> alert("member + button")}>+</button> </p>
+            <div className='container-top'>
+                <p>멤버 <BiUserPlus className="button" onClick={()=> alert("member + button")}/> </p>
             </div>
 
             <div className='second-col-WholeMemberList'>
@@ -123,8 +131,8 @@ const Workspace = function () {
 
         <div className='third-col'>
             <div className='third-col-DepartmentInfo'>
-                <p className="h5">{ accessedDepartment.name } </p>
-                <span className="small text-muted">&nbsp;{ getDepartmentGoal(accessedDepartment.id) }</span>
+                <span className="h5">{ accessedDepartment.name } </span>
+                <p className="small text-muted">&nbsp;{ getDepartmentGoal(accessedDepartment.id) }</p>
             </div>
             
             <div className='third-col-ChatList'>
@@ -150,36 +158,52 @@ const Workspace = function () {
                 />
             </div>
         </div>
-
-        <div className='fourth-col'>
+        <div className='fourth-col-container'>
             <div className='fourth-col-DepartmentInfo'>
                 <span>{ departmentViewModel.getDeadLine(accessedDepartment.id) }</span>
+                <FaPowerOff className='setting' style={{float:'right',marginLeft:'10px'}} onClick={()=> alert("department 수정")}/>
+                <BsGearFill className='setting' style={{float:'right'}} onClick={()=> alert("로그아웃")}/>
                 <p className="h5 mb-0 py-1">&nbsp;{ departmentViewModel.getDDay(accessedDepartment.id) }</p>
             </div>
 
-            <div className='add-button-title'>
-                <p>참여자<button className="add-button" onClick={()=> setModal2IsOpen(true)}>+</button> </p>
-                <Modal isOpen= {modal2IsOpen} style={modalStyles} onRequestClose={() => setModal2IsOpen(false)}>
-                    <DepartmentMemberAddModal modalIsOpen={modal2IsOpen} setModalIsOpen={setModal2IsOpen} accessedDepartmentId={accessedDepartment.id}/>
-                </Modal>
-            </div>
+            <div className='fourth-col'>
 
-            <div className='fourth-col-DPMemberList'>
-                <MemberList 
-                    members = {departmentMemberViewModel.getMembers(accessedDepartment.id)}
-                />
-            </div>
-            <div className='fourth-col-RoleDetermine'>
-                역할정하기
-            </div>
-            <div className='fourth-col-UploadedFile'>
-                파일목록
-            </div>
-            <div className='fourth-col-DPModify'>
-                DP수정
-            </div>
-            <div className='fourth-col-Bucket'>
-                버켓
+                <div className='fourth-col-DPMemberListContainer'>
+                    <div className='container-top'>
+                        <div style={{float:'left'}}>참여자 {departmentMemberViewModel.getMembers(accessedDepartment.id).length}</div>
+                        
+                        <div style={{float:'right'}} onClick={()=>setIsShowDPmemberList(!isShowDPmemberList)}>{
+                            isShowDPmemberList===true?
+                            <BiChevronsDown className='arrow'/>
+                            :
+                            <BiChevronsUp className='arrow'/>
+                        }</div>
+                        <BiUserPlus style={{float:'right'}} className="button" onClick={()=> setModal2IsOpen(true)}/>
+                        <Modal isOpen= {modal2IsOpen} style={modalStyles} onRequestClose={() => setModal2IsOpen(false)}>
+                            <DepartmentMemberAddModal modalIsOpen={modal2IsOpen} setModalIsOpen={setModal2IsOpen} accessedDepartmentId={accessedDepartment.id}/>
+                        </Modal>
+                    </div>
+                    <div className='fourth-col-DPMemberList'>
+                        {isShowDPmemberList===true?
+                            <MemberList members = {departmentMemberViewModel.getMembers(accessedDepartment.id)}/>
+                        :
+                            <></>
+                        }
+
+                    </div>
+                </div>
+                <div className='fourth-col-UploadedFile'>
+                    <div className='container-top'>
+                        파일목록
+                    </div>
+                    <div className='child'></div>
+                </div>
+                <div className='fourth-col-Bucket'>
+                    <div className='container-top'>
+                        버켓
+                    </div>
+                    <div className='child'></div>
+                </div>
             </div>
         </div>
     </div>

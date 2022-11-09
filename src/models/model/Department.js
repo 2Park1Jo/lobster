@@ -1,5 +1,6 @@
 export class Department{
     #departments = [{
+        workspaceId:"",
         departmentId: "",
         departmentName: "",
         departmentGoal: "",

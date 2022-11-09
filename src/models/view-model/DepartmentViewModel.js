@@ -26,11 +26,13 @@ export class DepartmentViewModel{
     }
     
     getGoal(departmentId) {
+        let goal="";
         this.getAll().map((department) => {
             if (department.departmentId === departmentId){
-                return department.departmentGoal;
+                goal= department.departmentGoal;
             }
         })
+        return goal;
     }
     
     getDeadLine(departmentId) {

@@ -7,7 +7,7 @@ export default function Message({ chatSender, chatDate, chatContent }){
     return(
         <div className='message'>
             <li className="small text-muted">{ chatSender } { chatDate }</li>
-            <ListGroup.Item action variant="dark" className="rounded">
+            <ListGroup.Item style={{width: 'auto'}} action className="rounded">
                 <span className="small"> { chatContent } </span>
             </ListGroup.Item>
         </div>
