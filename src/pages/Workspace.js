@@ -9,11 +9,14 @@ import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 import { useRecoilValue } from "recoil";
 
+import { getAllWorkspace, getWorkspaceMemberData, getWorkspaceData } from '../api/WorkspaceAPI';
+import { getAllDepartment, getDepartmentMemberData } from '../api/DepartmentAPI';
+
 import { getChattingData } from '../data/ChattingData';
 import { getDepartmentData, getDepartmentGoal, getDepartmentDeadLine } from '../data/DepartmentData';
-import { getDepartmentMemberData } from '../data/DepartmentMemberData';
-import { getAllWorkspaceData } from '../data/WorkspaceData';
-import { getWorkspaceMemberData } from '../data/WorkspaceMemberData';
+// import { getDepartmentMemberData } from '../data/DepartmentMemberData';
+// import { getAllWorkspaceData } from '../data/WorkspaceData';
+// import { getWorkspaceMemberData } from '../data/WorkspaceMemberData';
 import { ACCESSED_DEPARTMENT, LOGIN_MEMBER, WORKSPACE_ID } from '../recoil/Atoms';
 
 import MemberList from '../components/workspace/MemberList';
@@ -38,19 +41,15 @@ import { BiChevronsDown,BiChevronsUp,BiUserPlus } from "react-icons/bi";
 import { ListGroup } from 'react-bootstrap';
 const workspace = new WorkspaceModel();
 const workspaceViewModel = new WorkspaceViewModel(workspace);
-workspaceViewModel.update(getAllWorkspaceData());
 
 const workspaceMember = new WorkspaceMember();
 const workspaceMemberViewModel = new WorkspaceMemberViewModel(workspaceMember);
-workspaceMemberViewModel.update(getWorkspaceMemberData());
 
 const department = new Department();
 const departmentViewModel = new DepartmentViewModel(department);
-departmentViewModel.update(getDepartmentData());
 
 const departmentMember = new DepartmentMember();
 const departmentMemberViewModel = new DepartmentMemberViewModel(departmentMember);
-departmentMemberViewModel.update(getDepartmentMemberData());
 
 const chat = new Chat();
 const chatViewModel = new ChatViewModel(chat);
@@ -58,9 +57,14 @@ chatViewModel.update(getChattingData())
 
 const Workspace = function () {
     const messageEndRef = useRef(null); // 채팅메세지의 마지막
-    let loginMember = useRecoilValue(LOGIN_MEMBER);
+    // let loginMember = useRecoilValue(LOGIN_MEMBER);
     let accessedDepartment = useRecoilValue(ACCESSED_DEPARTMENT);
     let workspaceId = useRecoilValue(WORKSPACE_ID);
+
+    let [isReceivedWorkspace, setIsReceivedWorkspace] = useState(false);
+    let [isReceivedDepertment, setIsReceivedDepertment] = useState(false);
+    let [isReceivedDepertmentMember, setIsReceivedDepertmentMember] = useState(false);
+    let [isReceivedWorkspaceMember, setIsReceivedWorkspaceMember] = useState(false);
 
     let [modalIsOpen, setModalIsOpen] = useState(false);
     let [modal2IsOpen, setModal2IsOpen] = useState(false);    
@@ -68,6 +72,39 @@ const Workspace = function () {
     let [isShowDPmemberList,setIsShowDPmemberList]=useState(true);
 
     let navigate = useNavigate();
+    useEffect( () => {
+        getWorkspaceData(localStorage.getItem('loginMemberEmail'))
+        .then(
+            (res) => {
+                workspaceViewModel.update(res);
+                setIsReceivedWorkspace(true)
+            }
+        )
+
+        getAllDepartment()
+        .then(
+            (res) => {
+                departmentViewModel.update(res);
+                setIsReceivedDepertment(true)
+            }
+        )
+
+        getDepartmentMemberData(accessedDepartment.id)
+        .then(
+            (res) => {
+                departmentMemberViewModel.update(res);
+                setIsReceivedDepertmentMember(true)
+            }
+        )
+
+        getWorkspaceMemberData(workspaceId)
+        .then(
+            (res) => {
+                workspaceMemberViewModel.update(res);
+                setIsReceivedWorkspaceMember(true)
+            }
+        )
+    },[])
 
     const modalStyles = {
         content: {
@@ -84,6 +121,8 @@ const Workspace = function () {
         localStorage.clear();
         navigate('/')
     }
+    
+    if(isReceivedWorkspace && isReceivedDepertment && isReceivedDepertmentMember && isReceivedWorkspaceMember){
 
     return(
     <div className="maincontainer">
@@ -214,6 +253,7 @@ const Workspace = function () {
         </div>
     </div>
     );
+                    }
 }
 
 export default Workspace;

@@ -27,7 +27,7 @@ export class DepartmentMemberViewModel{
 
         this.getAll().map((member) => {
             if (member.email === memberEmail){
-                memberName = member.name;
+                memberName = member.memberName;
             }
         })
 

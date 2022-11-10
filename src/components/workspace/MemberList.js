@@ -9,9 +9,9 @@ export default function MemberList(props){
         memberCards.push(
             <MemberCard
                 profilePicture='https://therichpost.com/wp-content/uploads/2020/06/avatar2.png'
-                name={member.name}
-                role={member.role}
-                onClicked={() => alert(member.name)}
+                name={member.memberName}
+                role={member.departmentRole}
+                onClicked={() => alert(member.memberName)}
                 key = {index}
             />
         )
