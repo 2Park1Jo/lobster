@@ -5,6 +5,7 @@ import DepartmentAddModal from '../components/modals/DepartmentAddModal'
 import DepartmentMemberAddModal from '../components/modals/DepartmentMemberAddModal';
 
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 import { useRecoilValue } from "recoil";
 
@@ -66,6 +67,8 @@ const Workspace = function () {
     let [chatUpdateState, setChatUpdateState] = useState("");
     let [isShowDPmemberList,setIsShowDPmemberList]=useState(true);
 
+    let navigate = useNavigate();
+
     const modalStyles = {
         content: {
             top: '50%',
@@ -77,7 +80,10 @@ const Workspace = function () {
         },
     };
 
-
+    function logout(){
+        localStorage.clear();
+        navigate('/')
+    }
 
     return(
     <div className="maincontainer">
@@ -161,8 +167,8 @@ const Workspace = function () {
         <div className='fourth-col-container'>
             <div className='fourth-col-DepartmentInfo'>
                 <span>{ departmentViewModel.getDeadLine(accessedDepartment.id) }</span>
-                <FaPowerOff className='setting' style={{float:'right',marginLeft:'10px'}} onClick={()=> alert("department 수정")}/>
-                <BsGearFill className='setting' style={{float:'right'}} onClick={()=> alert("로그아웃")}/>
+                <FaPowerOff className='setting' style={{float:'right',marginLeft:'10px'}} onClick={()=> logout()}/>
+                <BsGearFill className='setting' style={{float:'right'}} onClick={()=> alert("department 수정")}/>
                 <p className="h5 mb-0 py-1">&nbsp;{ departmentViewModel.getDDay(accessedDepartment.id) }</p>
             </div>
 
