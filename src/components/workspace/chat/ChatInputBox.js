@@ -30,7 +30,7 @@ export default function ChatInputBox(props){
         copiedChattingData.push({
             workspaceId: "1",
             departmentId: props.departmentId, 
-            memberEmail: props.memberEmail,
+            memberEmail: props.loginMemberEmail,
             content: chatContent,
             date: currentTime,
             content_type: "TEXT",

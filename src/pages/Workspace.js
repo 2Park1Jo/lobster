@@ -140,7 +140,7 @@ const Workspace = function () {
                     departmentMemberViewModel = {departmentMemberViewModel}
                     chatViewModel = {chatViewModel}
                     departmentId = {accessedDepartment.id}
-                    loginMemberEmail = {loginMember.email}
+                    loginMemberEmail = {localStorage.getItem('loginMemberEmail')}
                     chats = {chatViewModel.getChats(accessedDepartment.id)}//chatViewModel.getChats(accessedDepartmentId)
                     messageEnd = {messageEndRef}
                 />
@@ -149,7 +149,7 @@ const Workspace = function () {
                 <ChatInputBox 
                     chatViewModel = {chatViewModel}
                     departmentId = {accessedDepartment.id}
-                    memberEmail = {loginMember.email}
+                    loginMemberEmail = {localStorage.getItem('loginMemberEmail')}
                     chatUpdateState = {chatUpdateState}
                     setChatUpdateState = {setChatUpdateState}
                     messageEnd = {messageEndRef}
