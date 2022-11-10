@@ -121,7 +121,7 @@ const Workspace = function () {
         localStorage.clear();
         navigate('/')
     }
-    
+
     if(isReceivedWorkspace && isReceivedDepertment && isReceivedDepertmentMember && isReceivedWorkspaceMember){
 
     return(
@@ -177,7 +177,7 @@ const Workspace = function () {
         <div className='third-col'>
             <div className='third-col-DepartmentInfo'>
                 <span className="h5">{ accessedDepartment.name } </span>
-                <p className="small text-muted">&nbsp;{ getDepartmentGoal(accessedDepartment.id) }</p>
+                <p className="small text-muted">&nbsp;{ departmentViewModel.getGoal(accessedDepartment.id) }</p>
             </div>
             
             <div className='third-col-ChatList'>

@@ -40,7 +40,8 @@ export class DepartmentViewModel{
 
         this.getAll().map((department) => {
             if (department.departmentId === departmentId){
-                deadLine = department.departmentDeadLine;
+                deadLine = department.departmentDeadline;
+                console.log(deadLine)
             }
         })
         return deadLine;

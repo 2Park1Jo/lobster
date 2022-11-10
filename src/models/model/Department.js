@@ -4,7 +4,7 @@ export class Department{
         departmentId: "",
         departmentName: "",
         departmentGoal: "",
-        departmentDeadLine: ""
+        departmentDeadline: ""
     }]
 
     updateModel(updatedModel){
