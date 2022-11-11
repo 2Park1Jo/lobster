@@ -13,3 +13,8 @@ export const getDepartmentMemberData = async (departmentId) =>{
     const responose = await axios.get(BACK_BASE_URL + 'department/' + departmentId + '/members')
     return responose.data;
 }
+
+export const getChattingData = async (departmentId) =>{
+    const responose = await axios.get(BACK_BASE_URL + 'department/' + departmentId + '/chat/content')
+    return responose.data;
+}

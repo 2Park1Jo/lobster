@@ -1,19 +1,17 @@
 import "./WorkspaceSelection.css"
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import WorkSpaceBanner from "../components/banner/WorkspaceBanner";
-import { getAllWorkspaceData } from "../data/WorkspaceData";
-import { getWorkspaceMemberData } from "../data/WorkspaceMemberData";
-import { WorkspaceModel } from "../models/model/Workspace";
-import { WorkspaceViewModel } from "../models/view-model/WorkspaceViewModel";
 import { getAllMemberData } from "../api/MemberAPI"
 import { getWorkspaceData } from "../api/WorkspaceAPI";
 
-import WorkspaceAddModal from "../components/modals/WorkspaceAddModal";
 import Modal from 'react-modal';
+import WorkspaceAddModal from "../components/modals/WorkspaceAddModal";
+import WorkSpaceBanner from "../components/banner/WorkspaceBanner";
+
 import { Member } from "../models/model/Member";
 import { MemberViewModel } from "../models/view-model/MemberViewModel";
-import { DepartmentViewModel } from "../models/view-model/DepartmentViewModel";
+import { WorkspaceModel } from "../models/model/Workspace";
+import { WorkspaceViewModel } from "../models/view-model/WorkspaceViewModel";
 
 const workspace = new WorkspaceModel();
 const workspaceViewModel = new WorkspaceViewModel(workspace);
