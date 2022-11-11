@@ -38,6 +38,9 @@ import { Department } from '../models/model/Department';
 import { FaPowerOff } from "react-icons/fa";
 import { BsGearFill } from "react-icons/bs";
 import { BiChevronsDown,BiChevronsUp,BiUserPlus } from "react-icons/bi";
+import { IoLogoBitbucket } from "react-icons/io"
+import { MdWorkspacesFilled } from "react-icons/md"
+
 import { ListGroup } from 'react-bootstrap';
 const workspace = new WorkspaceModel();
 const workspaceViewModel = new WorkspaceViewModel(workspace);
@@ -128,10 +131,10 @@ const Workspace = function () {
     <div className="maincontainer">
         <div className='first-col'>
             <div className='first-col-Workspace'>
-                workSpace버튼
+                <MdWorkspacesFilled/>
             </div>
             <div className='first-col-Bucket'>
-                버켓버튼
+                <IoLogoBitbucket/>
             </div>
         </div>
 
