@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import MemberCard from '../components/workspace/MemberCard';
 import DepartmentAddModal from '../components/modals/DepartmentAddModal'
 import DepartmentMemberAddModal from '../components/modals/DepartmentMemberAddModal';
+import DepartmentModifyModal from '../components/modals/DepartmentModifyModal';
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -37,11 +38,13 @@ import { Department } from '../models/model/Department';
 
 import { FaPowerOff } from "react-icons/fa";
 import { BsGearFill } from "react-icons/bs";
+import { MdPostAdd } from "react-icons/md";
 import { BiChevronsDown,BiChevronsUp,BiUserPlus } from "react-icons/bi";
 import {SiBitbucket} from "react-icons/si";
 import {MdOutlineWork} from "react-icons/md";
 
 import { ListGroup } from 'react-bootstrap';
+import Bucket from '../components/workspace/Bucket';
 const workspace = new WorkspaceModel();
 const workspaceViewModel = new WorkspaceViewModel(workspace);
 
@@ -70,7 +73,8 @@ const Workspace = function () {
     let [isReceivedWorkspaceMember, setIsReceivedWorkspaceMember] = useState(false);
 
     let [modalIsOpen, setModalIsOpen] = useState(false);
-    let [modal2IsOpen, setModal2IsOpen] = useState(false);    
+    let [modal2IsOpen, setModal2IsOpen] = useState(false); 
+    let [dpModifyModalIsOpen, setdpModifyModalIsOpen] = useState(false);    
     let [chatUpdateState, setChatUpdateState] = useState("");
     let [isShowDPmemberList,setIsShowDPmemberList]=useState(true);
 
@@ -154,38 +158,40 @@ const Workspace = function () {
                     <div className='second-col-WorkspaceInfo'>
                         { workspaceViewModel.getName(workspaceId) }
                     </div>
-                    <div className='second-col-UserInfo'>
-                        <ListGroup variant='flush'>
-                            <MemberCard 
-                                profilePicture='https://therichpost.com/wp-content/uploads/2020/06/avatar2.png'
-                                name={departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail'))}
-                                onClicked={() => alert(departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail')))}
-                            />
-                        </ListGroup>
-                    </div>
+                    <div className='second-col-container'>
+                        <div className='second-col-UserInfo'>
+                            <ListGroup variant='flush'>
+                                <MemberCard 
+                                    profilePicture='https://therichpost.com/wp-content/uploads/2020/06/avatar2.png'
+                                    name={departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail'))}
+                                    onClicked={() => alert(departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail')))}
+                                />
+                            </ListGroup>
+                        </div>
                     
-                    <div className='container-top'>
-                        <p>그룹 <BiUserPlus className="button" onClick={()=> setModalIsOpen(true)}/> </p>
-                        <Modal isOpen= {modalIsOpen} style={modalStyles} onRequestClose={() => setModalIsOpen(false)}>
-                            <DepartmentAddModal modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen}/>
-                        </Modal>
-                    </div>
+                        <div className='container-top'>
+                            <p>그룹 <MdPostAdd className="setting" onClick={()=> setModalIsOpen(true)}/> </p>
+                            <Modal isOpen= {modalIsOpen} style={modalStyles} onRequestClose={() => setModalIsOpen(false)}>
+                                <DepartmentAddModal modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen}/>
+                            </Modal>
+                        </div>
 
-                    <div className='second-col-DPList'>
-                        <DepartmentList
-                            workspaceId = {workspaceId}
-                            departments = {departmentViewModel.get(workspaceId)}
-                        />
-                    </div>
+                        <div className='second-col-DPList'>
+                            <DepartmentList
+                                workspaceId = {workspaceId}
+                                departments = {departmentViewModel.get(workspaceId)}
+                            />
+                        </div>
 
-                    <div className='container-top'>
-                        <p>멤버 <BiUserPlus className="button" onClick={()=> alert("member + button")}/> </p>
-                    </div>
+                        <div className='container-top'>
+                            <p>멤버 <BiUserPlus className="setting" onClick={()=> alert("member + button")}/> </p>
+                        </div>
 
-                    <div className='second-col-WholeMemberList'>
-                        <MemberList 
-                            members = {workspaceMemberViewModel.getMembers(workspaceId)}
-                        />
+                        <div className='second-col-WholeMemberList'>
+                            <MemberList 
+                                members = {workspaceMemberViewModel.getMembers(workspaceId)}
+                            />
+                        </div>
                     </div>
                 </div>
 
@@ -222,7 +228,10 @@ const Workspace = function () {
                     <div className='fourth-col-DepartmentInfo'>
                         <span>{ departmentViewModel.getDeadLine(accessedDepartment.id) }</span>
                         <FaPowerOff className='setting' style={{float:'right',marginLeft:'10px'}} onClick={()=> logout()}/>
-                        <BsGearFill className='setting' style={{float:'right'}} onClick={()=> alert("department 수정")}/>
+                        <BsGearFill className='setting' style={{float:'right'}} onClick={()=> setdpModifyModalIsOpen(true)}/>
+                            <Modal isOpen= {dpModifyModalIsOpen} style={modalStyles} onRequestClose={() => setdpModifyModalIsOpen(false)}>
+                                <DepartmentModifyModal departmentName={accessedDepartment.name} departmentGoal={departmentViewModel.getGoal(accessedDepartment.id)} departmentDeadLine={departmentViewModel.getDeadLine(accessedDepartment.id)} setdpModifyModalIsOpen={setdpModifyModalIsOpen}/>
+                            </Modal>
                         <p className="h5 mb-0 py-1">&nbsp;{ departmentViewModel.getDDay(accessedDepartment.id) }</p>
                     </div>
 
@@ -238,7 +247,7 @@ const Workspace = function () {
                                     :
                                     <BiChevronsUp className='arrow'/>
                                 }</div>
-                                <BiUserPlus style={{float:'right'}} className="button" onClick={()=> setModal2IsOpen(true)}/>
+                                <BiUserPlus style={{float:'right'}} className="arrow" onClick={()=> setModal2IsOpen(true)}/>
                                 <Modal isOpen= {modal2IsOpen} style={modalStyles} onRequestClose={() => setModal2IsOpen(false)}>
                                     <DepartmentMemberAddModal modalIsOpen={modal2IsOpen} setModalIsOpen={setModal2IsOpen} accessedDepartmentId={accessedDepartment.id}/>
                                 </Modal>
@@ -268,7 +277,7 @@ const Workspace = function () {
                 </div>
             </div>
         :
-            <></>
+            <Bucket>adgadsg</Bucket>
                         }
     </div>
     );
