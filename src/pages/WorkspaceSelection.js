@@ -7,21 +7,16 @@ import { getWorkspaceMemberData } from "../data/WorkspaceMemberData";
 import { WorkspaceModel } from "../models/model/Workspace";
 import { WorkspaceViewModel } from "../models/view-model/WorkspaceViewModel";
 import { getAllMemberData } from "../api/MemberAPI"
+import { getWorkspaceData } from "../api/WorkspaceAPI";
 
 import WorkspaceAddModal from "../components/modals/WorkspaceAddModal";
 import Modal from 'react-modal';
-import { WorkspaceMember } from "../models/model/WorkspaceMember";
-import { WorkspaceMemberViewModel } from "../models/view-model/WorkspaceMemberViewModel";
 import { Member } from "../models/model/Member";
 import { MemberViewModel } from "../models/view-model/MemberViewModel";
+import { DepartmentViewModel } from "../models/view-model/DepartmentViewModel";
 
 const workspace = new WorkspaceModel();
 const workspaceViewModel = new WorkspaceViewModel(workspace);
-workspaceViewModel.update(getAllWorkspaceData());
-
-const workspaceMember = new WorkspaceMember();
-const workspaceMemberViewModel = new WorkspaceMemberViewModel(workspaceMember);
-workspaceMemberViewModel.update(getWorkspaceMemberData());
 
 const member = new Member();
 const memberViewModel = new MemberViewModel(member);
@@ -41,15 +36,23 @@ export default function WorkspaceSelection() {
         },
     };
 
+    let [isReceivedWorkspace, setIsReceivedWorkspace] = useState(false);
+    let [isReceivedMember, setIsReceivedMember] = useState(false);
 
     useEffect( () => {
-        // setAllMemberData(memberViewModel.getAll());
         getAllMemberData()
         .then(
             (res) => {
-                // console.log(res)
-                // setAllMemberData(res)
                 memberViewModel.update(res);
+                setIsReceivedMember(true);
+            }
+        )
+
+        getWorkspaceData(localStorage.getItem('loginMemberEmail'))
+        .then(
+            (res) => {
+                workspaceViewModel.update(res);
+                setIsReceivedWorkspace(true);
             }
         )
     },[])
@@ -59,16 +62,12 @@ export default function WorkspaceSelection() {
         navigate('/')
     }
 
-    const openModal = () => {
-        setModalIsOpen(true);
-        document.body.style.overflow = "hidden";
-    };
     const closeModal = () => {
         setModalIsOpen(false);
         document.body.style.overflow = "unset";
     };
 
-
+    if (isReceivedMember && isReceivedWorkspace){
     return(
         <div className="banner-container">
 
@@ -78,7 +77,6 @@ export default function WorkspaceSelection() {
                     setModalIsOpen = {setModalIsOpen}
                     allMemberViewModel = {memberViewModel}
                     workspaceViewModel = {workspaceViewModel}
-                    workspaceMemberViewModel = {workspaceMemberViewModel}
                 />
             </Modal>
             <div className="banner-top">
@@ -98,4 +96,5 @@ export default function WorkspaceSelection() {
             </div>
         </div>
     );
+    }
 }

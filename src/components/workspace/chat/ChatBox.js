@@ -5,15 +5,14 @@ import { useEffect, useRef } from "react";
 
 export default function ChatBox(props){
     let chats = [];
-    // const messageEndRef = useRef(null); // 채팅메세지의 마지막
-
+    
     props.chats.map( (chat, index) => {
         chats.push(
             <Message
-                chatSender={ props.departmentMemberViewModel.getMemberName(chat.memberEmail) }
+                chatSender={ props.departmentMemberViewModel.getMemberName(props.loginMemberEmail) }
                 chatDate={chat.date}
                 chatContent={chat.content}
-                key = {index}
+                key = {index}s
             />
         )
     })

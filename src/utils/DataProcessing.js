@@ -3,6 +3,10 @@ export function calculateDDay(deadLine){
     let deadLineData = new Date(deadLine);
     let gap = deadLineData.getTime() - today.getTime();
     let dDay = Math.ceil(gap / (1000 * 60 * 60 * 24));
+    
+    if (deadLine === null){
+        return ""
+    }
 
     if (dDay < 0){
         dDay = "+" + (dDay * -1);
@@ -10,7 +14,6 @@ export function calculateDDay(deadLine){
     else if (dDay > 0){
         dDay = "-" + dDay;
     }
-    
     if (dDay === 0){
         return "D-day"
     }

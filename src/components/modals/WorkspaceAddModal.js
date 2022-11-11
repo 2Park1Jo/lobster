@@ -46,7 +46,7 @@ const CustomMenu = React.forwardRef(
 },
 );
 
-const WorkspaceAddModal = ({modalIsOpen, setModalIsOpen, allMemberViewModel, workspaceViewModel, workspaceMemberViewModel}) => {
+const WorkspaceAddModal = ({modalIsOpen, setModalIsOpen, allMemberViewModel}) => {
 
     let [inputWorkspaceName, setInputWorkspaceName] = useState("");
     let [inputWorkspaceGoal, setInputWorkspaceGoal] = useState("");
@@ -102,30 +102,30 @@ const WorkspaceAddModal = ({modalIsOpen, setModalIsOpen, allMemberViewModel, wor
             return
         }
 
-        let randomWorkspaceId = String(Math.random());
+        // let randomWorkspaceId = String(Math.random());
 
-        let newWorkspaceData = workspaceViewModel.getAll();
-        newWorkspaceData.push(
-            {
-                WorkspaceId:  randomWorkspaceId,
-                WorkspaceName: inputWorkspaceName,
-                WorkspaceGoal: inputWorkspaceGoal,
-                WorkspaceDeadLine: String(inputWorkspaceDeadLine)
-            },
-        )
+        // let newWorkspaceData = workspaceViewModel.getAll();
+        // newWorkspaceData.push(
+        //     {
+        //         WorkspaceId:  randomWorkspaceId,
+        //         WorkspaceName: inputWorkspaceName,
+        //         WorkspaceGoal: inputWorkspaceGoal,
+        //         WorkspaceDeadLine: String(inputWorkspaceDeadLine)
+        //     },
+        // )
 
-        let newWorkspaceMemberData = workspaceMemberViewModel.getAll();
-        for (let index = 0; index < inputWorkspaceMemberData.length; index++){
-            newWorkspaceMemberData.push(
-                {
-                    WorkspaceId: randomWorkspaceId,
-                    email: inputWorkspaceMemberData[index].email,
-                    name: inputWorkspaceMemberData[index].name,
-                    role: '',
-                    grade: ''
-                },
-            )
-        }
+        // let newWorkspaceMemberData = workspaceMemberViewModel.getAll();
+        // for (let index = 0; index < inputWorkspaceMemberData.length; index++){
+        //     newWorkspaceMemberData.push(
+        //         {
+        //             WorkspaceId: randomWorkspaceId,
+        //             email: inputWorkspaceMemberData[index].email,
+        //             name: inputWorkspaceMemberData[index].name,
+        //             role: '',
+        //             grade: ''
+        //         },
+        //     )
+        // }
         setModalIsOpen(false);
     }
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import Button from 'react-bootstrap/Button';
 import { useState, useEffect } from 'react';
-
+import { BiPaperPlane } from "react-icons/bi";
 
 export default function ChatInputBox(props){
 
@@ -30,7 +30,7 @@ export default function ChatInputBox(props){
         copiedChattingData.push({
             workspaceId: "1",
             departmentId: props.departmentId, 
-            memberEmail: props.memberEmail,
+            memberEmail: props.loginMemberEmail,
             content: chatContent,
             date: currentTime,
             content_type: "TEXT",
@@ -39,6 +39,7 @@ export default function ChatInputBox(props){
 
         props.chatViewModel.update(copiedChattingData);
         props.setChatUpdateState(copiedChattingData);
+        setInputChattingContent("");
     }
 
     const handleOnKeyPress = e => {
@@ -49,10 +50,10 @@ export default function ChatInputBox(props){
     };
 
     return(
-        <div className="input-group">
+        <div className="input-group px-1">
             <input type="text" placeholder="Type a message" className="form-control py-3 bg-light" value={ inputChattingContent }
                 onChange={e => setInputChattingContent(e.target.value)} onKeyPress={handleOnKeyPress}/>
-            <Button onClick={ () => addChattingData(inputChattingContent) }> send </Button>
+            <Button variant="secondary" onClick={ () => addChattingData(inputChattingContent) }> {<BiPaperPlane style={{fontSize:'20px'}}/>} </Button>
         </div>
     )
 }
