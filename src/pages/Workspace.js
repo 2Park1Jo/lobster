@@ -162,14 +162,14 @@ const Workspace = function () {
                 {selectedMenu===1?
                     <MdOutlineWork style={{color:'black'}} onClick={()=>setSelectedMenu(1)}/>
                     :
-                    <MdOutlineWork style={{color:'gray'}} onClick={()=>setSelectedMenu(1)}/>
+                    <MdOutlineWork className='menu-unselected' onClick={()=>setSelectedMenu(1)}/>
                 }
             </div>
             <div className='first-col-Button'>
                 {selectedMenu===2?
                     <SiBitbucket style={{color:'black'}} onClick={()=>setSelectedMenu(2)}/>
                     :
-                    <SiBitbucket style={{color:'gray'}} onClick={()=>setSelectedMenu(2)}/>
+                    <SiBitbucket className='menu-unselected' onClick={()=>setSelectedMenu(2)}/>
                 }
             </div>
         </div>
@@ -248,8 +248,8 @@ const Workspace = function () {
                 <div className='fourth-col-container'>
                     <div className='fourth-col-DepartmentInfo'>
                         <span>{ departmentViewModel.getDeadLine(accessedDepartment.id) }</span>
-                        <FaPowerOff className='setting' style={{float:'right',marginLeft:'10px'}} onClick={()=> logout()}/>
-                        <BsGearFill className='setting' style={{float:'right'}} onClick={()=> setdpModifyModalIsOpen(true)}/>
+                        <FaPowerOff className='setting' style={{marginLeft:'10px'}} onClick={()=> logout()}/>
+                        <BsGearFill className='setting' onClick={()=> setdpModifyModalIsOpen(true)}/>
                             <Modal isOpen= {dpModifyModalIsOpen} style={modalStyles} onRequestClose={() => setdpModifyModalIsOpen(false)}>
                                 <DepartmentModifyModal departmentName={accessedDepartment.name} departmentGoal={departmentViewModel.getGoal(accessedDepartment.id)} departmentDeadLine={departmentViewModel.getDeadLine(accessedDepartment.id)} setdpModifyModalIsOpen={setdpModifyModalIsOpen}/>
                             </Modal>
