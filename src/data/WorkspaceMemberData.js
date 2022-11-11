@@ -41,6 +41,12 @@ let workspaceMemberData = [
         name: '테스터',
         grade: '',
     },
+    {
+        email: 'test8@naver.com',
+        workspaceId: '1',
+        name: '정상벽',
+        grade: '',
+    },
 ];
 
 export function getWorkspaceMemberData() {

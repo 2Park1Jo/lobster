@@ -2,7 +2,7 @@ export class Member{
     #members = [{
         email: "",
         password: "",
-        name: "",
+        memberName: "",
     }]
 
     updateModel(updatedModel){

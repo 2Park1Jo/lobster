@@ -1,0 +1,102 @@
+<div className="container py-5 px-0">
+            <div className="row rounded-lg overflow-hidden shadow">
+                {/* left */}
+                <div className="col-1 px-0">
+                    <div className="bg-white">
+                        <div className="messages-box">
+                            <div className="list-group rounded-0">
+                            <a className="list-group-item list-group-item-action active text-white rounded-0">
+                                ⚙️
+                            </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* left center */}
+                <div className="col-2 px-0">
+                    {/* workspace info */}
+                    <div className="bg-gray px-4 py-2 bg-light">
+                        <p className="h5 mb-0 py-1">{ workspaceData.workspaceName }</p>
+                    </div>
+
+                    <div className="left-box">
+                        <MemberCard 
+                            profilePicture='https://therichpost.com/wp-content/uploads/2020/06/avatar2.png'
+                            name={loginMember.name}
+                            onClicked={() => alert(loginMember.name)}
+                        />
+                    
+                        {/* department List */}
+                        <div className="bg-gray px-4 py-2 bg-light">
+                            <p className="mb-0 py-1">그룹 <button className="add-button" onClick={()=> setModalIsOpen(true)}>+</button> </p>
+                            <Modal isOpen= {modalIsOpen} style={modalStyles} onRequestClose={() => setModalIsOpen(false)}>
+                                <DepartmentAddModal modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen}/>
+                            </Modal>
+                        </div>
+
+                        <DepartmentList 
+                            workspaceId = {workspaceId}
+                            departments = {departmentData}
+                        />
+                        
+                        {/* workspace member List */}   
+                        <div className="bg-gray px-4 py-2 bg-light">
+                            <p className="mb-0 py-1">멤버</p>
+                        </div>                    
+                        <MemberList 
+                            members = {workspaceMemberViewModel.getMembers(workspaceId)}
+                        />
+                        
+                    </div>
+                </div>
+
+                {/* right center */}
+                <div className="col-7 px-0">
+                    <div className="bg-gray px-4 bg-light">
+                        <p className="h5">{ accessedDepartment.name } </p>
+                        <span className="small text-muted">&nbsp;{ getDepartmentGoal(accessedDepartment.id) }</span>
+                    </div>
+
+                    <ChatBox
+                        departmentMemberViewModel = {departmentMemberViewModel}
+                        chatViewModel = {chatViewModel}
+                        departmentId = {accessedDepartment.id}
+                        loginMemberEmail = {loginMember.email}
+                        chats = {chatViewModel.getChats(accessedDepartment.id)}//chatViewModel.getChats(accessedDepartmentId)
+                        messageEnd = {messageEndRef}
+                    />
+                </div>
+                
+                {/* right */}
+                <div className="col-2 px-0">
+                    <div className="bg-gray px-4 py-2 bg-light">
+                        <span>{ departmentViewModel.getDeadLine(accessedDepartment.id) }</span>
+                        <p className="h5 mb-0 py-1">&nbsp;{ departmentViewModel.getDDay(accessedDepartment.id) }</p>
+                    </div>
+
+                    <div className="bg-gray px-4 py-2 bg-light">
+                        <p className="mb-0 py-1">참여자<button className="add-button" onClick={()=> setModal2IsOpen(true)}>+</button> </p>
+                        <Modal isOpen= {modal2IsOpen} style={modalStyles} onRequestClose={() => setModal2IsOpen(false)}>
+                            <DepartmentMemberAddModal modalIsOpen={modal2IsOpen} setModalIsOpen={setModal2IsOpen} accessedDepartmentId={accessedDepartment.id}/>
+                        </Modal>
+
+                    </div>
+
+                    <MemberList 
+                        members = {departmentMemberViewModel.getMembers(accessedDepartment.id)}
+                    />
+
+                    <div className="bg-gray px-4 py-2 bg-light">
+                        <p className="mb-0 py-1">역할정하기</p>
+                    </div>
+                    <div className="bg-gray px-4 py-2 bg-light">
+                        <p className="mb-0 py-1">파일함</p>
+                    </div>
+                    <div className="bg-gray px-4 py-2 bg-light">
+                        <p className="mb-0 py-1">버킷</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>

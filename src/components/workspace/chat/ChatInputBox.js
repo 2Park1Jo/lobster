@@ -1,7 +1,7 @@
 import React from 'react'
 import Button from 'react-bootstrap/Button';
 import { useState, useEffect } from 'react';
-
+import { BiPaperPlane } from "react-icons/bi";
 
 export default function ChatInputBox(props){
 
@@ -15,30 +15,47 @@ export default function ChatInputBox(props){
         scrollToBottom("smooth");
     }, [props.chatUpdateState])
 
+    useEffect( () => {
+        props.stomp.connect({}, onConnected, () => {
+            console.log('Broker reported error');
+        });
+    }, [])
+
+    function onConnected() {
+        props.stomp.send('/pub/chat/enter', {}, JSON.stringify({departmentId: props.departmentId, email: localStorage.getItem('loginMemberEmail')}))
+
+        props.stomp.subscribe("/sub/chat/department/" + props.departmentId, function (chat) {
+            let result = JSON.parse(chat.body);
+            if (props.chatUpdateState !== result.body){
+                props.setChatUpdateState(result.content);
+            }
+        });
+    }
+
     function addChattingData(chatContent) {
-        let copiedChattingData = [...props.chatViewModel.getAll()];
-        let date = new Date();
-        let houres = String(date.getHours()).padStart(2, "0");
-        let minutes = String(date.getMinutes()).padStart(2, "0");
-        let currentTime = houres + ':' + minutes;
+        let currentDate = new Date();
+        let year = currentDate.getFullYear();
+        let month = currentDate.getMonth();
+        let date = currentDate.getDate();
+        let houres = String(currentDate.getHours()).padStart(2, "0");
+        let minutes = String(currentDate.getMinutes()).padStart(2, "0");
+        let seconds = String(currentDate.getSeconds()).padStart(2, "0");
+        let currentTime = year + '-' + month + '-' + date + ' ' + houres + ':' + minutes + ':' + seconds;
 
         if (chatContent.replace(/ /g,"") === ""){
             setInputChattingContent("");
             return;
         }
-        
-        copiedChattingData.push({
-            workspaceId: "1",
-            departmentId: props.departmentId, 
-            memberEmail: props.memberEmail,
-            content: chatContent,
-            date: currentTime,
-            content_type: "TEXT",
-            link: "",
-        })
 
-        props.chatViewModel.update(copiedChattingData);
-        props.setChatUpdateState(copiedChattingData);
+        props.stomp.send('/pub/chat/message', {}, JSON.stringify({
+            departmentId: props.departmentId,
+            email: localStorage.getItem('loginMemberEmail'),
+            content: inputChattingContent,
+            contentType: 0,
+            date : currentTime
+        }))
+        
+        setInputChattingContent("");
     }
 
     const handleOnKeyPress = e => {
@@ -49,10 +66,10 @@ export default function ChatInputBox(props){
     };
 
     return(
-        <div className="input-group">
+        <div className="input-group px-1">
             <input type="text" placeholder="Type a message" className="form-control py-3 bg-light" value={ inputChattingContent }
                 onChange={e => setInputChattingContent(e.target.value)} onKeyPress={handleOnKeyPress}/>
-            <Button onClick={ () => addChattingData(inputChattingContent) }> send </Button>
+            <Button variant="secondary" onClick={ () => addChattingData(inputChattingContent) }> {<BiPaperPlane style={{fontSize:'20px'}}/>} </Button>
         </div>
     )
 }

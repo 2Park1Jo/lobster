@@ -2,9 +2,9 @@ export class DepartmentMember{
     #members = [{
         departmentId: "",
         email: "",
-        name: "",
-        role: "",
-        grade: ""
+        memberName: "",
+        departmentRole: "",
+        departmentGrade: ""
     }]
 
     updateModel(updatedModel){

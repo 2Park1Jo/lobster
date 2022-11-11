@@ -1,9 +1,10 @@
 export class Department{
     #departments = [{
+        workspaceId:"",
         departmentId: "",
         departmentName: "",
         departmentGoal: "",
-        departmentDeadLine: ""
+        departmentDeadline: ""
     }]
 
     updateModel(updatedModel){
