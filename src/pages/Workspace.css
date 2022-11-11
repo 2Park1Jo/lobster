@@ -5,6 +5,13 @@
     height: 100vh;
 }
 
+.contents-container{
+    display: flex;
+    align-items: stretch;
+    width: calc(100vw - 60px);
+    height: 100vh;
+}
+
 .container-top{
     width: 100%;
     height: 45px;
@@ -58,16 +65,17 @@
     align-items: center;
     border-left: 1px solid black;
 }
-
-.first-col-Workspace{
+.first-col-Button{
     width: 100%;
     height: 50px;
-    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    color: gray;
 }
-.first-col-Bucket{
-    width: 100%;
-    height: 50px;
-    
+.first-col-Button:hover{
+    color:black;
 }
 .second-col-WorkspaceInfo{
     width: 100%;

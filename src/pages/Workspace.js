@@ -38,6 +38,9 @@ import { Department } from '../models/model/Department';
 import { FaPowerOff } from "react-icons/fa";
 import { BsGearFill } from "react-icons/bs";
 import { BiChevronsDown,BiChevronsUp,BiUserPlus } from "react-icons/bi";
+import {SiBitbucket} from "react-icons/si";
+import {MdOutlineWork} from "react-icons/md";
+
 import { ListGroup } from 'react-bootstrap';
 const workspace = new WorkspaceModel();
 const workspaceViewModel = new WorkspaceViewModel(workspace);
@@ -70,6 +73,8 @@ const Workspace = function () {
     let [modal2IsOpen, setModal2IsOpen] = useState(false);    
     let [chatUpdateState, setChatUpdateState] = useState("");
     let [isShowDPmemberList,setIsShowDPmemberList]=useState(true);
+
+    let[selectedMenu,setSelectedMenu]=useState(1);
 
     let navigate = useNavigate();
     useEffect( () => {
@@ -106,6 +111,7 @@ const Workspace = function () {
         )
     },[])
 
+
     const modalStyles = {
         content: {
             top: '50%',
@@ -127,130 +133,143 @@ const Workspace = function () {
     return(
     <div className="maincontainer">
         <div className='first-col'>
-            <div className='first-col-Workspace'>
-                workSpace버튼
+            <div className='first-col-Button'>
+                {selectedMenu===1?
+                    <MdOutlineWork style={{color:'black'}} onClick={()=>setSelectedMenu(1)}/>
+                    :
+                    <MdOutlineWork style={{color:'gray'}} onClick={()=>setSelectedMenu(1)}/>
+                }
             </div>
-            <div className='first-col-Bucket'>
-                버켓버튼
-            </div>
-        </div>
-
-        <div className='second-col'>
-            <div className='second-col-WorkspaceInfo'>
-                { workspaceViewModel.getName(workspaceId) }
-            </div>
-            <div className='second-col-UserInfo'>
-                <ListGroup variant='flush'>
-                    <MemberCard 
-                        profilePicture='https://therichpost.com/wp-content/uploads/2020/06/avatar2.png'
-                        name={departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail'))}
-                        onClicked={() => alert(departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail')))}
-                    />
-                </ListGroup>
-            </div>
-            
-            <div className='container-top'>
-                <p>그룹 <BiUserPlus className="button" onClick={()=> setModalIsOpen(true)}/> </p>
-                <Modal isOpen= {modalIsOpen} style={modalStyles} onRequestClose={() => setModalIsOpen(false)}>
-                    <DepartmentAddModal modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen}/>
-                </Modal>
-            </div>
-
-            <div className='second-col-DPList'>
-                <DepartmentList
-                    workspaceId = {workspaceId}
-                    departments = {departmentViewModel.get(workspaceId)}
-                />
-            </div>
-
-            <div className='container-top'>
-                <p>멤버 <BiUserPlus className="button" onClick={()=> alert("member + button")}/> </p>
-            </div>
-
-            <div className='second-col-WholeMemberList'>
-                <MemberList 
-                    members = {workspaceMemberViewModel.getMembers(workspaceId)}
-                />
+            <div className='first-col-Button'>
+                {selectedMenu===2?
+                    <SiBitbucket style={{color:'black'}} onClick={()=>setSelectedMenu(2)}/>
+                    :
+                    <SiBitbucket style={{color:'gray'}} onClick={()=>setSelectedMenu(2)}/>
+                }
             </div>
         </div>
-
-        <div className='third-col'>
-            <div className='third-col-DepartmentInfo'>
-                <span className="h5">{ accessedDepartment.name } </span>
-                <p className="small text-muted">&nbsp;{ departmentViewModel.getGoal(accessedDepartment.id) }</p>
-            </div>
-            
-            <div className='third-col-ChatList'>
-                <ChatBox
-                    departmentMemberViewModel = {departmentMemberViewModel}
-                    chatViewModel = {chatViewModel}
-                    departmentId = {accessedDepartment.id}
-                    loginMemberEmail = {localStorage.getItem('loginMemberEmail')}
-                    chats = {chatViewModel.getChats(accessedDepartment.id)}//chatViewModel.getChats(accessedDepartmentId)
-                    messageEnd = {messageEndRef}
-                />
-            </div>
-            <div className='third-col-ChatInput'>
-                <ChatInputBox 
-                    chatViewModel = {chatViewModel}
-                    departmentId = {accessedDepartment.id}
-                    loginMemberEmail = {localStorage.getItem('loginMemberEmail')}
-                    chatUpdateState = {chatUpdateState}
-                    setChatUpdateState = {setChatUpdateState}
-                    messageEnd = {messageEndRef}
-                    // chatUpdateState = {props.chatUpdateState}
-                    // setChatUpdateState = {props.setChatUpdateState}
-                />
-            </div>
-        </div>
-        <div className='fourth-col-container'>
-            <div className='fourth-col-DepartmentInfo'>
-                <span>{ departmentViewModel.getDeadLine(accessedDepartment.id) }</span>
-                <FaPowerOff className='setting' style={{float:'right',marginLeft:'10px'}} onClick={()=> logout()}/>
-                <BsGearFill className='setting' style={{float:'right'}} onClick={()=> alert("department 수정")}/>
-                <p className="h5 mb-0 py-1">&nbsp;{ departmentViewModel.getDDay(accessedDepartment.id) }</p>
-            </div>
-
-            <div className='fourth-col'>
-
-                <div className='fourth-col-DPMemberListContainer'>
+        {selectedMenu===1?
+            <div className='contents-container'>
+                <div className='second-col'>
+                    <div className='second-col-WorkspaceInfo'>
+                        { workspaceViewModel.getName(workspaceId) }
+                    </div>
+                    <div className='second-col-UserInfo'>
+                        <ListGroup variant='flush'>
+                            <MemberCard 
+                                profilePicture='https://therichpost.com/wp-content/uploads/2020/06/avatar2.png'
+                                name={departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail'))}
+                                onClicked={() => alert(departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail')))}
+                            />
+                        </ListGroup>
+                    </div>
+                    
                     <div className='container-top'>
-                        <div style={{float:'left'}}>참여자 {departmentMemberViewModel.getMembers(accessedDepartment.id).length}</div>
-                        
-                        <div style={{float:'right'}} onClick={()=>setIsShowDPmemberList(!isShowDPmemberList)}>{
-                            isShowDPmemberList===true?
-                            <BiChevronsDown className='arrow'/>
-                            :
-                            <BiChevronsUp className='arrow'/>
-                        }</div>
-                        <BiUserPlus style={{float:'right'}} className="button" onClick={()=> setModal2IsOpen(true)}/>
-                        <Modal isOpen= {modal2IsOpen} style={modalStyles} onRequestClose={() => setModal2IsOpen(false)}>
-                            <DepartmentMemberAddModal modalIsOpen={modal2IsOpen} setModalIsOpen={setModal2IsOpen} accessedDepartmentId={accessedDepartment.id}/>
+                        <p>그룹 <BiUserPlus className="button" onClick={()=> setModalIsOpen(true)}/> </p>
+                        <Modal isOpen= {modalIsOpen} style={modalStyles} onRequestClose={() => setModalIsOpen(false)}>
+                            <DepartmentAddModal modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen}/>
                         </Modal>
                     </div>
-                    <div className='fourth-col-DPMemberList'>
-                        {isShowDPmemberList===true?
-                            <MemberList members = {departmentMemberViewModel.getMembers(accessedDepartment.id)}/>
-                        :
-                            <></>
-                        }
 
+                    <div className='second-col-DPList'>
+                        <DepartmentList
+                            workspaceId = {workspaceId}
+                            departments = {departmentViewModel.get(workspaceId)}
+                        />
+                    </div>
+
+                    <div className='container-top'>
+                        <p>멤버 <BiUserPlus className="button" onClick={()=> alert("member + button")}/> </p>
+                    </div>
+
+                    <div className='second-col-WholeMemberList'>
+                        <MemberList 
+                            members = {workspaceMemberViewModel.getMembers(workspaceId)}
+                        />
                     </div>
                 </div>
-                <div className='fourth-col-UploadedFile'>
-                    <div className='container-top'>
-                        파일목록
+
+                <div className='third-col'>
+                    <div className='third-col-DepartmentInfo'>
+                        <span className="h5">{ accessedDepartment.name } </span>
+                        <p className="small text-muted">&nbsp;{ departmentViewModel.getGoal(accessedDepartment.id) }</p>
                     </div>
-                    <div className='child'></div>
+                    
+                    <div className='third-col-ChatList'>
+                        <ChatBox
+                            departmentMemberViewModel = {departmentMemberViewModel}
+                            chatViewModel = {chatViewModel}
+                            departmentId = {accessedDepartment.id}
+                            loginMemberEmail = {localStorage.getItem('loginMemberEmail')}
+                            chats = {chatViewModel.getChats(accessedDepartment.id)}//chatViewModel.getChats(accessedDepartmentId)
+                            messageEnd = {messageEndRef}
+                        />
+                    </div>
+                    <div className='third-col-ChatInput'>
+                        <ChatInputBox 
+                            chatViewModel = {chatViewModel}
+                            departmentId = {accessedDepartment.id}
+                            loginMemberEmail = {localStorage.getItem('loginMemberEmail')}
+                            chatUpdateState = {chatUpdateState}
+                            setChatUpdateState = {setChatUpdateState}
+                            messageEnd = {messageEndRef}
+                            // chatUpdateState = {props.chatUpdateState}
+                            // setChatUpdateState = {props.setChatUpdateState}
+                        />
+                    </div>
                 </div>
-                <div className='fourth-col-Bucket'>
-                    <div className='container-top'>
-                        버켓
+                <div className='fourth-col-container'>
+                    <div className='fourth-col-DepartmentInfo'>
+                        <span>{ departmentViewModel.getDeadLine(accessedDepartment.id) }</span>
+                        <FaPowerOff className='setting' style={{float:'right',marginLeft:'10px'}} onClick={()=> logout()}/>
+                        <BsGearFill className='setting' style={{float:'right'}} onClick={()=> alert("department 수정")}/>
+                        <p className="h5 mb-0 py-1">&nbsp;{ departmentViewModel.getDDay(accessedDepartment.id) }</p>
                     </div>
-                    <div className='child'></div>
+
+                    <div className='fourth-col'>
+
+                        <div className='fourth-col-DPMemberListContainer'>
+                            <div className='container-top'>
+                                <div style={{float:'left'}}>참여자 {departmentMemberViewModel.getMembers(accessedDepartment.id).length}</div>
+                                
+                                <div style={{float:'right'}} onClick={()=>setIsShowDPmemberList(!isShowDPmemberList)}>{
+                                    isShowDPmemberList===true?
+                                    <BiChevronsDown className='arrow'/>
+                                    :
+                                    <BiChevronsUp className='arrow'/>
+                                }</div>
+                                <BiUserPlus style={{float:'right'}} className="button" onClick={()=> setModal2IsOpen(true)}/>
+                                <Modal isOpen= {modal2IsOpen} style={modalStyles} onRequestClose={() => setModal2IsOpen(false)}>
+                                    <DepartmentMemberAddModal modalIsOpen={modal2IsOpen} setModalIsOpen={setModal2IsOpen} accessedDepartmentId={accessedDepartment.id}/>
+                                </Modal>
+                            </div>
+                            <div className='fourth-col-DPMemberList'>
+                                {isShowDPmemberList===true?
+                                    <MemberList members = {departmentMemberViewModel.getMembers(accessedDepartment.id)}/>
+                                :
+                                    <></>
+                                }
+
+                            </div>
+                        </div>
+                        <div className='fourth-col-UploadedFile'>
+                            <div className='container-top'>
+                                파일목록
+                            </div>
+                            <div className='child'></div>
+                        </div>
+                        <div className='fourth-col-Bucket'>
+                            <div className='container-top'>
+                                버켓
+                            </div>
+                            <div className='child'></div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        :
+            <></>
+                        }
     </div>
     );
                     }
