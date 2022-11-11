@@ -10,14 +10,9 @@ import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 import { useRecoilValue } from "recoil";
 
-import { getAllWorkspace, getWorkspaceMemberData, getWorkspaceData } from '../api/WorkspaceAPI';
-import { getAllDepartment, getDepartmentMemberData } from '../api/DepartmentAPI';
+import { getWorkspaceMemberData, getWorkspaceData } from '../api/WorkspaceAPI';
+import { getAllDepartment, getDepartmentMemberData, getChattingData } from '../api/DepartmentAPI';
 
-import { getChattingData } from '../data/ChattingData';
-import { getDepartmentData, getDepartmentGoal, getDepartmentDeadLine } from '../data/DepartmentData';
-// import { getDepartmentMemberData } from '../data/DepartmentMemberData';
-// import { getAllWorkspaceData } from '../data/WorkspaceData';
-// import { getWorkspaceMemberData } from '../data/WorkspaceMemberData';
 import { ACCESSED_DEPARTMENT, LOGIN_MEMBER, WORKSPACE_ID } from '../recoil/Atoms';
 
 import MemberList from '../components/workspace/MemberList';
@@ -45,6 +40,11 @@ import {MdOutlineWork} from "react-icons/md";
 
 import { ListGroup } from 'react-bootstrap';
 import Bucket from '../components/workspace/Bucket';
+
+import SockJS from 'sockjs-client';
+import Stomp from 'stompjs';
+import { BACK_BASE_URL } from '../Config';
+
 const workspace = new WorkspaceModel();
 const workspaceViewModel = new WorkspaceViewModel(workspace);
 
@@ -59,7 +59,9 @@ const departmentMemberViewModel = new DepartmentMemberViewModel(departmentMember
 
 const chat = new Chat();
 const chatViewModel = new ChatViewModel(chat);
-chatViewModel.update(getChattingData())
+
+const sockJs = new SockJS(BACK_BASE_URL + "chat");
+const stomp = Stomp.over(sockJs);
 
 const Workspace = function () {
     const messageEndRef = useRef(null); // 채팅메세지의 마지막
@@ -71,7 +73,7 @@ const Workspace = function () {
     let [isReceivedDepertment, setIsReceivedDepertment] = useState(false);
     let [isReceivedDepertmentMember, setIsReceivedDepertmentMember] = useState(false);
     let [isReceivedWorkspaceMember, setIsReceivedWorkspaceMember] = useState(false);
-
+    let [isReceivedChat, setIsReceivedChat] = useState(false);
     let [modalIsOpen, setModalIsOpen] = useState(false);
     let [modal2IsOpen, setModal2IsOpen] = useState(false); 
     let [dpModifyModalIsOpen, setdpModifyModalIsOpen] = useState(false);    
@@ -81,6 +83,7 @@ const Workspace = function () {
     let[selectedMenu,setSelectedMenu]=useState(1);
 
     let navigate = useNavigate();
+
     useEffect( () => {
         getWorkspaceData(localStorage.getItem('loginMemberEmail'))
         .then(
@@ -113,8 +116,26 @@ const Workspace = function () {
                 setIsReceivedWorkspaceMember(true)
             }
         )
+
+        getChattingData(accessedDepartment.id)
+        .then(
+            (res) => {
+                chatViewModel.update(res);
+                setIsReceivedChat(true)
+            }
+        )
     },[])
 
+    useEffect( () => {
+        console.log("업데이트")
+        getChattingData(accessedDepartment.id)
+        .then(
+            (res) => {
+                chatViewModel.update(res);
+                setChatUpdateState(0);
+            }
+        )
+    }, [chatUpdateState])
 
     const modalStyles = {
         content: {
@@ -132,7 +153,7 @@ const Workspace = function () {
         navigate('/')
     }
 
-    if(isReceivedWorkspace && isReceivedDepertment && isReceivedDepertmentMember && isReceivedWorkspaceMember){
+    if(isReceivedWorkspace && isReceivedDepertment && isReceivedDepertmentMember && isReceivedWorkspaceMember && isReceivedChat){
 
     return(
     <div className="maincontainer">
@@ -215,10 +236,10 @@ const Workspace = function () {
                         <ChatInputBox 
                             chatViewModel = {chatViewModel}
                             departmentId = {accessedDepartment.id}
-                            loginMemberEmail = {localStorage.getItem('loginMemberEmail')}
                             chatUpdateState = {chatUpdateState}
                             setChatUpdateState = {setChatUpdateState}
                             messageEnd = {messageEndRef}
+                            stomp = {stomp}
                             // chatUpdateState = {props.chatUpdateState}
                             // setChatUpdateState = {props.setChatUpdateState}
                         />
@@ -278,10 +299,10 @@ const Workspace = function () {
             </div>
         :
             <Bucket>adgadsg</Bucket>
-                        }
+        }
     </div>
     );
-                    }
+    }
 }
 
 export default Workspace;
