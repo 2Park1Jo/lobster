@@ -14,6 +14,18 @@ export default function ChatInputBox(props){
         scrollToBottom("smooth");
     }, [props.chatUpdateState])
 
+    const handleChange = (e) => {
+        const file = e.target.files[0];
+        let reader = new FileReader();
+    
+        reader.onload = (e) => {
+            const file = e.target.result;
+        };
+    
+        reader.onerror = (e) => alert(e.target.error.name);
+        reader.readAsText(file);
+    };
+
     function addChattingData(chatContent) {
         let currentDate = new Date();
         let year = currentDate.getFullYear();
@@ -48,10 +60,13 @@ export default function ChatInputBox(props){
     };
 
     return(
+        <>
         <div className="input-group px-1">
             <textarea placeholder="Type a message" className="form-control bg-light" value={ inputChattingContent }
                 onChange={e => setInputChattingContent(e.target.value)} onKeyPress={handleOnKeyPress}/>
             <Button variant="secondary" onClick={ () => addChattingData(inputChattingContent) }> {<BiPaperPlane style={{fontSize:'20px'}}/>} </Button>
         </div>
+        {/* <input type="file" name="input" onChange={handleChange} /> */}
+        </>
     )
 }
