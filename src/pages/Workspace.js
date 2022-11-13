@@ -8,7 +8,7 @@ import DepartmentModifyModal from '../components/modals/DepartmentModifyModal';
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import { getWorkspaceMemberData, getWorkspaceData } from '../api/WorkspaceAPI';
 import { getAllDepartment, getDepartmentMemberData, getChattingData, getDepartments } from '../api/DepartmentAPI';
@@ -65,6 +65,8 @@ const Workspace = function () {
     // let loginMember = useRecoilValue(LOGIN_MEMBER);
     let accessedDepartment = useRecoilValue(ACCESSED_DEPARTMENT);
     let workspaceId = useRecoilValue(WORKSPACE_ID);
+    const setWorkspaceId = useSetRecoilState(WORKSPACE_ID);
+    const setAccessedDepartment = useSetRecoilState(ACCESSED_DEPARTMENT);
 
     let [isReceivedWorkspace, setIsReceivedWorkspace] = useState(false);
     let [isReceivedDepertment, setIsReceivedDepertment] = useState(false);
@@ -98,19 +100,24 @@ const Workspace = function () {
         .then(
             (res) => {
                 workspaceViewModel.update(res);
+                setWorkspaceId(localStorage.getItem('accessedWorkspaceId'))
                 setIsReceivedWorkspace(true)
             }
         )
 
-        getDepartments(workspaceId ,localStorage.getItem('loginMemberEmail'))
+        getDepartments(localStorage.getItem('accessedWorkspaceId') ,localStorage.getItem('loginMemberEmail'))
         .then(
             (res) => {
                 departmentViewModel.update(res);
+                setAccessedDepartment({
+                    id: localStorage.getItem('accessedDepartmentId'),
+                    name: departmentViewModel.getName(localStorage.getItem('accessedDepartmentId'))
+                })
                 setIsReceivedDepertment(true)
             }
         )
 
-        getDepartmentMemberData(accessedDepartment.id)
+        getDepartmentMemberData(localStorage.getItem('accessedDepartmentId'))
         .then(
             (res) => {
                 departmentMemberViewModel.update(res);
@@ -118,7 +125,7 @@ const Workspace = function () {
             }
         )
 
-        getWorkspaceMemberData(workspaceId)
+        getWorkspaceMemberData(localStorage.getItem('accessedWorkspaceId') )
         .then(
             (res) => {
                 workspaceMemberViewModel.update(res);
@@ -126,7 +133,7 @@ const Workspace = function () {
             }
         )
 
-        getChattingData(accessedDepartment.id)
+        getChattingData(localStorage.getItem('accessedDepartmentId'))
         .then(
             (res) => {
                 chatViewModel.update(res);
@@ -137,7 +144,7 @@ const Workspace = function () {
 
     useEffect( () => {
         console.log("채팅 업데이트")
-        getChattingData(accessedDepartment.id)
+        getChattingData(localStorage.getItem('accessedDepartmentId'))
         .then(
             (res) => {
                 chatViewModel.update(res);
@@ -148,7 +155,7 @@ const Workspace = function () {
 
     useEffect( () => {
         console.log("dp 업데이트")
-        getDepartments(workspaceId ,localStorage.getItem('loginMemberEmail'))
+        getDepartments(localStorage.getItem('accessedWorkspaceId')  ,localStorage.getItem('loginMemberEmail'))
         .then(
             (res) => {
                 departmentViewModel.update(res);
@@ -158,7 +165,7 @@ const Workspace = function () {
 
     useEffect( () => {
         console.log("dpMember 업데이트")
-        getDepartmentMemberData(accessedDepartment.id)
+        getDepartmentMemberData(localStorage.getItem('accessedDepartmentId'))
         .then(
             (res) => {
                 departmentMemberViewModel.update(res);
@@ -168,7 +175,7 @@ const Workspace = function () {
 
     useEffect( () => {
         console.log("workspaceMember 업데이트")
-        getWorkspaceMemberData(workspaceId)
+        getWorkspaceMemberData(localStorage.getItem('accessedWorkspaceId') )
         .then(
             (res) => {
                 workspaceMemberViewModel.update(res);
@@ -178,7 +185,7 @@ const Workspace = function () {
 
     function onConnected() {
         // chat 
-        stomp.subscribe("/sub/chat/department/" + accessedDepartment.id, function (chat) {
+        stomp.subscribe("/sub/chat/department/" + localStorage.getItem('accessedDepartmentId'), function (chat) {
             let result = JSON.parse(chat.body);
             if (chatUpdateState !== result.body){
                 setChatUpdateState(result.content);
@@ -186,27 +193,27 @@ const Workspace = function () {
         });
 
         // dp add
-        // stomp.subscribe("dp추가됐을 때 받는 주소" + accessedDepartment.id, function (data) {
+        // stomp.subscribe("dp추가됐을 때 받는 주소" + localStorage.getItem('accessedDepartmentId'), function (data) {
         //     let result = JSON.parse(data.body);
         //     console.log(result.content)
         //     setDepartmentUpdateState(result.content);
         // });
 
         // dpMember add
-        // stomp.subscribe("dpMember추가됐을 때 받는 주소" + accessedDepartment.id, function (data) {
+        // stomp.subscribe("dpMember추가됐을 때 받는 주소" + localStorage.getItem('accessedDepartmentId'), function (data) {
         //     let result = JSON.parse(data.body);
         //     console.log(result.content)
         //     setDpMemberUpdateState(result.content);
         // });
 
         // workpsaceMember add
-        // stomp.subscribe("dp추가됐을 때 받는 주소" + accessedDepartment.id, function (data) {
+        // stomp.subscribe("dp추가됐을 때 받는 주소" + localStorage.getItem('accessedDepartmentId'), function (data) {
         //     let result = JSON.parse(data.body);
         //     console.log(result.content)
         //     setWorkspaceMemberUpdateState(result.content);
         // });
 
-        stomp.send('/pub/chat/enter', {}, JSON.stringify({departmentId: accessedDepartment.id, email: localStorage.getItem('loginMemberEmail')}))
+        stomp.send('/pub/chat/enter', {}, JSON.stringify({departmentId: localStorage.getItem('accessedDepartmentId'), email: localStorage.getItem('loginMemberEmail')}))
     }
     
     const modalStyles = {
@@ -225,7 +232,7 @@ const Workspace = function () {
         navigate('/')
     }
 
-    if(isReceivedWorkspace && isReceivedDepertment && isReceivedDepertmentMember && isReceivedWorkspaceMember && isReceivedChat){
+    // if(isReceivedWorkspace && isReceivedDepertment && isReceivedDepertmentMember && isReceivedWorkspaceMember && isReceivedChat){
         return(
             <div className="maincontainer">
                 <div className='first-col'>
@@ -248,7 +255,7 @@ const Workspace = function () {
                     <div className='contents-container'>
                         <div className='second-col'>
                             <div className='second-col-WorkspaceInfo'>
-                                { workspaceViewModel.getName(workspaceId) }
+                                { workspaceViewModel.getName(localStorage.getItem('accessedWorkspaceId') ) }
                             </div>
                             <div className='second-col-container'>
                                 <div className='second-col-UserInfo'>
@@ -267,16 +274,16 @@ const Workspace = function () {
                                         <DepartmentAddModal 
                                             modalIsOpen={modalIsOpen} 
                                             setModalIsOpen={setModalIsOpen}
-                                            workspaceMembers={workspaceMemberViewModel.getMembers(workspaceId)}
+                                            workspaceMembers={workspaceMemberViewModel.getMembers(localStorage.getItem('accessedWorkspaceId') )}
                                             stomp = {stomp}
-                                            />
+                                        />
                                     </Modal>
                                 </div>
 
                                 <div className='second-col-DPList'>
                                     <DepartmentList
-                                        workspaceId = {workspaceId}
-                                        departments = {departmentViewModel.get(workspaceId)}
+                                        workspaceId = {localStorage.getItem('accessedWorkspaceId') }
+                                        departments = {departmentViewModel.get(localStorage.getItem('accessedWorkspaceId') )}
                                     />
                                 </div>
 
@@ -286,7 +293,7 @@ const Workspace = function () {
 
                                 <div className='second-col-WholeMemberList'>
                                     <MemberList 
-                                        members = {workspaceMemberViewModel.getMembers(workspaceId)}
+                                        members = {workspaceMemberViewModel.getMembers(localStorage.getItem('accessedWorkspaceId') )}
                                     />
                                 </div>
                             </div>
@@ -295,23 +302,23 @@ const Workspace = function () {
                         <div className='third-col'>
                             <div className='third-col-DepartmentInfo'>
                                 <span className="h5">{ accessedDepartment.name } </span>
-                                <p className="small text-muted">&nbsp;{ departmentViewModel.getGoal(accessedDepartment.id) }</p>
+                                <p className="small text-muted">&nbsp;{ departmentViewModel.getGoal(localStorage.getItem('accessedDepartmentId')) }</p>
                             </div>
                             
                             <div className='third-col-ChatList'>
                                 <ChatBox
                                     departmentMemberViewModel = {departmentMemberViewModel}
                                     chatViewModel = {chatViewModel}
-                                    departmentId = {accessedDepartment.id}
+                                    departmentId = {localStorage.getItem('accessedDepartmentId')}
                                     loginMemberEmail = {localStorage.getItem('loginMemberEmail')}
-                                    chats = {chatViewModel.getChats(accessedDepartment.id)}//chatViewModel.getChats(accessedDepartmentId)
+                                    chats = {chatViewModel.getChats(localStorage.getItem('accessedDepartmentId'))}//chatViewModel.getChats(accessedDepartmentId)
                                     messageEnd = {messageEndRef}
                                 />
                             </div>
                             <div className='third-col-ChatInput'>
                                 <ChatInputBox 
                                     chatViewModel = {chatViewModel}
-                                    departmentId = {accessedDepartment.id}
+                                    departmentId = {localStorage.getItem('accessedDepartmentId')}
                                     chatUpdateState = {chatUpdateState}
                                     setChatUpdateState = {setChatUpdateState}
                                     messageEnd = {messageEndRef}
@@ -321,20 +328,20 @@ const Workspace = function () {
                         </div>
                         <div className='fourth-col-container'>
                             <div className='fourth-col-DepartmentInfo'>
-                                <span>{ departmentViewModel.getDeadLine(accessedDepartment.id) }</span>
+                                <span>{ departmentViewModel.getDeadLine(localStorage.getItem('accessedDepartmentId')) }</span>
                                 <FaPowerOff className='setting' style={{marginLeft:'10px'}} onClick={()=> logout()}/>
                                 <BsGearFill className='setting' onClick={()=> setdpModifyModalIsOpen(true)}/>
                                     <Modal isOpen= {dpModifyModalIsOpen} style={modalStyles} onRequestClose={() => setdpModifyModalIsOpen(false)}>
-                                        <DepartmentModifyModal departmentName={accessedDepartment.name} departmentGoal={departmentViewModel.getGoal(accessedDepartment.id)} departmentDeadLine={departmentViewModel.getDeadLine(accessedDepartment.id)} setdpModifyModalIsOpen={setdpModifyModalIsOpen}/>
+                                        <DepartmentModifyModal departmentName={accessedDepartment.name} departmentGoal={departmentViewModel.getGoal(localStorage.getItem('accessedDepartmentId'))} departmentDeadLine={departmentViewModel.getDeadLine(localStorage.getItem('accessedDepartmentId'))} setdpModifyModalIsOpen={setdpModifyModalIsOpen}/>
                                     </Modal>
-                                <p className="h5 mb-0 py-1">&nbsp;{ departmentViewModel.getDDay(accessedDepartment.id) }</p>
+                                <p className="h5 mb-0 py-1">&nbsp;{ departmentViewModel.getDDay(localStorage.getItem('accessedDepartmentId')) }</p>
                             </div>
 
                             <div className='fourth-col'>
 
                                 <div className='fourth-col-DPMemberListContainer'>
                                     <div className='container-top'>
-                                        <div style={{float:'left'}}>참여자 {departmentMemberViewModel.getMembers(accessedDepartment.id).length}</div>
+                                        <div style={{float:'left'}}>참여자 {departmentMemberViewModel.getMembers(localStorage.getItem('accessedDepartmentId')).length}</div>
                                         
                                         <div style={{float:'right'}} onClick={()=>setIsShowDPmemberList(!isShowDPmemberList)}>{
                                             isShowDPmemberList===true?
@@ -347,15 +354,15 @@ const Workspace = function () {
                                             <DepartmentMemberAddModal 
                                                 modalIsOpen={modal2IsOpen} 
                                                 setModalIsOpen={setModal2IsOpen} 
-                                                accessedDepartmentId={accessedDepartment.id}
-                                                workspaceMembers={workspaceMemberViewModel.getMembers(workspaceId)}
+                                                accessedDepartmentId={localStorage.getItem('accessedDepartmentId')}
+                                                workspaceMembers={workspaceMemberViewModel.getMembers(localStorage.getItem('accessedWorkspaceId') )}
                                                 stomp = {stomp}
                                                 />
                                         </Modal>
                                     </div>
                                     <div className='fourth-col-DPMemberList'>
                                         {isShowDPmemberList===true?
-                                            <MemberList members = {departmentMemberViewModel.getMembers(accessedDepartment.id)}/>
+                                            <MemberList members = {departmentMemberViewModel.getMembers(localStorage.getItem('accessedDepartmentId'))}/>
                                         :
                                             <></>
                                         }
@@ -382,7 +389,7 @@ const Workspace = function () {
                 }
             </div>
         );
-    }
+    // }
 }
 
 export default Workspace;
