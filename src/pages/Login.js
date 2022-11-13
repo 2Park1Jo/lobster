@@ -2,12 +2,8 @@ import './Login.css';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from 'recoil';
-import { getMemberData } from '../data/MemberData.js';
 import { WORKSPACE_ID, ACCESSED_DEPARTMENT } from '../recoil/Atoms';
-import { getAllMemberData, isLoginSuccessed } from '../api/MemberAPI';
-import { MemberViewModel } from '../models/view-model/MemberViewModel';
-import { Member } from '../models/model/Member';
-import { LOGIN_MEMBER } from '../recoil/Atoms';
+import { isLoginSuccessed } from '../api/MemberAPI';
 
 const Login = function () {
 
