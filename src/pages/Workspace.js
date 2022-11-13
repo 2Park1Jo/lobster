@@ -138,6 +138,7 @@ const Workspace = function () {
             (res) => {
                 chatViewModel.update(res);
                 setIsReceivedChat(true)
+                messageEndRef.current?.scrollIntoView({behavior: "auto"})
             }
         )
     },[])
