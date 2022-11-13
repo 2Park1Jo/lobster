@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Form from 'react-bootstrap/Form';
-
 import './Modal.css';
-import { getDepartmentData, setDepartmentData } from '../../data/DepartmentData';
-import { getDepartmentMemberData, setDepartmentMemberData } from '../../data/DepartmentMemberData';
-import { getWorkspaceMemberData, setWorkspaceMemberData } from '../../data/WorkspaceMemberData';
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 <a
@@ -50,23 +46,22 @@ const CustomMenu = React.forwardRef(
 },
 );
 
-const DepartmentAddModal = ({modalIsOpen, setModalIsOpen}) => {
+const DepartmentAddModal = ({modalIsOpen, setModalIsOpen, workspaceMembers}) => {
 
     let [inputDepartmentName, setInputDepartmentName] = useState("");
     let [inputDepartmentGoal, setInputDepartmentGoal] = useState("");
     let [inputDepartmentDeadLine, setInputDepartmentDeadLine] = useState("");
     let [inputDepartmentMemberData, setInputDepartmentMemberData] = useState([]);
-    let workspaceMemberData = getWorkspaceMemberData();
 
     function applyWorkspaceMemberListInDropdown() {
         let htmlArrayForDepartmentMember = [];
 
-        for (let index = 0; index < workspaceMemberData.length; index++) {
-            let memberName = workspaceMemberData[index].name
-            let memberEmail = workspaceMemberData[index].email
+        for (let index = 0; index < workspaceMembers.length; index++) {
+            let memberName = workspaceMembers[index].memberName
+            let memberEmail = workspaceMembers[index].email
 
             htmlArrayForDepartmentMember.push(
-                <Dropdown.Item eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName }</Dropdown.Item>
+                <Dropdown.Item key={ memberEmail } eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName }</Dropdown.Item>
                 )
         }
         return htmlArrayForDepartmentMember
@@ -108,7 +103,7 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen}) => {
 
         let randomDepartmentId = String(Math.random());
 
-        let newDepartmentData = getDepartmentData();
+        let newDepartmentData = [];
         newDepartmentData.push(
             {
                 departmentId:  randomDepartmentId,
@@ -118,7 +113,7 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen}) => {
             },
         )
 
-        let newDepartmentMemberData = getDepartmentMemberData();
+        let newDepartmentMemberData = [];
         for (let index = 0; index < inputDepartmentMemberData.length; index++){
             newDepartmentMemberData.push(
                 {
@@ -131,8 +126,7 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen}) => {
             )
         }
 
-        setDepartmentData(newDepartmentData);
-        setDepartmentMemberData(newDepartmentMemberData);
+        // addDepartment
         setModalIsOpen(false);
     }
 
@@ -192,7 +186,8 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen}) => {
             </div>
 
             <div className="d-grid gap-2 mt-3">
-                <button className="btn btn-primary" onClick={ () => addDepartmentData() }>
+                <button className="btn btn-primary">
+                {/* <button className="btn btn-primary" onClick={ () => addDepartmentData() }> */}
                     추가하기
                 </button>
             </div>

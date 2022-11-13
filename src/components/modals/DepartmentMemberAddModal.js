@@ -3,8 +3,6 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import Form from 'react-bootstrap/Form';
 
 import './Modal.css';
-import { getDepartmentMemberData, setDepartmentMemberData } from '../../data/DepartmentMemberData';
-import { getWorkspaceMemberData } from '../../data/WorkspaceMemberData';
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 <a
@@ -49,9 +47,9 @@ const CustomMenu = React.forwardRef(
 },
 );
 
-const DepartmentMemberAddModal = ({modalIsOpen, setModalIsOpen, accessedDepartmentId}) => {
+const DepartmentMemberAddModal = ({modalIsOpen, setModalIsOpen, accessedDepartmentId, workspaceMembers}) => {
     let [inputDepartmentMemberData, setInputDepartmentMemberData] = useState([]);
-    let workspaceMemberData = getWorkspaceMemberData();
+    let workspaceMemberData = workspaceMembers;
 
     function applyWorkspaceMemberListInDropdown() {
         let htmlArrayForDepartmentMember = [];
@@ -61,7 +59,7 @@ const DepartmentMemberAddModal = ({modalIsOpen, setModalIsOpen, accessedDepartme
             let memberEmail = workspaceMemberData[index].email
 
             htmlArrayForDepartmentMember.push(
-                <Dropdown.Item eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName }</Dropdown.Item>
+                <Dropdown.Item key={ memberEmail } eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName }</Dropdown.Item>
                 )
         }
         return htmlArrayForDepartmentMember
@@ -94,28 +92,28 @@ const DepartmentMemberAddModal = ({modalIsOpen, setModalIsOpen, accessedDepartme
         return selectedMemberNameList;
     }
 
-    function addDepartmentData() {
-        let selectedMemberLength = getSelectedMemberName().length;
-        if (selectedMemberLength === 0){
-            alert("추가할 멤버를 선택해주세요")
-            return
-        }
+    // function addDepartmentData() {
+    //     let selectedMemberLength = getSelectedMemberName().length;
+    //     if (selectedMemberLength === 0){
+    //         alert("추가할 멤버를 선택해주세요")
+    //         return
+    //     }
 
-        let newDepartmentMemberData = getDepartmentMemberData();
-        for (let index = 0; index < inputDepartmentMemberData.length; index++){
-            newDepartmentMemberData.push(
-                {
-                    departmentId: accessedDepartmentId,
-                    email: inputDepartmentMemberData[index].email,
-                    name: inputDepartmentMemberData[index].name,
-                    role: '',
-                    grade: ''
-                },
-            )
-        }
-        setDepartmentMemberData(newDepartmentMemberData);
-        setModalIsOpen(false);
-    }
+    //     let newDepartmentMemberData = getDepartmentMemberData();
+    //     for (let index = 0; index < inputDepartmentMemberData.length; index++){
+    //         newDepartmentMemberData.push(
+    //             {
+    //                 departmentId: accessedDepartmentId,
+    //                 email: inputDepartmentMemberData[index].email,
+    //                 name: inputDepartmentMemberData[index].name,
+    //                 role: '',
+    //                 grade: ''
+    //             },
+    //         )
+    //     }
+    //     setDepartmentMemberData(newDepartmentMemberData);
+    //     setModalIsOpen(false);
+    // }
 
     return(
         <div>
@@ -141,7 +139,8 @@ const DepartmentMemberAddModal = ({modalIsOpen, setModalIsOpen, accessedDepartme
             </div>
 
             <div className="d-grid gap-2 mt-3">
-                <button className="btn btn-primary" onClick={ () => addDepartmentData() }>
+                {/* <button className="btn btn-primary" onClick={ () => addDepartmentData() }> */}
+                <button className="btn btn-primary">
                     추가하기
                 </button>
             </div>

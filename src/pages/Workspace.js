@@ -192,8 +192,12 @@ const Workspace = function () {
                     
                         <div className='container-top'>
                             <p>그룹 <MdPostAdd className="setting" onClick={()=> setModalIsOpen(true)}/> </p>
-                            <Modal isOpen= {modalIsOpen} style={modalStyles} onRequestClose={() => setModalIsOpen(false)}>
-                                <DepartmentAddModal modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen}/>
+                            <Modal ariaHideApp={false} isOpen= {modalIsOpen} style={modalStyles} onRequestClose={() => setModalIsOpen(false)}>
+                                <DepartmentAddModal 
+                                    modalIsOpen={modalIsOpen} 
+                                    setModalIsOpen={setModalIsOpen}
+                                    workspaceMembers={workspaceMemberViewModel.getMembers(workspaceId)}
+                                    />
                             </Modal>
                         </div>
 
@@ -269,8 +273,13 @@ const Workspace = function () {
                                     <BiChevronsUp className='arrow'/>
                                 }</div>
                                 <BiUserPlus style={{float:'right'}} className="arrow" onClick={()=> setModal2IsOpen(true)}/>
-                                <Modal isOpen= {modal2IsOpen} style={modalStyles} onRequestClose={() => setModal2IsOpen(false)}>
-                                    <DepartmentMemberAddModal modalIsOpen={modal2IsOpen} setModalIsOpen={setModal2IsOpen} accessedDepartmentId={accessedDepartment.id}/>
+                                <Modal ariaHideApp={false} isOpen= {modal2IsOpen} style={modalStyles} onRequestClose={() => setModal2IsOpen(false)}>
+                                    <DepartmentMemberAddModal 
+                                        modalIsOpen={modal2IsOpen} 
+                                        setModalIsOpen={setModal2IsOpen} 
+                                        accessedDepartmentId={accessedDepartment.id}
+                                        workspaceMembers={workspaceMemberViewModel.getMembers(workspaceId)}
+                                        />
                                 </Modal>
                             </div>
                             <div className='fourth-col-DPMemberList'>

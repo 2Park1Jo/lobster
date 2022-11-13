@@ -62,7 +62,7 @@ const WorkspaceAddModal = ({modalIsOpen, setModalIsOpen, allMemberViewModel}) =>
             let memberEmail = allMeemberData[index].email
 
             htmlArrayForWorkspaceMember.push(
-                <Dropdown.Item eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName }</Dropdown.Item>
+                <Dropdown.Item key={ memberEmail } eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName }</Dropdown.Item>
                 )
         }
         return htmlArrayForWorkspaceMember
