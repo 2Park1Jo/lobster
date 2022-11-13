@@ -46,7 +46,7 @@ const CustomMenu = React.forwardRef(
 },
 );
 
-const DepartmentAddModal = ({modalIsOpen, setModalIsOpen, workspaceMembers}) => {
+const DepartmentAddModal = ({modalIsOpen, setModalIsOpen, workspaceMembers, stomp}) => {
 
     let [inputDepartmentName, setInputDepartmentName] = useState("");
     let [inputDepartmentGoal, setInputDepartmentGoal] = useState("");
@@ -103,30 +103,34 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen, workspaceMembers}) => 
 
         let randomDepartmentId = String(Math.random());
 
-        let newDepartmentData = [];
-        newDepartmentData.push(
-            {
-                departmentId:  randomDepartmentId,
-                departmentName: inputDepartmentName,
-                departmentGoal: inputDepartmentGoal,
-                departmentDeadLine: String(inputDepartmentDeadLine)
-            },
-        )
+        stomp.send('department추가 주소', {}, JSON.stringify({
+            departmentId:  randomDepartmentId,
+            departmentName: inputDepartmentName,
+            departmentGoal: inputDepartmentGoal,
+            departmentDeadLine: String(inputDepartmentDeadLine)
+        }))
 
-        let newDepartmentMemberData = [];
+        let departmentMemberList = [];
+
         for (let index = 0; index < inputDepartmentMemberData.length; index++){
-            newDepartmentMemberData.push(
-                {
-                    departmentId: randomDepartmentId,
-                    email: inputDepartmentMemberData[index].email,
-                    name: inputDepartmentMemberData[index].name,
-                    role: '',
-                    grade: ''
-                },
-            )
+            departmentMemberList.push({
+                departmentId: randomDepartmentId,
+                email: inputDepartmentMemberData[index].email,
+                name: inputDepartmentMemberData[index].name,
+                role: '',
+                grade: ''
+            },)
+            // stomp.send('departmentMember추가 주소', {}, JSON.stringify({
+            //     departmentId: randomDepartmentId,
+            //     email: inputDepartmentMemberData[index].email,
+            //     name: inputDepartmentMemberData[index].name,
+            //     role: '',
+            //     grade: ''
+            // }))
         }
 
-        // addDepartment
+        stomp.send('departmentMember추가 주소', {}, JSON.stringify({departmentMemberList}))
+
         setModalIsOpen(false);
     }
 
@@ -186,8 +190,7 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen, workspaceMembers}) => 
             </div>
 
             <div className="d-grid gap-2 mt-3">
-                <button className="btn btn-primary">
-                {/* <button className="btn btn-primary" onClick={ () => addDepartmentData() }> */}
+                <button className="btn btn-primary" onClick={ () => addDepartmentData() }>
                     추가하기
                 </button>
             </div>

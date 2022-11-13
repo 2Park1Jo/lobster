@@ -23,20 +23,3 @@ export const getChattingData = async (departmentId) =>{
     const responose = await axios.get(BACK_BASE_URL + 'department/' + departmentId + '/chat/content')
     return responose.data;
 }
-
-export const addDepartment = async (departmentId, departmentName, departmentGoal, departmentDeadline) => {
-    const response = await axios.post(BACK_BASE_URL + 'department/login',
-    {
-        departmentId: departmentId,
-        departmentName: departmentName,
-        departmentGoal: departmentGoal,
-        departmentDeadline: departmentDeadline
-    },
-    {
-        headers: {
-        'Access-Control-Allow-Origin': '*',
-        },
-        withCredentials: true
-    })
-    return response;
-}

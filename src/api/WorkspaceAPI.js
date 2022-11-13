@@ -18,3 +18,20 @@ export const getWorkspaceMemberData = async (workspaceId) =>{
     const responose = await axios.get(BACK_BASE_URL + 'workspace/' + workspaceId + '/members')
     return responose.data;
 }
+
+export const addWorkspace = async (workpsaceName, workspaceGoal, workspaceDeadline) => {
+    const response = await axios.post(BACK_BASE_URL + 'workspace/add',
+    {
+        workpsaceName: workpsaceName,
+        workspaceGoal: workspaceGoal,
+        workspaceDeadline: workspaceDeadline,
+    },
+    {
+        headers: {
+        'Access-Control-Allow-Origin': '*',
+        },
+        withCredentials: true
+    })
+    return response;
+}
+
