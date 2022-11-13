@@ -11,7 +11,7 @@ import Modal from 'react-modal';
 import { useRecoilValue } from "recoil";
 
 import { getWorkspaceMemberData, getWorkspaceData } from '../api/WorkspaceAPI';
-import { getAllDepartment, getDepartmentMemberData, getChattingData } from '../api/DepartmentAPI';
+import { getAllDepartment, getDepartmentMemberData, getChattingData, getDepartments } from '../api/DepartmentAPI';
 
 import { ACCESSED_DEPARTMENT, LOGIN_MEMBER, WORKSPACE_ID } from '../recoil/Atoms';
 
@@ -97,7 +97,7 @@ const Workspace = function () {
             }
         )
 
-        getAllDepartment()
+        getDepartments(workspaceId ,localStorage.getItem('loginMemberEmail'))
         .then(
             (res) => {
                 departmentViewModel.update(res);

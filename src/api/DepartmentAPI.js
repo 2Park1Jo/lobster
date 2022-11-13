@@ -9,6 +9,11 @@ export const getAllDepartment = async () =>{
     return responose.data;
 }
 
+export const getDepartments = async (workspaceId, memberEmail) =>{
+    const responose = await axios.get(BACK_BASE_URL + 'member/' + memberEmail + '/workspace/' + workspaceId + '/departments')
+    return responose.data;
+}
+
 export const getDepartmentMemberData = async (departmentId) =>{
     const responose = await axios.get(BACK_BASE_URL + 'department/' + departmentId + '/members')
     return responose.data;
