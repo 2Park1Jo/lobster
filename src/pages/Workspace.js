@@ -142,14 +142,20 @@ const Workspace = function () {
     }, [chatUpdateState])
 
     function onConnected() {
-
+        // chat 
         stomp.subscribe("/sub/chat/department/" + accessedDepartment.id, function (chat) {
             let result = JSON.parse(chat.body);
-            console.log(result.content)
+            console.log(chatUpdateState + "|" + result.content)
             if (chatUpdateState !== result.body){
                 setChatUpdateState(result.content);
             }
         });
+
+        // dp add
+
+        // workpsaceMember add
+
+        // dpMember add
 
         stomp.send('/pub/chat/enter', {}, JSON.stringify({departmentId: accessedDepartment.id, email: localStorage.getItem('loginMemberEmail')}))
     }
@@ -261,8 +267,6 @@ const Workspace = function () {
                             setChatUpdateState = {setChatUpdateState}
                             messageEnd = {messageEndRef}
                             stomp = {stomp}
-                            // chatUpdateState = {props.chatUpdateState}
-                            // setChatUpdateState = {props.setChatUpdateState}
                         />
                     </div>
                 </div>

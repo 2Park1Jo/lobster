@@ -49,7 +49,7 @@ export default function ChatInputBox(props){
 
     return(
         <div className="input-group px-1">
-            <input type="text" placeholder="Type a message" className="form-control py-3 bg-light" value={ inputChattingContent }
+            <textarea placeholder="Type a message" className="form-control bg-light" value={ inputChattingContent }
                 onChange={e => setInputChattingContent(e.target.value)} onKeyPress={handleOnKeyPress}/>
             <Button variant="secondary" onClick={ () => addChattingData(inputChattingContent) }> {<BiPaperPlane style={{fontSize:'20px'}}/>} </Button>
         </div>
