@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { BiPaperPlane } from "react-icons/bi";
 
 export default function ChatInputBox(props){
-
     let [inputChattingContent, setInputChattingContent] = useState(""); // 사용자가 입력한 채팅 컨텐츠 데이터
 
     function scrollToBottom(behavior) {
@@ -14,23 +13,6 @@ export default function ChatInputBox(props){
     useEffect( () => {
         scrollToBottom("smooth");
     }, [props.chatUpdateState])
-
-    useEffect( () => {
-        props.stomp.connect({}, onConnected, () => {
-            console.log('Broker reported error');
-        });
-    }, [])
-
-    function onConnected() {
-        props.stomp.send('/pub/chat/enter', {}, JSON.stringify({departmentId: props.departmentId, email: localStorage.getItem('loginMemberEmail')}))
-
-        props.stomp.subscribe("/sub/chat/department/" + props.departmentId, function (chat) {
-            let result = JSON.parse(chat.body);
-            if (props.chatUpdateState !== result.body){
-                props.setChatUpdateState(result.content);
-            }
-        });
-    }
 
     function addChattingData(chatContent) {
         let currentDate = new Date();
