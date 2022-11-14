@@ -4,6 +4,7 @@ import MemberCard from '../components/workspace/MemberCard';
 import DepartmentAddModal from '../components/modals/DepartmentAddModal'
 import DepartmentMemberAddModal from '../components/modals/DepartmentMemberAddModal';
 import DepartmentModifyModal from '../components/modals/DepartmentModifyModal';
+import WorkspaceMemberAdd from '../components/modals/WorkspaceMemberAdd';
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -62,7 +63,6 @@ const chatViewModel = new ChatViewModel(chat);
 
 const sockJs = new SockJS(BACK_BASE_URL + "chat");
 const stomp = Stomp.over(sockJs);
-    
 
 const Workspace = function () {
     const messageEndRef = useRef(null); // 채팅메세지의 마지막
@@ -80,7 +80,8 @@ const Workspace = function () {
 
     let [modalIsOpen, setModalIsOpen] = useState(false);
     let [modal2IsOpen, setModal2IsOpen] = useState(false); 
-    let [dpModifyModalIsOpen, setdpModifyModalIsOpen] = useState(false);    
+    let [dpModifyModalIsOpen, setdpModifyModalIsOpen] = useState(false);  
+    let [WorkspaceMemberAddModalIsOpen,setWorkspaceMemberAddModalIsOpen]=useState(false);  
 
     let [chatUpdateState, setChatUpdateState] = useState("");
     let [departmentUpdateState, setDepartmentUpdateState] = useState("");
@@ -290,7 +291,12 @@ const Workspace = function () {
                                 </div>
 
                                 <div className='container-top'>
-                                    <p>멤버 <BiUserPlus className="setting" onClick={()=> alert("member + button")}/> </p>
+                                    <p>멤버 <BiUserPlus className="setting" onClick={()=> setWorkspaceMemberAddModalIsOpen(true)}/> </p>
+                                    <Modal isOpen= {WorkspaceMemberAddModalIsOpen} style={modalStyles} onRequestClose={() => setWorkspaceMemberAddModalIsOpen(false)}>
+                                        <WorkspaceMemberAdd 
+                                            setWorkspaceMemberAddModalIsOpen={setWorkspaceMemberAddModalIsOpen}
+                                            WorkspaceId={workspaceId}/>
+                                    </Modal>
                                 </div>
 
                                 <div className='second-col-WholeMemberList'>

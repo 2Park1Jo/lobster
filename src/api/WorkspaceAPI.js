@@ -35,3 +35,24 @@ export const addWorkspace = async (workpsaceName, workspaceGoal, workspaceDeadli
     return response;
 }
 
+export const inviteMemberToWorkspace=async(emailList,workspaceId)=>{
+    let bodyList=[]
+    for(var i=0;i<emailList.length;i++){
+        bodyList.push("{email:"+emailList[i]+",memberName:a,workspaceGrade=null")
+    }
+    const responose=await axios.post(BACK_BASE_URL+'workspace/'+workspaceId+'/invitation',
+    {
+        bodyList
+    },
+    {
+        headers: {
+        'Access-Control-Allow-Origin': '*',
+        },
+        withCredentials: true
+    }).then(res=>{
+        console.log(res)
+    }).catch(err=>{
+        console.log(err)
+    })
+}
+
