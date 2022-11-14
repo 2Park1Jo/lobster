@@ -52,14 +52,14 @@ const WorkspaceAddModal = ({modalIsOpen, setModalIsOpen, allMemberViewModel, sto
     let [inputWorkspaceGoal, setInputWorkspaceGoal] = useState("");
     let [inputWorkspaceDeadLine, setInputWorkspaceDeadLine] = useState("");
     let [inputWorkspaceMemberData, setInputWorkspaceMemberData] = useState([]);
-    let allMeemberData = allMemberViewModel.getAll();
+    let allMemberData = allMemberViewModel.getAll();
     
     function applyWorkspaceMemberListInDropdown() {
         let htmlArrayForWorkspaceMember = [];
 
-        for (let index = 0; index < allMeemberData.length; index++) {
-            let memberName = allMeemberData[index].name
-            let memberEmail = allMeemberData[index].email
+        for (let index = 0; index < allMemberData.length; index++) {
+            let memberName = allMemberData[index].memberName
+            let memberEmail = allMemberData[index].email
 
             htmlArrayForWorkspaceMember.push(
                 <Dropdown.Item key={ memberEmail } eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName }</Dropdown.Item>
@@ -72,14 +72,14 @@ const WorkspaceAddModal = ({modalIsOpen, setModalIsOpen, allMemberViewModel, sto
         let copiedMemberData = [...inputWorkspaceMemberData];
 
         for (let index = 0; index < copiedMemberData.length; index++){
-            if (copiedMemberData[index].email === memberEmail && copiedMemberData[index].name === memberName){
+            if (copiedMemberData[index].email === memberEmail && copiedMemberData[index].memberName === memberName){
                 return;
             }
         }
         copiedMemberData.push(
             {
                 email: memberEmail,
-                name: memberName,
+                memberName: memberName,
             }
         )
         setInputWorkspaceMemberData(copiedMemberData)
@@ -89,7 +89,7 @@ const WorkspaceAddModal = ({modalIsOpen, setModalIsOpen, allMemberViewModel, sto
         let selectedMemberNameList = [];
 
         for (let index = 0; index < inputWorkspaceMemberData.length; index++){
-            selectedMemberNameList.push(inputWorkspaceMemberData[index].name)
+            selectedMemberNameList.push(inputWorkspaceMemberData[index].memberName)
         }
 
         return selectedMemberNameList;
@@ -116,7 +116,7 @@ const WorkspaceAddModal = ({modalIsOpen, setModalIsOpen, allMemberViewModel, sto
             workspaceMemberList.push({
                 workspaceId: randomWorkspaceId,
                 email: inputWorkspaceMemberData[index].email,
-                name: inputWorkspaceMemberData[index].name,
+                memberName: inputWorkspaceMemberData[index].memberName,
                 role: '',
                 grade: ''
             },
@@ -124,7 +124,7 @@ const WorkspaceAddModal = ({modalIsOpen, setModalIsOpen, allMemberViewModel, sto
             // stomp.send('workspaceMember추가 주소', {}, JSON.stringify({
             //     workspaceId: randomWorkspaceId,
             //     email: inputWorkspaceMemberData[index].email,
-            //     name: inputWorkspaceMemberData[index].name,
+            //     memberName: inputWorkspaceMemberData[index].memberName,
             //     role: '',
             //     grade: ''
             // }))

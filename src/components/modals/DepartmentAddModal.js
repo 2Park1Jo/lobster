@@ -71,14 +71,14 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen, workspaceMembers, stom
         let copiedMemberData = [...inputDepartmentMemberData];
 
         for (let index = 0; index < copiedMemberData.length; index++){
-            if (copiedMemberData[index].email === memberEmail && copiedMemberData[index].name === memberName){
+            if (copiedMemberData[index].email === memberEmail && copiedMemberData[index].memberName === memberName){
                 return;
             }
         }
         copiedMemberData.push(
             {
                 email: memberEmail,
-                name: memberName,
+                memberName: memberName,
             }
         )
         setInputDepartmentMemberData(copiedMemberData)
@@ -88,7 +88,7 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen, workspaceMembers, stom
         let selectedMemberNameList = [];
 
         for (let index = 0; index < inputDepartmentMemberData.length; index++){
-            selectedMemberNameList.push(inputDepartmentMemberData[index].name)
+            selectedMemberNameList.push(inputDepartmentMemberData[index].memberName)
         }
 
         return selectedMemberNameList;
@@ -116,14 +116,14 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen, workspaceMembers, stom
             departmentMemberList.push({
                 departmentId: randomDepartmentId,
                 email: inputDepartmentMemberData[index].email,
-                name: inputDepartmentMemberData[index].name,
+                memberName: inputDepartmentMemberData[index].memberName,
                 role: '',
                 grade: ''
             },)
             // stomp.send('departmentMember추가 주소', {}, JSON.stringify({
             //     departmentId: randomDepartmentId,
             //     email: inputDepartmentMemberData[index].email,
-            //     name: inputDepartmentMemberData[index].name,
+            //     memberName: inputDepartmentMemberData[index].memberName,
             //     role: '',
             //     grade: ''
             // }))
