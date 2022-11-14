@@ -60,9 +60,12 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen, workspaceMembers, stom
             let memberName = workspaceMembers[index].memberName
             let memberEmail = workspaceMembers[index].email
 
-            htmlArrayForDepartmentMember.push(
-                <Dropdown.Item key={ memberEmail } eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName }</Dropdown.Item>
+
+            if (localStorage.getItem('loginMemberEmail') !== memberEmail){
+                htmlArrayForDepartmentMember.push(
+                    <Dropdown.Item key={ memberEmail } eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName }</Dropdown.Item>
                 )
+            }
         }
         return htmlArrayForDepartmentMember
     }
