@@ -46,6 +46,17 @@ export class DepartmentViewModel{
         return deadLine;
     }
 
+    getName(departmentId) {
+        let name = "";
+
+        this.getAll().map((department) => {
+            if (department.departmentId === departmentId){
+                name = department.departmentName;
+            }
+        })
+        return name;
+    }
+
     getDDay(departmentId){
         return calculateDDay(this.getDeadLine(departmentId))
     }

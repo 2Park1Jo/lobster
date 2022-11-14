@@ -69,7 +69,7 @@ export default function WorkspaceSelection() {
     return(
         <div className="banner-container">
 
-            <Modal isOpen= {modalIsOpen} style={modalStyles} onRequestClose={() => closeModal()}>
+            <Modal ariaHideApp={false}  isOpen= {modalIsOpen} style={modalStyles} onRequestClose={() => closeModal()}>
                 <WorkspaceAddModal 
                     modalIsOpen = {modalIsOpen} 
                     setModalIsOpen = {setModalIsOpen}
