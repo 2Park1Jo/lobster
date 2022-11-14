@@ -129,7 +129,7 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen, workspaceMembers, stom
             // }))
         }
 
-        stomp.send('departmentMember추가 주소', {}, JSON.stringify({departmentMemberList}))
+        stomp.send('departmentMember추가 주소', {}, JSON.stringify(departmentMemberList))
 
         setModalIsOpen(false);
     }
