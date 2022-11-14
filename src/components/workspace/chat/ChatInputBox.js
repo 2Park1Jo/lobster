@@ -14,6 +14,12 @@ export default function ChatInputBox(props){
         scrollToBottom("smooth");
     }, [props.chatUpdateState])
 
+    useEffect( () => {
+        if(inputChattingContent === '\n'){
+            setInputChattingContent("");
+        }
+    },[inputChattingContent])
+
     const handleChange = (e) => {
         const file = e.target.files[0];
         let reader = new FileReader();
