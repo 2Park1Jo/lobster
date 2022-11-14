@@ -68,7 +68,6 @@ const DepartmentMemberAddModal = ({modalIsOpen, setModalIsOpen, accessedDepartme
             let memberEmail = workspaceMemberData[index].email
 
             if (!isAlreadyJoinMember(memberEmail)){
-                console.log(memberName)
                 htmlArrayForDepartmentMember.push(
                     <Dropdown.Item key={ memberEmail } eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName }</Dropdown.Item>
                 )
@@ -136,7 +135,7 @@ const DepartmentMemberAddModal = ({modalIsOpen, setModalIsOpen, accessedDepartme
     }
 
     return(
-        <div>
+        <div style={{width:'300px', height:'300px'}}>
             <button className="modal-close" type="button" onClick={() => setModalIsOpen(false)}>X</button>
             <h3 className="Auth-form-title">멤버추가</h3>
             <div className="form-group mt-3">
@@ -158,7 +157,7 @@ const DepartmentMemberAddModal = ({modalIsOpen, setModalIsOpen, accessedDepartme
                 </Dropdown>
             </div>
 
-            <div className="d-grid gap-2 mt-3">
+            <div className="d-grid gap-2 mt-3" style={{position: 'absolute', width:'90%', left: '5%', bottom: '10px'}}>
                 <button className="btn btn-primary" onClick={ () => addDepartmentData() }>
                     추가하기
                 </button>
