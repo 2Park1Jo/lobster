@@ -7,10 +7,9 @@ export default function Message({ chatSender, chatDate, chatContent }){
     return(
         (
             chatSender === null || chatSender === "" ? 
-                <>
-                    &nbsp;
-                    <p className="small">({ chatDate.split(" ")[1] })&nbsp;{ chatContent } </p>
-                </>
+                <div className='message'>
+                    <span className="small">({ chatDate.split(" ")[1] })&nbsp;{ chatContent } </span>
+                </div>
             :
                 <div className='message'>
                     <li className="small text-muted">{ chatSender } { chatDate.split(" ")[1] }</li>
