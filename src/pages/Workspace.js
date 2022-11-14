@@ -162,6 +162,7 @@ const Workspace = function () {
         .then(
             (res) => {
                 departmentViewModel.update(res);
+                setDepartmentUpdateState(0)
             }
         )
     }, [departmentUpdateState])
@@ -172,6 +173,7 @@ const Workspace = function () {
         .then(
             (res) => {
                 departmentMemberViewModel.update(res);
+                setDpMemberUpdateState(0)
             }
         )
     }, [dpMemberUpdateState])
@@ -182,6 +184,7 @@ const Workspace = function () {
         .then(
             (res) => {
                 workspaceMemberViewModel.update(res);
+                setWorkspaceMemberUpdateState(0)
             }
         )
     }, [workspaceMemberUpdateState])
@@ -192,6 +195,10 @@ const Workspace = function () {
             let result = JSON.parse(chat.body);
             if (chatUpdateState !== result.body){
                 setChatUpdateState(result.content);
+            }
+            if (result.contentType === "-1"){
+                setChatUpdateState(result.content);
+                setDpMemberUpdateState(result.content);
             }
         });
 
