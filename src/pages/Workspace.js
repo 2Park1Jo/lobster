@@ -357,6 +357,7 @@ const Workspace = function () {
                                                 modalIsOpen={modal2IsOpen} 
                                                 setModalIsOpen={setModal2IsOpen} 
                                                 accessedDepartmentId={localStorage.getItem('accessedDepartmentId')}
+                                                departmentMembers={departmentMemberViewModel.getMembers(localStorage.getItem('accessedDepartmentId'))}
                                                 workspaceMembers={workspaceMemberViewModel.getMembers(localStorage.getItem('accessedWorkspaceId') )}
                                                 stomp = {stomp}
                                                 />

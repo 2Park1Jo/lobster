@@ -47,9 +47,18 @@ const CustomMenu = React.forwardRef(
 },
 );
 
-const DepartmentMemberAddModal = ({modalIsOpen, setModalIsOpen, accessedDepartmentId, workspaceMembers, stomp}) => {
+const DepartmentMemberAddModal = ({modalIsOpen, setModalIsOpen, accessedDepartmentId, departmentMembers, workspaceMembers, stomp}) => {
     let [inputDepartmentMemberData, setInputDepartmentMemberData] = useState([]);
     let workspaceMemberData = workspaceMembers;
+
+    function isAlreadyJoinMember(memberEmail){
+        for (let index = 0; index < departmentMembers.length; index++) {
+            if (memberEmail === departmentMembers[index].email){
+                return true
+            }
+        }
+        return false
+    }
 
     function applyWorkspaceMemberListInDropdown() {
         let htmlArrayForDepartmentMember = [];
@@ -58,9 +67,12 @@ const DepartmentMemberAddModal = ({modalIsOpen, setModalIsOpen, accessedDepartme
             let memberName = workspaceMemberData[index].memberName
             let memberEmail = workspaceMemberData[index].email
 
-            htmlArrayForDepartmentMember.push(
-                <Dropdown.Item key={ memberEmail } eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName }</Dropdown.Item>
+            if (!isAlreadyJoinMember(memberEmail)){
+                console.log(memberName)
+                htmlArrayForDepartmentMember.push(
+                    <Dropdown.Item key={ memberEmail } eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName }</Dropdown.Item>
                 )
+            }
         }
         return htmlArrayForDepartmentMember
     }
