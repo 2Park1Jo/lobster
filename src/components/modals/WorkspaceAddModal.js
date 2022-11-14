@@ -46,7 +46,7 @@ const CustomMenu = React.forwardRef(
 },
 );
 
-const WorkspaceAddModal = ({modalIsOpen, setModalIsOpen, allMemberViewModel}) => {
+const WorkspaceAddModal = ({modalIsOpen, setModalIsOpen, allMemberViewModel, stomp}) => {
 
     let [inputWorkspaceName, setInputWorkspaceName] = useState("");
     let [inputWorkspaceGoal, setInputWorkspaceGoal] = useState("");
@@ -62,7 +62,7 @@ const WorkspaceAddModal = ({modalIsOpen, setModalIsOpen, allMemberViewModel}) =>
             let memberEmail = allMeemberData[index].email
 
             htmlArrayForWorkspaceMember.push(
-                <Dropdown.Item eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName }</Dropdown.Item>
+                <Dropdown.Item key={ memberEmail } eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName }</Dropdown.Item>
                 )
         }
         return htmlArrayForWorkspaceMember
@@ -102,30 +102,36 @@ const WorkspaceAddModal = ({modalIsOpen, setModalIsOpen, allMemberViewModel}) =>
             return
         }
 
-        // let randomWorkspaceId = String(Math.random());
+        let randomWorkspaceId = String(Math.random());
 
-        // let newWorkspaceData = workspaceViewModel.getAll();
-        // newWorkspaceData.push(
-        //     {
-        //         WorkspaceId:  randomWorkspaceId,
-        //         WorkspaceName: inputWorkspaceName,
-        //         WorkspaceGoal: inputWorkspaceGoal,
-        //         WorkspaceDeadLine: String(inputWorkspaceDeadLine)
-        //     },
-        // )
+        stomp.send('workspace추가 주소', {}, JSON.stringify({
+            WorkspaceId:  randomWorkspaceId,
+            WorkspaceName: inputWorkspaceName,
+            WorkspaceGoal: inputWorkspaceGoal,
+            WorkspaceDeadLine: String(inputWorkspaceDeadLine)
+        }))
 
-        // let newWorkspaceMemberData = workspaceMemberViewModel.getAll();
-        // for (let index = 0; index < inputWorkspaceMemberData.length; index++){
-        //     newWorkspaceMemberData.push(
-        //         {
-        //             WorkspaceId: randomWorkspaceId,
-        //             email: inputWorkspaceMemberData[index].email,
-        //             name: inputWorkspaceMemberData[index].name,
-        //             role: '',
-        //             grade: ''
-        //         },
-        //     )
-        // }
+        let workspaceMemberList = [];
+        for (let index = 0; index < inputWorkspaceMemberData.length; index++){
+            workspaceMemberList.push({
+                workspaceId: randomWorkspaceId,
+                email: inputWorkspaceMemberData[index].email,
+                name: inputWorkspaceMemberData[index].name,
+                role: '',
+                grade: ''
+            },
+            )
+            // stomp.send('workspaceMember추가 주소', {}, JSON.stringify({
+            //     workspaceId: randomWorkspaceId,
+            //     email: inputWorkspaceMemberData[index].email,
+            //     name: inputWorkspaceMemberData[index].name,
+            //     role: '',
+            //     grade: ''
+            // }))
+        }
+
+        stomp.send('workspaceMember추가 주소', {}, JSON.stringify({workspaceMemberList}))
+
         setModalIsOpen(false);
     }
 

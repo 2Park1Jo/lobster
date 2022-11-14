@@ -3,8 +3,6 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import Form from 'react-bootstrap/Form';
 
 import './Modal.css';
-import { getDepartmentMemberData, setDepartmentMemberData } from '../../data/DepartmentMemberData';
-import { getWorkspaceMemberData } from '../../data/WorkspaceMemberData';
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 <a
@@ -49,19 +47,19 @@ const CustomMenu = React.forwardRef(
 },
 );
 
-const DepartmentMemberAddModal = ({modalIsOpen, setModalIsOpen, accessedDepartmentId}) => {
+const DepartmentMemberAddModal = ({modalIsOpen, setModalIsOpen, accessedDepartmentId, workspaceMembers, stomp}) => {
     let [inputDepartmentMemberData, setInputDepartmentMemberData] = useState([]);
-    let workspaceMemberData = getWorkspaceMemberData();
+    let workspaceMemberData = workspaceMembers;
 
     function applyWorkspaceMemberListInDropdown() {
         let htmlArrayForDepartmentMember = [];
 
         for (let index = 0; index < workspaceMemberData.length; index++) {
-            let memberName = workspaceMemberData[index].name
+            let memberName = workspaceMemberData[index].memberName
             let memberEmail = workspaceMemberData[index].email
 
             htmlArrayForDepartmentMember.push(
-                <Dropdown.Item eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName }</Dropdown.Item>
+                <Dropdown.Item key={ memberEmail } eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName }</Dropdown.Item>
                 )
         }
         return htmlArrayForDepartmentMember
@@ -101,19 +99,27 @@ const DepartmentMemberAddModal = ({modalIsOpen, setModalIsOpen, accessedDepartme
             return
         }
 
-        let newDepartmentMemberData = getDepartmentMemberData();
+        let departmentMemberList = [];
+
         for (let index = 0; index < inputDepartmentMemberData.length; index++){
-            newDepartmentMemberData.push(
-                {
-                    departmentId: accessedDepartmentId,
-                    email: inputDepartmentMemberData[index].email,
-                    name: inputDepartmentMemberData[index].name,
-                    role: '',
-                    grade: ''
-                },
-            )
+            departmentMemberList.push({
+                departmentId: accessedDepartmentId,
+                email: inputDepartmentMemberData[index].email,
+                name: inputDepartmentMemberData[index].name,
+                role: '',
+                grade: ''
+            },)
+            // stomp.send('departmentMember추가 주소', {}, JSON.stringify({
+            //     departmentId: accessedDepartmentId,
+            //     email: inputDepartmentMemberData[index].email,
+            //     name: inputDepartmentMemberData[index].name,
+            //     role: '',
+            //     grade: ''
+            // }))
         }
-        setDepartmentMemberData(newDepartmentMemberData);
+
+        stomp.send('departmentMember추가 주소', {}, JSON.stringify({departmentMemberList}))
+
         setModalIsOpen(false);
     }
 

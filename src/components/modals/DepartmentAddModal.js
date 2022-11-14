@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Form from 'react-bootstrap/Form';
-
 import './Modal.css';
-import { getDepartmentData, setDepartmentData } from '../../data/DepartmentData';
-import { getDepartmentMemberData, setDepartmentMemberData } from '../../data/DepartmentMemberData';
-import { getWorkspaceMemberData, setWorkspaceMemberData } from '../../data/WorkspaceMemberData';
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 <a
@@ -50,23 +46,22 @@ const CustomMenu = React.forwardRef(
 },
 );
 
-const DepartmentAddModal = ({modalIsOpen, setModalIsOpen}) => {
+const DepartmentAddModal = ({modalIsOpen, setModalIsOpen, workspaceMembers, stomp}) => {
 
     let [inputDepartmentName, setInputDepartmentName] = useState("");
     let [inputDepartmentGoal, setInputDepartmentGoal] = useState("");
     let [inputDepartmentDeadLine, setInputDepartmentDeadLine] = useState("");
     let [inputDepartmentMemberData, setInputDepartmentMemberData] = useState([]);
-    let workspaceMemberData = getWorkspaceMemberData();
 
     function applyWorkspaceMemberListInDropdown() {
         let htmlArrayForDepartmentMember = [];
 
-        for (let index = 0; index < workspaceMemberData.length; index++) {
-            let memberName = workspaceMemberData[index].name
-            let memberEmail = workspaceMemberData[index].email
+        for (let index = 0; index < workspaceMembers.length; index++) {
+            let memberName = workspaceMembers[index].memberName
+            let memberEmail = workspaceMembers[index].email
 
             htmlArrayForDepartmentMember.push(
-                <Dropdown.Item eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName }</Dropdown.Item>
+                <Dropdown.Item key={ memberEmail } eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName }</Dropdown.Item>
                 )
         }
         return htmlArrayForDepartmentMember
@@ -108,31 +103,34 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen}) => {
 
         let randomDepartmentId = String(Math.random());
 
-        let newDepartmentData = getDepartmentData();
-        newDepartmentData.push(
-            {
-                departmentId:  randomDepartmentId,
-                departmentName: inputDepartmentName,
-                departmentGoal: inputDepartmentGoal,
-                departmentDeadLine: String(inputDepartmentDeadLine)
-            },
-        )
+        stomp.send('department추가 주소', {}, JSON.stringify({
+            departmentId:  randomDepartmentId,
+            departmentName: inputDepartmentName,
+            departmentGoal: inputDepartmentGoal,
+            departmentDeadLine: String(inputDepartmentDeadLine)
+        }))
 
-        let newDepartmentMemberData = getDepartmentMemberData();
+        let departmentMemberList = [];
+
         for (let index = 0; index < inputDepartmentMemberData.length; index++){
-            newDepartmentMemberData.push(
-                {
-                    departmentId: randomDepartmentId,
-                    email: inputDepartmentMemberData[index].email,
-                    name: inputDepartmentMemberData[index].name,
-                    role: '',
-                    grade: ''
-                },
-            )
+            departmentMemberList.push({
+                departmentId: randomDepartmentId,
+                email: inputDepartmentMemberData[index].email,
+                name: inputDepartmentMemberData[index].name,
+                role: '',
+                grade: ''
+            },)
+            // stomp.send('departmentMember추가 주소', {}, JSON.stringify({
+            //     departmentId: randomDepartmentId,
+            //     email: inputDepartmentMemberData[index].email,
+            //     name: inputDepartmentMemberData[index].name,
+            //     role: '',
+            //     grade: ''
+            // }))
         }
 
-        setDepartmentData(newDepartmentData);
-        setDepartmentMemberData(newDepartmentMemberData);
+        stomp.send('departmentMember추가 주소', {}, JSON.stringify({departmentMemberList}))
+
         setModalIsOpen(false);
     }
 

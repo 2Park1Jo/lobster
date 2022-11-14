@@ -8,3 +8,26 @@
     color: black;
     cursor: pointer;
 }
+
+.searched-Email-div{
+    border-radius: 2px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height: 20px;
+}
+.searched-Email-div:hover{
+    background-color: gray;
+}
+
+.modal-container{
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+}
+
+.added-member-container{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    flex-direction: column;
+}
