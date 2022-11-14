@@ -60,6 +60,10 @@ const departmentMemberViewModel = new DepartmentMemberViewModel(departmentMember
 const chat = new Chat();
 const chatViewModel = new ChatViewModel(chat);
 
+const sockJs = new SockJS(BACK_BASE_URL + "chat");
+const stomp = Stomp.over(sockJs);
+    
+
 const Workspace = function () {
     const messageEndRef = useRef(null); // 채팅메세지의 마지막
     // let loginMember = useRecoilValue(LOGIN_MEMBER);
@@ -88,12 +92,9 @@ const Workspace = function () {
 
     let navigate = useNavigate();
 
-    const sockJs = new SockJS(BACK_BASE_URL + "chat");
-    const stomp = Stomp.over(sockJs);
-
     useEffect( () => {
-        stomp.connect({}, onConnected, () => {
-            console.log('sever error');
+        stomp.connect({}, onConnected, (error) => {
+            console.log('sever error : ' + error );
         });
         
         getWorkspaceData(localStorage.getItem('loginMemberEmail'))
