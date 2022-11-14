@@ -36,8 +36,6 @@ export default function ChatInputBox(props){
         let seconds = String(currentDate.getSeconds()).padStart(2, "0");
         let currentTime = year + '-' + month + '-' + date + ' ' + houres + ':' + minutes + ':' + seconds;
 
-        console.log(month)
-
         if (chatContent.replace(/ /g,"") === ""){
             setInputChattingContent("");
             return;
