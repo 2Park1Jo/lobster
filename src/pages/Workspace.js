@@ -94,8 +94,6 @@ const Workspace = function () {
 
     let navigate = useNavigate();
 
-    console.log(stomp)
-
     useEffect( () => {
         stomp.connect({}, onConnected, (error) => {
             console.log('sever error : ' + error );
@@ -155,6 +153,10 @@ const Workspace = function () {
         )
     }, [workspaceMemberUpdateState])
 
+    useEffect( () => {
+        console.log(stomp.subscriptions)
+    }, [accessedDepartment])
+
     function onConnected() {
 
         console.log('stomp connect')
@@ -171,7 +173,7 @@ const Workspace = function () {
         });
 
         //dp add
-        stomp.subscribe("/sub/chat/workspace/" + localStorage.getItem('workspaceId'), function (data) {
+        stomp.subscribe("/sub/chat/workspace/" + localStorage.getItem('accessedWorkspaceId'), function (data) {
             let result = JSON.parse(data.body);
             console.log(result)
             setDepartmentUpdateState(result.content);
