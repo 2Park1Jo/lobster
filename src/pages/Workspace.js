@@ -12,9 +12,9 @@ import Modal from 'react-modal';
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import { getWorkspaceMemberData, getWorkspaceData } from '../api/WorkspaceAPI';
-import { getAllDepartment, getDepartmentMemberData, getChattingData, getDepartments } from '../api/DepartmentAPI';
+import { getDepartmentMemberData, getChattingData, getDepartments } from '../api/DepartmentAPI';
 
-import { ACCESSED_DEPARTMENT, LOGIN_MEMBER, WORKSPACE_ID } from '../recoil/Atoms';
+import { ACCESSED_DEPARTMENT, WORKSPACE_ID } from '../recoil/Atoms';
 
 import MemberList from '../components/workspace/MemberList';
 import DepartmentList from '../components/workspace/DepartmentList';
@@ -45,6 +45,7 @@ import Bucket from '../components/workspace/Bucket';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { BACK_BASE_URL } from '../Config';
+import { Last } from 'react-bootstrap/esm/PageItem';
 
 const workspace = new WorkspaceModel();
 const workspaceViewModel = new WorkspaceViewModel(workspace);
@@ -73,10 +74,10 @@ const Workspace = function () {
     const setAccessedDepartment = useSetRecoilState(ACCESSED_DEPARTMENT);
 
     let [isReceivedWorkspace, setIsReceivedWorkspace] = useState(false);
-    let [isReceivedDepertment, setIsReceivedDepertment] = useState(false);
-    let [isReceivedDepertmentMember, setIsReceivedDepertmentMember] = useState(false);
-    let [isReceivedWorkspaceMember, setIsReceivedWorkspaceMember] = useState(false);
-    let [isReceivedChat, setIsReceivedChat] = useState(false);
+    // let [isReceivedDepertment, setIsReceivedDepertment] = useState(false);
+    // let [isReceivedDepertmentMember, setIsReceivedDepertmentMember] = useState(false);
+    // let [isReceivedWorkspaceMember, setIsReceivedWorkspaceMember] = useState(false);
+    // let [isReceivedChat, setIsReceivedChat] = useState(false);
 
     let [modalIsOpen, setModalIsOpen] = useState(false);
     let [modal2IsOpen, setModal2IsOpen] = useState(false); 
@@ -93,6 +94,8 @@ const Workspace = function () {
 
     let navigate = useNavigate();
 
+    console.log(stomp)
+
     useEffect( () => {
         stomp.connect({}, onConnected, (error) => {
             console.log('sever error : ' + error );
@@ -106,43 +109,6 @@ const Workspace = function () {
                 setIsReceivedWorkspace(true)
             }
         )
-
-        getDepartments(localStorage.getItem('accessedWorkspaceId') ,localStorage.getItem('loginMemberEmail'))
-        .then(
-            (res) => {
-                departmentViewModel.update(res);
-                setAccessedDepartment({
-                    id: localStorage.getItem('accessedDepartmentId'),
-                    name: departmentViewModel.getName(localStorage.getItem('accessedDepartmentId'))
-                })
-                setIsReceivedDepertment(true)
-            }
-        )
-
-        getDepartmentMemberData(localStorage.getItem('accessedDepartmentId'))
-        .then(
-            (res) => {
-                departmentMemberViewModel.update(res);
-                setIsReceivedDepertmentMember(true)
-            }
-        )
-
-        getWorkspaceMemberData(localStorage.getItem('accessedWorkspaceId') )
-        .then(
-            (res) => {
-                workspaceMemberViewModel.update(res);
-                setIsReceivedWorkspaceMember(true)
-            }
-        )
-
-        getChattingData(localStorage.getItem('accessedDepartmentId'))
-        .then(
-            (res) => {
-                chatViewModel.update(res);
-                setIsReceivedChat(true)
-                messageEndRef.current?.scrollIntoView({behavior: "auto"})
-            }
-        )
     },[])
 
     useEffect( () => {
@@ -151,21 +117,21 @@ const Workspace = function () {
         .then(
             (res) => {
                 chatViewModel.update(res);
-                setChatUpdateState(0);
+                setChatUpdateState(res.at(Last).chatId);
             }
         )
-    }, [chatUpdateState])
+    }, [chatUpdateState, accessedDepartment])
 
     useEffect( () => {
         console.log("dp 업데이트")
-        getDepartments(localStorage.getItem('accessedWorkspaceId')  ,localStorage.getItem('loginMemberEmail'))
+        getDepartments(localStorage.getItem('accessedWorkspaceId'),localStorage.getItem('loginMemberEmail'))
         .then(
             (res) => {
                 departmentViewModel.update(res);
-                setDepartmentUpdateState(0)
+                setDepartmentUpdateState(res.at(Last).departmentId)
             }
         )
-    }, [departmentUpdateState])
+    }, [departmentUpdateState, accessedDepartment])
 
     useEffect( () => {
         console.log("dpMember 업데이트")
@@ -173,10 +139,10 @@ const Workspace = function () {
         .then(
             (res) => {
                 departmentMemberViewModel.update(res);
-                setDpMemberUpdateState(0)
+                setDpMemberUpdateState(res.at(Last).departmentId)
             }
         )
-    }, [dpMemberUpdateState])
+    }, [dpMemberUpdateState, accessedDepartment])
 
     useEffect( () => {
         console.log("workspaceMember 업데이트")
@@ -190,24 +156,26 @@ const Workspace = function () {
     }, [workspaceMemberUpdateState])
 
     function onConnected() {
+
+        console.log('stomp connect')
         // chat 
         stomp.subscribe("/sub/chat/department/" + localStorage.getItem('accessedDepartmentId'), function (chat) {
             let result = JSON.parse(chat.body);
             if (chatUpdateState !== result.body){
                 setChatUpdateState(result.content);
             }
-            if (result.contentType === "-1"){
+            if (result.contentType === "-1"){ // invite
                 setChatUpdateState(result.content);
                 setDpMemberUpdateState(result.content);
             }
         });
 
-        // dp add
-        // stomp.subscribe("dp추가됐을 때 받는 주소" + localStorage.getItem('accessedDepartmentId'), function (data) {
-        //     let result = JSON.parse(data.body);
-        //     console.log(result.content)
-        //     setDepartmentUpdateState(result.content);
-        // });
+        //dp add
+        stomp.subscribe("/sub/chat/workspace/" + localStorage.getItem('workspaceId'), function (data) {
+            let result = JSON.parse(data.body);
+            console.log(result)
+            setDepartmentUpdateState(result.content);
+        });
 
         // dpMember add
         // stomp.subscribe("dpMember추가됐을 때 받는 주소" + localStorage.getItem('accessedDepartmentId'), function (data) {
@@ -285,6 +253,7 @@ const Workspace = function () {
                                             modalIsOpen={modalIsOpen} 
                                             setModalIsOpen={setModalIsOpen}
                                             workspaceMembers={workspaceMemberViewModel.getMembers(localStorage.getItem('accessedWorkspaceId') )}
+                                            loginMemberName={departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail'))}
                                             stomp = {stomp}
                                         />
                                     </Modal>
