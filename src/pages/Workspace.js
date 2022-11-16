@@ -80,7 +80,7 @@ const Workspace = function () {
     let [modal2IsOpen, setModal2IsOpen] = useState(false); 
     let [dpModifyModalIsOpen, setdpModifyModalIsOpen] = useState(false);  
     let [WorkspaceMemberAddModalIsOpen,setWorkspaceMemberAddModalIsOpen]=useState(false);  
-
+    let [drag,setDrag]=useState("")
     let [chatUpdateState, setChatUpdateState] = useState("");
     let [departmentUpdateState, setDepartmentUpdateState] = useState("");
     let [dpMemberUpdateState, setDpMemberUpdateState] = useState("");

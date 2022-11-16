@@ -165,7 +165,7 @@
     font-size: 100px;
 }
 .fourth-col-DepartmentInfo{
-    width: 100vw;
+    width: 100%;
     height: 80px;
     background-color: rgb(246,189,189);
     border-bottom: 1px solid black;
