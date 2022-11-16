@@ -107,7 +107,7 @@ const Workspace = function () {
     useEffect( () => {
         if (stomp.connected){
             if (departmentIdList.length > 0){
-                if (departmentIdList.length !== stomp.counter - 1){
+                if (departmentIdList.length !== stomp.counter - 2){
                     console.log('구독추가')
                     stomp.subscribe("/sub/chat/department/" + departmentIdList[departmentIdList.length - 1], function (chat) {
                         let result = JSON.parse(chat.body);
