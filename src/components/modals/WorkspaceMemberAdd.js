@@ -3,8 +3,9 @@ import { WorkspaceMember } from '../../models/model/WorkspaceMember';
 import { getMemberProfile } from '../../api/MemberAPI';
 import './Modal.css'
 import { inviteMemberToWorkspace } from '../../api/WorkspaceAPI';
+import Stomp from 'stompjs';
 
-const WorkspaceMemberAdd=({setWorkspaceMemberAddModalIsOpen,workspaceId,workspaceMembers})=>{
+const WorkspaceMemberAdd=({setWorkspaceMemberAddModalIsOpen,workspaceId,workspaceMembers,stomp})=>{
     let [inputMemberEmail,setinputMemberEmail]=useState("");
     let [searchedMemberHTML,setSearchedMemberHTML]=useState();
     let [memberList,setMemberList]=useState([]);
@@ -17,7 +18,7 @@ const WorkspaceMemberAdd=({setWorkspaceMemberAddModalIsOpen,workspaceId,workspac
         for(var i=0;i<memberList.length;i++){
             let email=memberList.at(i)
             let name=memberNameList.at(i)
-            console.log(memberList.at(i));
+            // console.log(memberList.at(i));
             memberListHTML.push(<div key={email} className='searched-Email-div' onClick={()=>deleteMemberAtList(email)}>
                     <div>
                         <span style={{color:'black', fontSize : '14px', float:'left'}}>{name}&nbsp;({email})</span>
@@ -35,7 +36,7 @@ const WorkspaceMemberAdd=({setWorkspaceMemberAddModalIsOpen,workspaceId,workspac
             if(memberList.at(i)===email){
                 isExistedInList=true
             }
-            console.log(memberList.length)
+            // console.log(memberList.length)
         }
         if(isExistedInList===false){
             setMemberList([...memberList,email]);
@@ -54,7 +55,7 @@ const WorkspaceMemberAdd=({setWorkspaceMemberAddModalIsOpen,workspaceId,workspac
         memberList.splice(index,1);
         setmMemberNameList([...memberNameList])
         setMemberList([...memberList])
-        console.log(memberList)
+        // console.log(memberList)
     }
 
     function inviteMember(){
@@ -62,9 +63,14 @@ const WorkspaceMemberAdd=({setWorkspaceMemberAddModalIsOpen,workspaceId,workspac
             alert("초대할 멤버가 없습니다.")
         }
         else{
-            inviteMemberToWorkspace(memberList,memberNameList,workspaceId);
-            alert("초대가 완료되었습니다.")
-            setWorkspaceMemberAddModalIsOpen(false)
+            inviteMemberToWorkspace(memberList,memberNameList,workspaceId)
+            .then( (res) => {
+                if (res.status === 201){
+                    // alert("초대가 완료되었습니다.")
+                    stomp.send('/pub/chat/workspace/invitation', {}, ('ok'))
+                    setWorkspaceMemberAddModalIsOpen(false)
+                }
+            });
         }
     }
 

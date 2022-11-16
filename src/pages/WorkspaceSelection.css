@@ -19,3 +19,8 @@
 .banner-bottom {
     text-align: center;
 }
+
+.logout-button{
+    background-color: transparent;
+    float: right;
+}

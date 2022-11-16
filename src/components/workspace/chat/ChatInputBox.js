@@ -20,6 +20,12 @@ export default function ChatInputBox(props){
         scrollToBottom("smooth");
     }, [props.chatUpdateState])
 
+    useEffect( () => {
+        if(inputChattingContent === '\n'){
+            setInputChattingContent("");
+        }
+    },[inputChattingContent])
+
     const handleChange = (e) => {
         const file = e.target.files[0];
         let reader = new FileReader();
@@ -36,7 +42,7 @@ export default function ChatInputBox(props){
     function addChattingData(chatContent) {
         let currentDate = new Date();
         let year = currentDate.getFullYear();
-        let month = currentDate.getMonth();
+        let month = currentDate.getMonth() + 1;
         let date = currentDate.getDate();
         let houres = String(currentDate.getHours()).padStart(2, "0");
         let minutes = String(currentDate.getMinutes()).padStart(2, "0");

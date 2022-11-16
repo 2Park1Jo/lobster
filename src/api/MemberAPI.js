@@ -3,7 +3,7 @@ import '../utils/Constant.js'
 import '../Config.js'
 import { BACK_BASE_URL } from "../Config.js";
 axios.defaults.withCredentials = true;
-axios.defaults.timeout=4000;
+// axios.defaults.timeout=4000;
 
 export const getAllMemberData = async () =>{
     const responose = await axios.get(BACK_BASE_URL + 'member/allmember')

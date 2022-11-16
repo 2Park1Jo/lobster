@@ -19,12 +19,22 @@ export const getWorkspaceMemberData = async (workspaceId) =>{
     return responose.data;
 }
 
-export const addWorkspace = async (workpsaceName, workspaceGoal, workspaceDeadline) => {
-    const response = await axios.post(BACK_BASE_URL + 'workspace/add',
+export const addWorkspace = async (email, workspaceName, workspaceGoal, workspaceDeadline) => {
+    const response = await axios.post(BACK_BASE_URL + 'workspace/create',
     {
-        workpsaceName: workpsaceName,
-        workspaceGoal: workspaceGoal,
-        workspaceDeadline: workspaceDeadline,
+        workspace:{
+            workspaceId: "",
+            workspaceName: workspaceName,
+            workspaceGoal: workspaceGoal,
+            workspaceDeadline: workspaceDeadline,
+        },
+        workspaceMemberList: [
+            {
+                email: email,
+                workspaceId: "",
+                workspaceGrade: ""
+            },
+        ]
     },
     {
         headers: {
@@ -50,10 +60,7 @@ export const inviteMemberToWorkspace=async(emailList,nameList,workspaceId)=>{
         'Access-Control-Allow-Origin': '*',
         },
         withCredentials: true
-    }).then(res=>{
-        console.log(res)
-    }).catch(err=>{
-        console.log(err)
     })
+    return responose;
 }
 

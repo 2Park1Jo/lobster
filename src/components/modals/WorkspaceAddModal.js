@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Form from 'react-bootstrap/Form';
+import { addWorkspace } from '../../api/WorkspaceAPI';
 import './Modal.css';
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
@@ -46,93 +47,76 @@ const CustomMenu = React.forwardRef(
 },
 );
 
-const WorkspaceAddModal = ({modalIsOpen, setModalIsOpen, allMemberViewModel, stomp}) => {
+const WorkspaceAddModal = ({modalIsOpen, setModalIsOpen, workspaceUpdateState, setWorkspaceUpdateState, isReceivedWorkspace, setIsReceivedWorkspace}) => {
 
     let [inputWorkspaceName, setInputWorkspaceName] = useState("");
     let [inputWorkspaceGoal, setInputWorkspaceGoal] = useState("");
     let [inputWorkspaceDeadLine, setInputWorkspaceDeadLine] = useState("");
     let [inputWorkspaceMemberData, setInputWorkspaceMemberData] = useState([]);
-    let allMemberData = allMemberViewModel.getAll();
+    // let allMemberData = allMemberViewModel.getAll();
     
-    function applyWorkspaceMemberListInDropdown() {
-        let htmlArrayForWorkspaceMember = [];
+    // function applyWorkspaceMemberListInDropdown() {
+    //     let htmlArrayForWorkspaceMember = [];
 
-        for (let index = 0; index < allMemberData.length; index++) {
-            let memberName = allMemberData[index].memberName
-            let memberEmail = allMemberData[index].email
+    //     for (let index = 0; index < allMemberData.length; index++) {
+    //         let memberName = allMemberData[index].memberName
+    //         let memberEmail = allMemberData[index].email
 
-            htmlArrayForWorkspaceMember.push(
-                <Dropdown.Item key={ memberEmail } eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName }</Dropdown.Item>
-                )
-        }
-        return htmlArrayForWorkspaceMember
-    }
+    //         htmlArrayForWorkspaceMember.push(
+    //             <Dropdown.Item key={ memberEmail } eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName }</Dropdown.Item>
+    //             )
+    //     }
+    //     return htmlArrayForWorkspaceMember
+    // }
 
-    function addMemberData(memberName, memberEmail) {
-        let copiedMemberData = [...inputWorkspaceMemberData];
+    // function addMemberData(memberName, memberEmail) {
+    //     let copiedMemberData = [...inputWorkspaceMemberData];
 
-        for (let index = 0; index < copiedMemberData.length; index++){
-            if (copiedMemberData[index].email === memberEmail && copiedMemberData[index].memberName === memberName){
-                return;
-            }
-        }
-        copiedMemberData.push(
-            {
-                email: memberEmail,
-                memberName: memberName,
-            }
-        )
-        setInputWorkspaceMemberData(copiedMemberData)
-    }
+    //     for (let index = 0; index < copiedMemberData.length; index++){
+    //         if (copiedMemberData[index].email === memberEmail && copiedMemberData[index].memberName === memberName){
+    //             return;
+    //         }
+    //     }
+    //     copiedMemberData.push(
+    //         {
+    //             email: memberEmail,
+    //             memberName: memberName,
+    //         }
+    //     )
+    //     setInputWorkspaceMemberData(copiedMemberData)
+    // }
     
-    function getSelectedMemberName() {
-        let selectedMemberNameList = [];
+    // function getSelectedMemberName() {
+    //     let selectedMemberNameList = [];
 
-        for (let index = 0; index < inputWorkspaceMemberData.length; index++){
-            selectedMemberNameList.push(inputWorkspaceMemberData[index].memberName)
-        }
+    //     for (let index = 0; index < inputWorkspaceMemberData.length; index++){
+    //         selectedMemberNameList.push(inputWorkspaceMemberData[index].memberName)
+    //     }
 
-        return selectedMemberNameList;
-    }
+    //     return selectedMemberNameList;
+    // }
 
     function addWorkspaceData() {
-        let selectedMemberLength = getSelectedMemberName().length;
-        if (inputWorkspaceDeadLine === "" || inputWorkspaceGoal === "" || inputWorkspaceName === "" || selectedMemberLength === 0){
+        // let selectedMemberLength = getSelectedMemberName().length;
+        if (inputWorkspaceDeadLine === "" || inputWorkspaceGoal === "" || inputWorkspaceName === ""){
             alert("모든정보를 입력해주세요")
             return
         }
 
-        let randomWorkspaceId = String(Math.random());
-
-        stomp.send('workspace추가 주소', {}, JSON.stringify({
-            WorkspaceId:  randomWorkspaceId,
-            WorkspaceName: inputWorkspaceName,
-            WorkspaceGoal: inputWorkspaceGoal,
-            WorkspaceDeadLine: String(inputWorkspaceDeadLine)
-        }))
-
-        let workspaceMemberList = [];
-        for (let index = 0; index < inputWorkspaceMemberData.length; index++){
-            workspaceMemberList.push({
-                workspaceId: randomWorkspaceId,
-                email: inputWorkspaceMemberData[index].email,
-                memberName: inputWorkspaceMemberData[index].memberName,
-                role: '',
-                grade: ''
-            },
-            )
-            // stomp.send('workspaceMember추가 주소', {}, JSON.stringify({
-            //     workspaceId: randomWorkspaceId,
-            //     email: inputWorkspaceMemberData[index].email,
-            //     memberName: inputWorkspaceMemberData[index].memberName,
-            //     role: '',
-            //     grade: ''
-            // }))
-        }
-
-        stomp.send('workspaceMember추가 주소', {}, JSON.stringify({workspaceMemberList}))
-
-        setModalIsOpen(false);
+        addWorkspace(
+            localStorage.getItem('loginMemberEmail'),
+            inputWorkspaceName,
+            inputWorkspaceGoal,
+            String(inputWorkspaceDeadLine)
+        ).then( (res) => {
+            // console.log(res)
+            if(res.status === 201){
+                setWorkspaceUpdateState(res.status)
+                setIsReceivedWorkspace(false)
+                setModalIsOpen(false);
+            }
+            setModalIsOpen(false);
+        })
     }
 
     return(
@@ -170,7 +154,7 @@ const WorkspaceAddModal = ({modalIsOpen, setModalIsOpen, allMemberViewModel, sto
                 />
             </div>
             
-            <div className="form-group mt-3">
+            {/* <div className="form-group mt-3">
                 <label>멤버추가</label>
                 <input
                     type="text"
@@ -188,7 +172,7 @@ const WorkspaceAddModal = ({modalIsOpen, setModalIsOpen, allMemberViewModel, sto
                         { applyWorkspaceMemberListInDropdown() }
                     </Dropdown.Menu>
                 </Dropdown>
-            </div>
+            </div> */}
 
             <div className="d-grid gap-2 mt-3">
                 <button className="btn btn-primary" onClick={ () => addWorkspaceData() }>

@@ -128,8 +128,8 @@ const DepartmentMemberAddModal = ({modalIsOpen, setModalIsOpen, accessedDepartme
             //     grade: ''
             // }))
         }
-
-        stomp.send('departmentMember추가 주소', {}, JSON.stringify({departmentMemberList}))
+        console.log(JSON.stringify(departmentMemberList))
+        stomp.send('/pub/chat/invitation', {}, JSON.stringify(departmentMemberList))
 
         setModalIsOpen(false);
     }

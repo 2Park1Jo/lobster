@@ -2,7 +2,7 @@ import WorkspcaeCard from "./WorkspcaeCard";
 import WorkspaceCarousel from "./WorkspaceCarousel";
 import { WORKSPACE_ADD_KEY } from "../../utils/Constant";
 
-export default function workSpaceBanner({ allWorkspace, modalIsOpen, setModalIsOpen }) {
+export default function workSpaceBanner({ allWorkspace, modalIsOpen, setModalIsOpen}) {
     let cards = []
 
     allWorkspace.map( (workspace) => {
@@ -38,7 +38,7 @@ export default function workSpaceBanner({ allWorkspace, modalIsOpen, setModalIsO
             width="80%"
             margin="0 auto"
             offset={2}
-            showArrows={false}
+            showArrows={true}
             modalIsOpen={modalIsOpen} 
             setModalIsOpen={setModalIsOpen}
         />

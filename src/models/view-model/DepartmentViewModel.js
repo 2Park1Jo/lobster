@@ -24,6 +24,18 @@ export class DepartmentViewModel{
 
         return filteredDepartmentList;
     }
+
+    getIdList(workspaceId){
+        let departmentIdList = [];
+
+        this.getAll().map((department) => {
+            if(department.workspaceId === workspaceId){
+                departmentIdList.push(department.departmentId);
+            }
+        })
+
+        return departmentIdList;
+    }
     
     getGoal(departmentId) {
         let goal="";
