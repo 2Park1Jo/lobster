@@ -46,6 +46,9 @@ import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { BACK_BASE_URL } from '../Config';
 import { Last } from 'react-bootstrap/esm/PageItem';
+import Dropzone from 'react-dropzone'
+import '../utils/FileUpload.js'
+import { uploadFiles } from '../utils/FileUpload.js';
 
 const workspace = new WorkspaceModel();
 const workspaceViewModel = new WorkspaceViewModel(workspace);
@@ -173,7 +176,11 @@ const Workspace = function () {
         )
     }, [workspaceMemberUpdateState])
 
-    const onConnected = () => {
+    useEffect(()=>{
+        console.log(drag)
+    },[drag])
+
+    function onConnected() {
         // chat 
         for (let index = 0; index < departmentIdList.length; index++){
             stomp.subscribe("/sub/chat/department/" + departmentIdList[index], function (chat) {
@@ -299,27 +306,39 @@ const Workspace = function () {
                                 <span className="h5">{ accessedDepartment.name } </span>
                                 <p className="small text-muted">&nbsp;{ departmentViewModel.getGoal(localStorage.getItem('accessedDepartmentId')) }</p>
                             </div>
-                            
-                            <div className='third-col-ChatList'>
-                                <ChatBox
-                                    departmentMemberViewModel = {departmentMemberViewModel}
-                                    chatViewModel = {chatViewModel}
-                                    departmentId = {localStorage.getItem('accessedDepartmentId')}
-                                    loginMemberEmail = {localStorage.getItem('loginMemberEmail')}
-                                    chats = {chatViewModel.getChats(localStorage.getItem('accessedDepartmentId'))}//chatViewModel.getChats(accessedDepartmentId)
-                                    messageEnd = {messageEndRef}
-                                />
-                            </div>
-                            <div className='third-col-ChatInput'>
-                                <ChatInputBox 
+                            <Dropzone onDrop={acceptedFiles=>console.log(acceptedFiles)} onDragLeave={()=>setDrag(false)} noClick={true} onDragOver={()=>setDrag(true)}>
+                                {({getRootProps, getInputProps}) => (
+                                <div className='third-col-ChatContainer'>
+                                    <div {...getRootProps()} >
+                                        <input {...getInputProps()} />
+                                        {drag===true?
+                                            <div className='third-col-fileUpload'><SiBitbucket /></div>
+                                            :<></>}
+                                        <div className='third-col-ChatList'>
+                                            <ChatBox
+                                                departmentMemberViewModel = {departmentMemberViewModel}
+                                                chatViewModel = {chatViewModel}
+                                                departmentId = {localStorage.getItem('accessedDepartmentId')}
+                                                loginMemberEmail = {localStorage.getItem('loginMemberEmail')}
+                                                chats = {chatViewModel.getChats(localStorage.getItem('accessedDepartmentId'))}//chatViewModel.getChats(accessedDepartmentId)
+                                                messageEnd = {messageEndRef}
+                                            />
+                                        </div>
+                                        <div className='third-col-ChatInput'>
+                                    <ChatInputBox 
                                     chatViewModel = {chatViewModel}
                                     departmentId = {localStorage.getItem('accessedDepartmentId')}
                                     chatUpdateState = {chatUpdateState}
                                     setChatUpdateState = {setChatUpdateState}
                                     messageEnd = {messageEndRef}
                                     stomp = {stomp}
-                                />
+                                    />
                             </div>
+
+                            </div>
+                                </div>
+                                )}
+                            </Dropzone>
                         </div>
                         <div className='fourth-col-container'>
                             <div className='fourth-col-DepartmentInfo'>
@@ -381,7 +400,7 @@ const Workspace = function () {
                         </div>
                     </div>
                 :
-                    <Bucket>adgadsg</Bucket>
+                    <Bucket/>
                 }
             </div>
         );
