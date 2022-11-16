@@ -1,23 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { WorkspaceMember } from '../../models/model/WorkspaceMember';
-import { isDuplicatedId } from '../../api/MemberAPI';
+import { getMemberProfile } from '../../api/MemberAPI';
 import './Modal.css'
 import { inviteMemberToWorkspace } from '../../api/WorkspaceAPI';
 
-const WorkspaceMemberAdd=({setWorkspaceMemberAddModalIsOpen,WorkspaceId})=>{
+const WorkspaceMemberAdd=({setWorkspaceMemberAddModalIsOpen,workspaceId,workspaceMembers})=>{
     let [inputMemberEmail,setinputMemberEmail]=useState("");
     let [searchedMemberHTML,setSearchedMemberHTML]=useState();
     let [memberList,setMemberList]=useState([]);
+    let [memberNameList,setmMemberNameList]=useState([]);
     let [addedMemberHTML,setAddedMemberHTML]=useState();
+
     
     useEffect(()=>{
         let memberListHTML=[];
         for(var i=0;i<memberList.length;i++){
-            let key=memberList.at(i)
+            let email=memberList.at(i)
+            let name=memberNameList.at(i)
             console.log(memberList.at(i));
-            memberListHTML.push(<div className='searched-Email-div' onClick={()=>deleteMemberAtList(key)}>
+            memberListHTML.push(<div key={email} className='searched-Email-div' onClick={()=>deleteMemberAtList(email)}>
                     <div>
-                        <span style={{color:'black', fontSize : '14px', float:'left'}}>{key}</span>
+                        <span style={{color:'black', fontSize : '14px', float:'left'}}>{name}&nbsp;({email})</span>
                         <span style={{color:'black', fontSize : '14px', float:'right'}}>X</span>
                     </div>
                 </div>)
@@ -25,8 +28,9 @@ const WorkspaceMemberAdd=({setWorkspaceMemberAddModalIsOpen,WorkspaceId})=>{
         setAddedMemberHTML([...memberListHTML]);
     },[memberList])
 
-    function addMemberToList(email){
+    function addMemberToList(email,name){
         let isExistedInList=false;
+
         for(var i=0;i<memberList.length;i++){
             if(memberList.at(i)===email){
                 isExistedInList=true
@@ -34,14 +38,21 @@ const WorkspaceMemberAdd=({setWorkspaceMemberAddModalIsOpen,WorkspaceId})=>{
             console.log(memberList.length)
         }
         if(isExistedInList===false){
-            setMemberList([...memberList,email])
+            setMemberList([...memberList,email]);
+            setmMemberNameList([...memberNameList,name]);
+            setSearchedMemberHTML(<span style={{color:'green', fontSize : '14px'}}>추가되었습니다.</span>)
         }
-        setSearchedMemberHTML(<span style={{color:'green', fontSize : '14px'}}>추가되었습니다.</span>)
+        else{   
+            setSearchedMemberHTML(<span style={{color:'orange', fontSize : '14px'}}>이미 리스트에 추가되었습니다.</span>)
+        }
     }
 
     function deleteMemberAtList(value){
         let key=value
-        memberList.splice(memberList.indexOf(key),1);
+        let index=memberList.indexOf(key)
+        memberNameList.splice(index,1);
+        memberList.splice(index,1);
+        setmMemberNameList([...memberNameList])
         setMemberList([...memberList])
         console.log(memberList)
     }
@@ -51,7 +62,9 @@ const WorkspaceMemberAdd=({setWorkspaceMemberAddModalIsOpen,WorkspaceId})=>{
             alert("초대할 멤버가 없습니다.")
         }
         else{
-            inviteMemberToWorkspace(memberList,WorkspaceId);
+            inviteMemberToWorkspace(memberList,memberNameList,workspaceId);
+            alert("초대가 완료되었습니다.")
+            setWorkspaceMemberAddModalIsOpen(false)
         }
     }
 
@@ -59,13 +72,27 @@ const WorkspaceMemberAdd=({setWorkspaceMemberAddModalIsOpen,WorkspaceId})=>{
 
 
     function searchMember(){
-        let result=Promise.resolve(isDuplicatedId(inputMemberEmail))
+        let isExistedInWorkspase=false;
+        for(var i=0;i<workspaceMembers.length;i++){
+            if(workspaceMembers.at(i).email===inputMemberEmail){
+                isExistedInWorkspase=true
+            }
+        }
+        if(isExistedInWorkspase===true){
+            setSearchedMemberHTML(<span style={{color:'orange', fontSize : '14px'}}>이미 현재 워크스페이스에 존재하는 유저입니다.</span>)
+            return;
+        }
+        let result=Promise.resolve(getMemberProfile(inputMemberEmail))
             result.then(value=>{
-                if(value){
+                console.log(value.at(0))
+                let data=value.at(0)
+                if(data!==null){
+                    console.log(data.email)
+                    console.log(data.memberName)
                     setSearchedMemberHTML(
-                        <div className='searched-Email-div' onClick={()=>addMemberToList(inputMemberEmail)}>
+                        <div className='searched-Email-div' onClick={()=>addMemberToList(data.email,data.memberName)}>
                             <div>
-                                <span style={{color:'black', fontSize : '14px', float:'left'}}>{inputMemberEmail}</span>
+                                <span style={{color:'black', fontSize : '14px', float:'left'}}>{data.memberName}&nbsp;({data.email})</span>
                                 <span style={{color:'black', fontSize : '14px', float:'right'}}>+</span>
                             </div>
                         </div>)
