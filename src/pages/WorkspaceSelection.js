@@ -12,17 +12,19 @@ import { Member } from "../models/model/Member";
 import { MemberViewModel } from "../models/view-model/MemberViewModel";
 import { WorkspaceModel } from "../models/model/Workspace";
 import { WorkspaceViewModel } from "../models/view-model/WorkspaceViewModel";
+import { First, Last } from "react-bootstrap/esm/PageItem";
 
 const workspace = new WorkspaceModel();
 const workspaceViewModel = new WorkspaceViewModel(workspace);
 
-const member = new Member();
-const memberViewModel = new MemberViewModel(member);
 
 export default function WorkspaceSelection() {
     let [modalIsOpen, setModalIsOpen] = useState(false);
+    let [workspaceUpdateState, setWorkspaceUpdateState] = useState("");
+    let [isReceivedWorkspace, setIsReceivedWorkspace] = useState(false);
+
     let navigate = useNavigate();
-    
+
     const modalStyles = {
         content: {
             top: '50%',
@@ -34,18 +36,7 @@ export default function WorkspaceSelection() {
         },
     };
 
-    let [isReceivedWorkspace, setIsReceivedWorkspace] = useState(false);
-    let [isReceivedMember, setIsReceivedMember] = useState(false);
-
     useEffect( () => {
-        getAllMemberData()
-        .then(
-            (res) => {
-                memberViewModel.update(res);
-                setIsReceivedMember(true);
-            }
-        )
-
         getWorkspaceData(localStorage.getItem('loginMemberEmail'))
         .then(
             (res) => {
@@ -54,6 +45,17 @@ export default function WorkspaceSelection() {
             }
         )
     },[])
+
+    useEffect( () => {
+        getWorkspaceData(localStorage.getItem('loginMemberEmail'))
+        .then(
+            (res) => {
+                workspaceViewModel.update(res);
+                setWorkspaceUpdateState(res.length);
+                setIsReceivedWorkspace(true);
+            }
+        )
+    },[workspaceUpdateState])
 
     function logout(){
         localStorage.clear();
@@ -65,7 +67,7 @@ export default function WorkspaceSelection() {
         document.body.style.overflow = "unset";
     };
 
-    if (isReceivedMember && isReceivedWorkspace){
+    if (isReceivedWorkspace){
     return(
         <div className="banner-container">
 
@@ -73,10 +75,11 @@ export default function WorkspaceSelection() {
                 <WorkspaceAddModal 
                     modalIsOpen = {modalIsOpen} 
                     setModalIsOpen = {setModalIsOpen}
-                    allMemberViewModel = {memberViewModel}
-                    workspaceViewModel = {workspaceViewModel}
+                    setWorkspaceUpdateState = {setWorkspaceUpdateState}
+                    setIsReceivedWorkspace = {setIsReceivedWorkspace}
                 />
             </Modal>
+            <button className="logout-button" onClick={()=> logout()}> Logout </button>
             <div className="banner-top">
                 <h2>LOBSTER</h2>
             </div>
@@ -89,9 +92,9 @@ export default function WorkspaceSelection() {
                 />
             </div>
 
-            <div className="banner-bottom">
-                <button className="add-button" onClick={()=> logout()}> Logout </button>
-            </div>
+            {/* <div className="banner-bottom">
+                <button style={{border:'none',backgroundColor:'transparent'}} onClick={()=> logout()}> Logout </button>
+            </div> */}
         </div>
     );
     }

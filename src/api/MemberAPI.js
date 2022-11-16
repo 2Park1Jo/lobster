@@ -3,7 +3,7 @@ import '../utils/Constant.js'
 import '../Config.js'
 import { BACK_BASE_URL } from "../Config.js";
 axios.defaults.withCredentials = true;
-axios.defaults.timeout=4000;
+// axios.defaults.timeout=4000;
 
 export const getAllMemberData = async () =>{
     const responose = await axios.get(BACK_BASE_URL + 'member/allmember')
@@ -49,12 +49,35 @@ export const isDuplicatedId=async function(email){
     return data
 }
 
+export const getMemberProfile=async function(email){
+    const data=await axios.get(
+        BACK_BASE_URL+'member/profile',
+        {
+            params:{
+                email:email
+            }
+        },
+        {
+            headers: {
+            'Access-Control-Allow-Origin': '*',
+            },
+            withCredentials: true
+        
+        }).then(response=>{
+            console.log(response)
+            return [response.data,response.status];
+        }).catch(error=>{
+            console.log(error)
+        })
+    return data
+}
+
 export const registerUser=async function(email,password,name){
     const data=await axios.post(BACK_BASE_URL+'member/signup',
         {
             email:email,
             password:password,
-            name:name
+            memberName:name
         },
         {
             headers: {

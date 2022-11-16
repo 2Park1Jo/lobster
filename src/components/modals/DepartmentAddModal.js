@@ -104,15 +104,6 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen, workspaceMembers, logi
             return
         }
 
-        // console.log({
-        //     email: localStorage.getItem('loginMemberEmail'),
-        //     workspaceId: localStorage.getItem('accessedWorkspaceId'),
-        //     departmentName: inputDepartmentName,
-        //     departmentGoal: inputDepartmentGoal,
-        //     departmentDeadLine: String(inputDepartmentDeadLine),
-        //     departmentId: ""
-        // })
-
         let departmentMemberList = [];
 
         departmentMemberList.push( // 생성자는 처음에 무조건 포함
@@ -131,13 +122,6 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen, workspaceMembers, logi
                 role: '',
                 grade: ''
             },)
-            // stomp.send('departmentMember추가 주소', {}, JSON.stringify({
-            //     departmentId: randomDepartmentId,
-            //     email: inputDepartmentMemberData[index].email,
-            //     memberName: inputDepartmentMemberData[index].memberName,
-            //     role: '',
-            //     grade: ''
-            // }))
         }
 
         let department = {
@@ -148,20 +132,8 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen, workspaceMembers, logi
             workspaceId: localStorage.getItem('accessedWorkspaceId') 
         }
 
-        // stomp.send('/pub/chat/department/creation', {}, JSON.stringify(
-        //     {
-        //         departmentName: inputDepartmentName,
-        //         departmentGoal: inputDepartmentGoal,
-        //         departmentDeadline: String(inputDepartmentDeadLine),
-        //         departmentId: "",
-        //         workspaceId: localStorage.getItem('accessedWorkspaceId') 
-        //     }
-        // ))
-
-        console.log(JSON.stringify({department,departmentMemberList}))
-
         stomp.send('/pub/chat/department/creation', {}, JSON.stringify({department,departmentMemberList}))
-
+        
         setModalIsOpen(false);
     }
 
