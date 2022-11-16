@@ -9,12 +9,12 @@ import WorkspaceMemberAdd from '../components/modals/WorkspaceMemberAdd';
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 
 import { getWorkspaceMemberData, getWorkspaceData } from '../api/WorkspaceAPI';
-import { getAllDepartment, getDepartmentMemberData, getChattingData, getDepartments } from '../api/DepartmentAPI';
+import { getDepartmentMemberData, getChattingData, getDepartments } from '../api/DepartmentAPI';
 
-import { ACCESSED_DEPARTMENT, LOGIN_MEMBER, WORKSPACE_ID } from '../recoil/Atoms';
+import { ACCESSED_DEPARTMENT, WORKSPACE_ID } from '../recoil/Atoms';
 
 import MemberList from '../components/workspace/MemberList';
 import DepartmentList from '../components/workspace/DepartmentList';
@@ -45,6 +45,10 @@ import Bucket from '../components/workspace/Bucket';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { BACK_BASE_URL } from '../Config';
+import { Last } from 'react-bootstrap/esm/PageItem';
+import Dropzone from 'react-dropzone'
+import '../utils/FileUpload.js'
+import { uploadFiles } from '../utils/FileUpload.js';
 
 const workspace = new WorkspaceModel();
 const workspaceViewModel = new WorkspaceViewModel(workspace);
@@ -62,21 +66,15 @@ const chat = new Chat();
 const chatViewModel = new ChatViewModel(chat);
 
 const sockJs = new SockJS(BACK_BASE_URL + "chat");
-const stomp = Stomp.over(sockJs);
+let stomp = Stomp.over(sockJs);
 
 const Workspace = function () {
     const messageEndRef = useRef(null); // 채팅메세지의 마지막
     // let loginMember = useRecoilValue(LOGIN_MEMBER);
-    let accessedDepartment = useRecoilValue(ACCESSED_DEPARTMENT);
-    let workspaceId = useRecoilValue(WORKSPACE_ID);
-    const setWorkspaceId = useSetRecoilState(WORKSPACE_ID);
-    const setAccessedDepartment = useSetRecoilState(ACCESSED_DEPARTMENT);
+    let [accessedDepartment, setAccessedDepartment] = useRecoilState(ACCESSED_DEPARTMENT);
+    let [workspaceId, setWorkspaceId] = useRecoilState(WORKSPACE_ID);
 
     let [isReceivedWorkspace, setIsReceivedWorkspace] = useState(false);
-    let [isReceivedDepertment, setIsReceivedDepertment] = useState(false);
-    let [isReceivedDepertmentMember, setIsReceivedDepertmentMember] = useState(false);
-    let [isReceivedWorkspaceMember, setIsReceivedWorkspaceMember] = useState(false);
-    let [isReceivedChat, setIsReceivedChat] = useState(false);
 
     let [modalIsOpen, setModalIsOpen] = useState(false);
     let [modal2IsOpen, setModal2IsOpen] = useState(false); 
@@ -89,15 +87,13 @@ const Workspace = function () {
     let [workspaceMemberUpdateState, setWorkspaceMemberUpdateState] = useState("");
 
     let [isShowDPmemberList,setIsShowDPmemberList]=useState(true);
-    let[selectedMenu,setSelectedMenu]=useState(1);
+    let [selectedMenu,setSelectedMenu]=useState(1);
+
+    let [departmentIdList, setDepartmentIdList] = useState([]);
 
     let navigate = useNavigate();
-
-    useEffect( () => {
-        stomp.connect({}, onConnected, (error) => {
-            console.log('sever error : ' + error );
-        });
-        
+    
+    useEffect( () => {     
         getWorkspaceData(localStorage.getItem('loginMemberEmail'))
         .then(
             (res) => {
@@ -106,8 +102,47 @@ const Workspace = function () {
                 setIsReceivedWorkspace(true)
             }
         )
+    },[])
 
-        getDepartments(localStorage.getItem('accessedWorkspaceId') ,localStorage.getItem('loginMemberEmail'))
+    useEffect( () => {
+        if (stomp.connected){
+            if (departmentIdList.length > 0){
+                if (departmentIdList.length !== stomp.counter - 1){
+                    console.log('구독추가')
+                    stomp.subscribe("/sub/chat/department/" + departmentIdList[departmentIdList.length - 1], function (chat) {
+                        let result = JSON.parse(chat.body);
+                        if (chatUpdateState !== result.body){
+                            setChatUpdateState(result.content);
+                        }
+                        if (result.contentType === "-1"){ // invite
+                            setChatUpdateState(result.content);
+                            setDpMemberUpdateState(result.content);
+                        }
+                    });
+                }
+            }
+        }
+        else{
+            stomp.connect({}, onConnected, (error) => {
+                console.log('sever error : ' + error );
+            });
+        }
+    }, [departmentIdList])
+
+    useEffect( () => {
+        getChattingData(localStorage.getItem('accessedDepartmentId'))
+        .then(
+            (res) => {
+                if (res.length > 0){
+                    chatViewModel.update(res);
+                    setChatUpdateState(res.at(Last).chatId);
+                }
+            }
+        )
+    }, [chatUpdateState, accessedDepartment])
+
+    useEffect( () => {
+        getDepartments(localStorage.getItem('accessedWorkspaceId'),localStorage.getItem('loginMemberEmail'))
         .then(
             (res) => {
                 departmentViewModel.update(res);
@@ -115,106 +150,61 @@ const Workspace = function () {
                     id: localStorage.getItem('accessedDepartmentId'),
                     name: departmentViewModel.getName(localStorage.getItem('accessedDepartmentId'))
                 })
-                setIsReceivedDepertment(true)
-            }
-        )
-
-        getDepartmentMemberData(localStorage.getItem('accessedDepartmentId'))
-        .then(
-            (res) => {
-                departmentMemberViewModel.update(res);
-                setIsReceivedDepertmentMember(true)
-            }
-        )
-
-        getWorkspaceMemberData(localStorage.getItem('accessedWorkspaceId') )
-        .then(
-            (res) => {
-                workspaceMemberViewModel.update(res);
-                setIsReceivedWorkspaceMember(true)
-            }
-        )
-
-        getChattingData(localStorage.getItem('accessedDepartmentId'))
-        .then(
-            (res) => {
-                chatViewModel.update(res);
-                setIsReceivedChat(true)
-                messageEndRef.current?.scrollIntoView({behavior: "auto"})
-            }
-        )
-    },[])
-
-    useEffect( () => {
-        console.log("채팅 업데이트")
-        getChattingData(localStorage.getItem('accessedDepartmentId'))
-        .then(
-            (res) => {
-                chatViewModel.update(res);
-                setChatUpdateState(0);
-            }
-        )
-    }, [chatUpdateState])
-
-    useEffect( () => {
-        console.log("dp 업데이트")
-        getDepartments(localStorage.getItem('accessedWorkspaceId')  ,localStorage.getItem('loginMemberEmail'))
-        .then(
-            (res) => {
-                departmentViewModel.update(res);
+                setDepartmentIdList(departmentViewModel.getIdList(localStorage.getItem('accessedWorkspaceId')))
+                setDepartmentUpdateState(res.at(Last).departmentId)
             }
         )
     }, [departmentUpdateState])
 
     useEffect( () => {
-        console.log("dpMember 업데이트")
         getDepartmentMemberData(localStorage.getItem('accessedDepartmentId'))
         .then(
             (res) => {
                 departmentMemberViewModel.update(res);
+                setDpMemberUpdateState(res.at(Last).departmentId)
             }
         )
-    }, [dpMemberUpdateState])
+    }, [dpMemberUpdateState, accessedDepartment])
 
     useEffect( () => {
-        console.log("workspaceMember 업데이트")
         getWorkspaceMemberData(localStorage.getItem('accessedWorkspaceId') )
         .then(
             (res) => {
                 workspaceMemberViewModel.update(res);
+                setWorkspaceMemberUpdateState(res.at(Last).workspaceId)
             }
         )
     }, [workspaceMemberUpdateState])
 
+    useEffect(()=>{
+        console.log(drag)
+    },[drag])
+
     function onConnected() {
         // chat 
-        stomp.subscribe("/sub/chat/department/" + localStorage.getItem('accessedDepartmentId'), function (chat) {
-            let result = JSON.parse(chat.body);
-            if (chatUpdateState !== result.body){
-                setChatUpdateState(result.content);
-            }
+        for (let index = 0; index < departmentIdList.length; index++){
+            stomp.subscribe("/sub/chat/department/" + departmentIdList[index], function (chat) {
+                let result = JSON.parse(chat.body);
+                if (chatUpdateState !== result.body){
+                    setChatUpdateState(result.content);
+                }
+                if (result.contentType === "-1"){ // invite
+                    setChatUpdateState(result.content);
+                    setDpMemberUpdateState(result.content);
+                }
+            });
+        }
+
+        //dp add
+        stomp.subscribe("/sub/chat/workspace/" + localStorage.getItem('accessedWorkspaceId'), function (data) {
+            let result = JSON.parse(data.body);
+            setDepartmentUpdateState(result.content);
         });
 
-        // dp add
-        // stomp.subscribe("dp추가됐을 때 받는 주소" + localStorage.getItem('accessedDepartmentId'), function (data) {
-        //     let result = JSON.parse(data.body);
-        //     console.log(result.content)
-        //     setDepartmentUpdateState(result.content);
-        // });
-
-        // dpMember add
-        // stomp.subscribe("dpMember추가됐을 때 받는 주소" + localStorage.getItem('accessedDepartmentId'), function (data) {
-        //     let result = JSON.parse(data.body);
-        //     console.log(result.content)
-        //     setDpMemberUpdateState(result.content);
-        // });
-
-        // workpsaceMember add
-        // stomp.subscribe("dp추가됐을 때 받는 주소" + localStorage.getItem('accessedDepartmentId'), function (data) {
-        //     let result = JSON.parse(data.body);
-        //     console.log(result.content)
-        //     setWorkspaceMemberUpdateState(result.content);
-        // });
+        stomp.subscribe("/sub/chat/workspace", function (data) {
+            let result = data.body;
+            setWorkspaceMemberUpdateState(result.content);
+        });
 
         stomp.send('/pub/chat/enter', {}, JSON.stringify({departmentId: localStorage.getItem('accessedDepartmentId'), email: localStorage.getItem('loginMemberEmail')}))
     }
@@ -278,6 +268,7 @@ const Workspace = function () {
                                             modalIsOpen={modalIsOpen} 
                                             setModalIsOpen={setModalIsOpen}
                                             workspaceMembers={workspaceMemberViewModel.getMembers(localStorage.getItem('accessedWorkspaceId') )}
+                                            loginMemberName={departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail'))}
                                             stomp = {stomp}
                                         />
                                     </Modal>
@@ -292,10 +283,13 @@ const Workspace = function () {
 
                                 <div className='container-top'>
                                     <p>멤버 <BiUserPlus className="setting" onClick={()=> setWorkspaceMemberAddModalIsOpen(true)}/> </p>
-                                    <Modal isOpen= {WorkspaceMemberAddModalIsOpen} style={modalStyles} onRequestClose={() => setWorkspaceMemberAddModalIsOpen(false)}>
+                                    <Modal ariaHideApp={false} isOpen= {WorkspaceMemberAddModalIsOpen} style={modalStyles} onRequestClose={() => setWorkspaceMemberAddModalIsOpen(false)}>
                                         <WorkspaceMemberAdd 
                                             setWorkspaceMemberAddModalIsOpen={setWorkspaceMemberAddModalIsOpen}
-                                            WorkspaceId={workspaceId}/>
+                                            workspaceId={localStorage.getItem('accessedWorkspaceId')}
+                                            workspaceMembers={workspaceMemberViewModel.getMembers(localStorage.getItem('accessedWorkspaceId'))}
+                                            stomp={stomp}
+                                            />
                                     </Modal>
                                 </div>
 
@@ -312,27 +306,39 @@ const Workspace = function () {
                                 <span className="h5">{ accessedDepartment.name } </span>
                                 <p className="small text-muted">&nbsp;{ departmentViewModel.getGoal(localStorage.getItem('accessedDepartmentId')) }</p>
                             </div>
-                            
-                            <div className='third-col-ChatList'>
-                                <ChatBox
-                                    departmentMemberViewModel = {departmentMemberViewModel}
-                                    chatViewModel = {chatViewModel}
-                                    departmentId = {localStorage.getItem('accessedDepartmentId')}
-                                    loginMemberEmail = {localStorage.getItem('loginMemberEmail')}
-                                    chats = {chatViewModel.getChats(localStorage.getItem('accessedDepartmentId'))}//chatViewModel.getChats(accessedDepartmentId)
-                                    messageEnd = {messageEndRef}
-                                />
-                            </div>
-                            <div className='third-col-ChatInput'>
-                                <ChatInputBox 
+                            <Dropzone onDrop={acceptedFiles=>console.log(acceptedFiles)} onDragLeave={()=>setDrag(false)} noClick={true} onDragOver={()=>setDrag(true)}>
+                                {({getRootProps, getInputProps}) => (
+                                <div className='third-col-ChatContainer'>
+                                    <div {...getRootProps()} >
+                                        <input {...getInputProps()} />
+                                        {drag===true?
+                                            <div className='third-col-fileUpload'><SiBitbucket /></div>
+                                            :<></>}
+                                        <div className='third-col-ChatList'>
+                                            <ChatBox
+                                                departmentMemberViewModel = {departmentMemberViewModel}
+                                                chatViewModel = {chatViewModel}
+                                                departmentId = {localStorage.getItem('accessedDepartmentId')}
+                                                loginMemberEmail = {localStorage.getItem('loginMemberEmail')}
+                                                chats = {chatViewModel.getChats(localStorage.getItem('accessedDepartmentId'))}//chatViewModel.getChats(accessedDepartmentId)
+                                                messageEnd = {messageEndRef}
+                                            />
+                                        </div>
+                                        <div className='third-col-ChatInput'>
+                                    <ChatInputBox 
                                     chatViewModel = {chatViewModel}
                                     departmentId = {localStorage.getItem('accessedDepartmentId')}
                                     chatUpdateState = {chatUpdateState}
                                     setChatUpdateState = {setChatUpdateState}
                                     messageEnd = {messageEndRef}
                                     stomp = {stomp}
-                                />
+                                    />
                             </div>
+
+                            </div>
+                                </div>
+                                )}
+                            </Dropzone>
                         </div>
                         <div className='fourth-col-container'>
                             <div className='fourth-col-DepartmentInfo'>
@@ -394,7 +400,7 @@ const Workspace = function () {
                         </div>
                     </div>
                 :
-                    <Bucket>adgadsg</Bucket>
+                    <Bucket/>
                 }
             </div>
         );

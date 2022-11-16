@@ -46,7 +46,7 @@ const CustomMenu = React.forwardRef(
 },
 );
 
-const DepartmentAddModal = ({modalIsOpen, setModalIsOpen, workspaceMembers, stomp}) => {
+const DepartmentAddModal = ({modalIsOpen, setModalIsOpen, workspaceMembers, loginMemberName, stomp}) => {
 
     let [inputDepartmentName, setInputDepartmentName] = useState("");
     let [inputDepartmentGoal, setInputDepartmentGoal] = useState("");
@@ -60,9 +60,12 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen, workspaceMembers, stom
             let memberName = workspaceMembers[index].memberName
             let memberEmail = workspaceMembers[index].email
 
-            htmlArrayForDepartmentMember.push(
-                <Dropdown.Item key={ memberEmail } eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName }</Dropdown.Item>
+
+            if (localStorage.getItem('loginMemberEmail') !== memberEmail){
+                htmlArrayForDepartmentMember.push(
+                    <Dropdown.Item key={ memberEmail } eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName }</Dropdown.Item>
                 )
+            }
         }
         return htmlArrayForDepartmentMember
     }
@@ -101,36 +104,36 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen, workspaceMembers, stom
             return
         }
 
-        let randomDepartmentId = String(Math.random());
-
-        stomp.send('department추가 주소', {}, JSON.stringify({
-            departmentId:  randomDepartmentId,
-            departmentName: inputDepartmentName,
-            departmentGoal: inputDepartmentGoal,
-            departmentDeadLine: String(inputDepartmentDeadLine)
-        }))
-
         let departmentMemberList = [];
+
+        departmentMemberList.push( // 생성자는 처음에 무조건 포함
+            {
+                email: localStorage.getItem('loginMemberEmail'),
+                memberName: loginMemberName,
+                role: '',
+                grade: ''
+            }
+        )
 
         for (let index = 0; index < inputDepartmentMemberData.length; index++){
             departmentMemberList.push({
-                departmentId: randomDepartmentId,
                 email: inputDepartmentMemberData[index].email,
                 memberName: inputDepartmentMemberData[index].memberName,
                 role: '',
                 grade: ''
             },)
-            // stomp.send('departmentMember추가 주소', {}, JSON.stringify({
-            //     departmentId: randomDepartmentId,
-            //     email: inputDepartmentMemberData[index].email,
-            //     memberName: inputDepartmentMemberData[index].memberName,
-            //     role: '',
-            //     grade: ''
-            // }))
         }
 
-        stomp.send('departmentMember추가 주소', {}, JSON.stringify({departmentMemberList}))
+        let department = {
+            departmentName: inputDepartmentName,
+            departmentGoal: inputDepartmentGoal,
+            departmentDeadline: String(inputDepartmentDeadLine),
+            departmentId: "",
+            workspaceId: localStorage.getItem('accessedWorkspaceId') 
+        }
 
+        stomp.send('/pub/chat/department/creation', {}, JSON.stringify({department,departmentMemberList}))
+        
         setModalIsOpen(false);
     }
 
