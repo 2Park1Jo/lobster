@@ -5,7 +5,7 @@ export class Chat{
         memberEmail: "",
         content: "",
         date: "",
-        content_type: "",
+        contentType: "",
         link: "",
     }]
 

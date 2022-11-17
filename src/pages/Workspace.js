@@ -5,9 +5,10 @@ import DepartmentAddModal from '../components/modals/DepartmentAddModal'
 import DepartmentMemberAddModal from '../components/modals/DepartmentMemberAddModal';
 import DepartmentModifyModal from '../components/modals/DepartmentModifyModal';
 import WorkspaceMemberAdd from '../components/modals/WorkspaceMemberAdd';
+import FileUploadConfirm from '../components/modals/FileUploadConfirm';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 import { useRecoilState } from "recoil";
 
@@ -32,7 +33,7 @@ import { Chat } from '../models/model/Chat';
 import { ChatViewModel } from '../models/view-model/ChatViewModel';
 import { Department } from '../models/model/Department';
 
-import { FaPowerOff } from "react-icons/fa";
+import { FaPowerOff, FaUpload} from "react-icons/fa";
 import { BsGearFill } from "react-icons/bs";
 import { MdPostAdd } from "react-icons/md";
 import { BiChevronsDown,BiChevronsUp,BiUserPlus } from "react-icons/bi";
@@ -44,11 +45,10 @@ import Bucket from '../components/workspace/Bucket';
 
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
-import { BACK_BASE_URL } from '../Config';
+import { BACK_BASE_URL,ACCESS_KEY,SECRET_ACCESS_KEY,S3_BUCKET,REGION } from '../Config';
 import { Last } from 'react-bootstrap/esm/PageItem';
-import Dropzone from 'react-dropzone'
-import '../utils/FileUpload.js'
-import { uploadFiles } from '../utils/FileUpload.js';
+import AWS from 'aws-sdk';
+
 
 const workspace = new WorkspaceModel();
 const workspaceViewModel = new WorkspaceViewModel(workspace);
@@ -79,7 +79,8 @@ const Workspace = function () {
     let [modalIsOpen, setModalIsOpen] = useState(false);
     let [modal2IsOpen, setModal2IsOpen] = useState(false); 
     let [dpModifyModalIsOpen, setdpModifyModalIsOpen] = useState(false);  
-    let [WorkspaceMemberAddModalIsOpen,setWorkspaceMemberAddModalIsOpen]=useState(false);  
+    let [WorkspaceMemberAddModalIsOpen,setWorkspaceMemberAddModalIsOpen]=useState(false); 
+    let [FileUploadConfirmModalIsOpen,setFileUploadConfirmModalIsOpen]=useState(false);
     let [drag,setDrag]=useState("")
     let [chatUpdateState, setChatUpdateState] = useState("");
     let [departmentUpdateState, setDepartmentUpdateState] = useState("");
@@ -90,6 +91,7 @@ const Workspace = function () {
     let [selectedMenu,setSelectedMenu]=useState(1);
 
     let [departmentIdList, setDepartmentIdList] = useState([]);
+    let selectedFileName=""
 
     let navigate = useNavigate();
     
@@ -225,6 +227,121 @@ const Workspace = function () {
         navigate('/')
     }
 
+    const inputRef = useRef(null);
+
+    const handleClick = () => {
+        // 👇️ open file input box on click of other element
+        inputRef.current.click();
+    };
+
+    AWS.config.update({
+        accessKeyId:ACCESS_KEY,
+        secretAccessKey:SECRET_ACCESS_KEY
+    });
+    
+    const myBucket=new AWS.S3({
+        params:{Bucket: S3_BUCKET},
+        region: REGION
+    });
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [progress , setProgress] = useState(0);
+
+    const handleFileInput = (e) => {
+        const file = e.target.files[0];
+        const fileExt = file.name.split('.').pop();
+        // if(file.type !== 'image/jpeg' || fileExt !=='jpg'){
+        //   alert('jpg 파일만 Upload 가능합니다.');
+        //   return;
+        // }
+        setProgress(0);
+        setSelectedFile(e.target.files[0]);
+        selectedFileName=e.target.files[0].name;
+        setFileUploadConfirmModalIsOpen(true)
+    }
+
+    const uploadFile = (file) => {
+        let currentDate = new Date();
+        let year = currentDate.getFullYear();
+        let month = currentDate.getMonth() + 1;
+        let date = currentDate.getDate();
+        let houres = String(currentDate.getHours()).padStart(2, "0");
+        let minutes = String(currentDate.getMinutes()).padStart(2, "0");
+        let seconds = String(currentDate.getSeconds()).padStart(2, "0");
+        let currentTime = year + '-' + month + '-' + date + ' ' + houres + ':' + minutes + ':' + seconds;
+        let key=("upload/"+currentTime+"/"+ file.name).replace(/ /g, '')
+        const params = {
+          ACL: 'public-read',
+          Body: file,
+          ACL: AWS.config.acl,
+          Bucket: S3_BUCKET,
+          Key: key
+        };
+        
+        myBucket.putObject(params)
+          .on('httpUploadProgress', (evt) => {
+            setProgress(Math.round((evt.loaded / evt.total) * 100))
+          })
+          .send((err) => {
+            if (err){ console.log(err)
+                alert("서버에 에러가 발생하였습니다!")
+                return;
+            }
+          })
+
+          stomp.send('/pub/chat/message', {}, JSON.stringify({
+                    departmentId: localStorage.getItem('accessedDepartmentId'),
+                    email: localStorage.getItem('loginMemberEmail'),
+                    content: file.name,
+                    contentType: 1,
+                    date : currentTime,
+                    link:"https://"+S3_BUCKET+".s3."+REGION+".amazonaws.com/"+key
+            }))
+    }
+
+    function containsFiles(event) {
+        if (event.dataTransfer.types) {
+            for (var i=0; i<event.dataTransfer.types.length; i++) {
+                if (event.dataTransfer.types[i] == "Files") {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+
+    function handleDrop(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        setDrag(false)
+    
+        var files = e.dataTransfer.files;
+        if(files.length>1){
+            alert("한번에 1개의 파일만 업로드 하실 수 있습니다!")
+            return
+        }
+        for (var i = 0, f; f = files[i]; i++) { // iterate in the files dropped
+            if (f.type=="") {
+                alert(f.name+"\n해당 파일은 지원하지 않는 형식입니다!")
+            } else {
+                console.log("file")
+                setSelectedFile(f);
+                setFileUploadConfirmModalIsOpen(true)
+                
+            }
+            console.log(f.name)
+        }
+    }
+    
+
+    function handleDragEnter(e) {
+        e.preventDefault();
+        if (containsFiles(e)) {
+            setDrag(true)
+        } else {
+            setDrag(false)
+        }
+    }
     // if(isReceivedWorkspace && isReceivedDepertment && isReceivedDepertmentMember && isReceivedWorkspaceMember && isReceivedChat){
         return(
             <div className="maincontainer">
@@ -306,13 +423,10 @@ const Workspace = function () {
                                 <span className="h5">{ accessedDepartment.name } </span>
                                 <p className="small text-muted">&nbsp;{ departmentViewModel.getGoal(localStorage.getItem('accessedDepartmentId')) }</p>
                             </div>
-                            <Dropzone onDrop={()=>setDrag(false)} onDragLeave={()=>setDrag(false)} noClick={true} onDragOver={()=>setDrag(true)}>
-                                {({getRootProps, getInputProps}) => (
+                            <div onDrop={e=>handleDrop(e)} onDragLeave={()=>setDrag(false)} onDragOver={e=>handleDragEnter(e)}>
                                 <div className='third-col-ChatContainer'>
-                                    <div {...getRootProps()} >
-                                        <input {...getInputProps()} />
                                         {drag===true?
-                                            <div className='third-col-fileUpload'><SiBitbucket /></div>
+                                            <div className='third-col-fileUpload'><FaUpload /></div>
                                             :<></>}
                                         <div className='third-col-ChatList'>
                                             <ChatBox
@@ -325,20 +439,17 @@ const Workspace = function () {
                                             />
                                         </div>
                                         <div className='third-col-ChatInput'>
-                                    <ChatInputBox 
-                                    chatViewModel = {chatViewModel}
-                                    departmentId = {localStorage.getItem('accessedDepartmentId')}
-                                    chatUpdateState = {chatUpdateState}
-                                    setChatUpdateState = {setChatUpdateState}
-                                    messageEnd = {messageEndRef}
-                                    stomp = {stomp}
-                                    />
-                            </div>
-
-                            </div>
+                                            <ChatInputBox 
+                                            chatViewModel = {chatViewModel}
+                                            departmentId = {localStorage.getItem('accessedDepartmentId')}
+                                            chatUpdateState = {chatUpdateState}
+                                            setChatUpdateState = {setChatUpdateState}
+                                            messageEnd = {messageEndRef}
+                                            stomp = {stomp}
+                                            />
+                                        </div>
                                 </div>
-                                )}
-                            </Dropzone>
+                            </div>
                         </div>
                         <div className='fourth-col-container'>
                             <div className='fourth-col-DepartmentInfo'>
@@ -387,12 +498,30 @@ const Workspace = function () {
                                 <div className='fourth-col-UploadedFile'>
                                     <div className='container-top'>
                                         파일목록
+                                        <input
+                                            style={{display: 'none'}}
+                                            ref={inputRef}
+                                            type="file"
+                                            onChange={handleFileInput}
+                                        />
+
+                                        <FaUpload onClick={handleClick} style={{float:'right'}} className="arrow"/>
                                     </div>
+                                    <Modal ariaHideApp={false} isOpen= {FileUploadConfirmModalIsOpen} style={modalStyles} onRequestClose={() => setFileUploadConfirmModalIsOpen(false)}>
+                                        <FileUploadConfirm 
+                                            setFileUploadConfirmModalIsOpen={setFileUploadConfirmModalIsOpen}
+                                            uploadFile={uploadFile}
+                                            selectedFile={selectedFile}
+                                            progress={progress}
+                                            setSelectedFile={setSelectedFile}
+                                            />
+                                    </Modal>
                                     <div className='child'></div>
                                 </div>
                                 <div className='fourth-col-Bucket'>
                                     <div className='container-top'>
                                         버켓
+                                        
                                     </div>
                                     <div className='child'></div>
                                 </div>

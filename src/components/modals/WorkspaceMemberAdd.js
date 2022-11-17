@@ -90,9 +90,10 @@ const WorkspaceMemberAdd=({setWorkspaceMemberAddModalIsOpen,workspaceId,workspac
         }
         let result=Promise.resolve(getMemberProfile(inputMemberEmail))
             result.then(value=>{
-                console.log(value.at(0))
+                console.log(result)
                 let data=value.at(0)
-                if(data!==null){
+                let status=value.at(1)
+                if(status==200){
                     console.log(data.email)
                     console.log(data.memberName)
                     setSearchedMemberHTML(
@@ -103,7 +104,7 @@ const WorkspaceMemberAdd=({setWorkspaceMemberAddModalIsOpen,workspaceId,workspac
                             </div>
                         </div>)
                 }
-                else if(value===false){
+                else if(status===404){
                     setSearchedMemberHTML(<span style={{color:'red', fontSize : '14px'}}>존재하지 않는 유저의 이메일입니다.</span>)
                 }
                 else {

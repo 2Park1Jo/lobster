@@ -80,3 +80,15 @@
     align-content: center;
     justify-content: center;
 }
+.upload-modal-container{
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+}
+
+.added-member-container{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    flex-direction: column;
+}

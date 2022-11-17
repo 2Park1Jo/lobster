@@ -2,3 +2,18 @@
     word-break: break-all;
     padding-bottom: 7px;
 }
+.text-Area{
+    width: 100%;
+    border: none;
+    outline-color: none;
+}
+.download-button{
+    font-size: 40px;
+    float: left;
+    cursor: pointer;
+    margin-top: auto;
+    color:gray;
+}
+.download-button:hover{
+    color: black;
+}

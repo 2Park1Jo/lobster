@@ -64,7 +64,7 @@ export const getMemberProfile=async function(email){
             withCredentials: true
         
         }).then(response=>{
-            console.log(response)
+            console.log(response.status)
             return [response.data,response.status];
         }).catch(error=>{
             console.log(error)
