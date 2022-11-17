@@ -77,7 +77,7 @@ export default function ChatInputBox(props){
         <>
         <div className="input-group px-1">
             <textarea placeholder="Type a message" className="form-control bg-light" value={ inputChattingContent }
-                onChange={e => setInputChattingContent(e.target.value)} onKeyPress={handleOnKeyPress}/>
+                onChange={e => setInputChattingContent(e.target.value)} onKeyPress={handleOnKeyPress} style={{paddingBottom:"10px"}}/>
             <Button variant="secondary" onClick={ () => addChattingData(inputChattingContent) }> {<BiPaperPlane style={{fontSize:'20px'}}/>} </Button>
         </div>
         {/* <input type="file" name="input" onChange={handleChange} /> */}

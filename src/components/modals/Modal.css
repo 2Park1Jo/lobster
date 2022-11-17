@@ -9,6 +9,49 @@
     cursor: pointer;
 }
 
+.departmentMember-add-modal-container{
+    width: 280px;
+    height: auto;
+}
+
+.selected-member-container{
+    background-color:gainsboro;
+    /* word-break: break-all; */
+    border-radius: 5px;
+    padding: 5px;
+    height: auto;
+    margin-bottom: 5px;
+}
+
+.dpMember-list{
+    background-color: gray;
+    border-radius: 5px;
+    height: auto;
+}
+
+.dropdown-member-div{
+    background-color:whitesmoke;
+    cursor: pointer;
+    height: auto;
+}
+
+.dropdown-member-div:hover{
+    background-color: gray;
+}
+
+.selected-member-div{
+    background-color:whitesmoke;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-right: 7px;
+    height: auto;
+}
+.selected-member-div:hover{
+    background-color: gray;
+}
+
 .searched-member-container{
     display: flex;
 }
@@ -37,9 +80,15 @@
     align-content: center;
     justify-content: center;
 }
+.upload-modal-container{
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+}
 
 .added-member-container{
     margin-top: 20px;
     margin-bottom: 20px;
+    cursor: pointer;
     flex-direction: column;
 }
