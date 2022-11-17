@@ -9,23 +9,44 @@
     cursor: pointer;
 }
 
+.departmentMember-add-modal-container{
+    width: 280px;
+    height: auto;
+}
+
 .selected-member-container{
     background-color:gainsboro;
-    word-break: break-all;
+    /* word-break: break-all; */
     border-radius: 5px;
-    min-height: 40px;
-    padding: 10px;
+    padding: 5px;
     height: auto;
+    margin-bottom: 5px;
+}
+
+.dpMember-list{
+    background-color: gray;
+    border-radius: 5px;
+    height: auto;
+}
+
+.dropdown-member-div{
+    background-color:whitesmoke;
+    cursor: pointer;
+    height: auto;
+}
+
+.dropdown-member-div:hover{
+    background-color: gray;
 }
 
 .selected-member-div{
     background-color:whitesmoke;
+    cursor: pointer;
     border-radius: 5px;
-    border-radius: 2px;
     margin-top: 10px;
     margin-bottom: 10px;
-    margin-right: 5px;
-    height: 20px;
+    margin-right: 7px;
+    height: auto;
 }
 .selected-member-div:hover{
     background-color: gray;
