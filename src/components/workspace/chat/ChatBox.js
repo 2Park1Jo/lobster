@@ -4,13 +4,14 @@ import { useEffect } from "react";
 
 export default function ChatBox(props){
     let chats = [];
-    
     props.chats.map( (chat, index) => {
         chats.push(
             <Message
                 chatSender={ props.departmentMemberViewModel.getMemberName(chat.email) }
                 chatDate={chat.date}
                 chatContent={chat.content}
+                chatType={chat.contentType}
+                link={chat.link}
                 key = {index}s
             />
         )

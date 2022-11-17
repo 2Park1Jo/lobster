@@ -7,3 +7,13 @@
     border: none;
     outline-color: none;
 }
+.download-button{
+    font-size: 40px;
+    float: left;
+    cursor: pointer;
+    margin-top: auto;
+    color:gray;
+}
+.download-button:hover{
+    color: black;
+}

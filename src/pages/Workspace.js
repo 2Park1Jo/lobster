@@ -47,7 +47,6 @@ import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { BACK_BASE_URL,ACCESS_KEY,SECRET_ACCESS_KEY,S3_BUCKET,REGION } from '../Config';
 import { Last } from 'react-bootstrap/esm/PageItem';
-import Dropzone from 'react-dropzone'
 import AWS from 'aws-sdk';
 
 
@@ -259,31 +258,6 @@ const Workspace = function () {
         selectedFileName=e.target.files[0].name;
         setFileUploadConfirmModalIsOpen(true)
     }
-    // function addChattingData(chatContent) {
-    //     let currentDate = new Date();
-    //     let year = currentDate.getFullYear();
-    //     let month = currentDate.getMonth() + 1;
-    //     let date = currentDate.getDate();
-    //     let houres = String(currentDate.getHours()).padStart(2, "0");
-    //     let minutes = String(currentDate.getMinutes()).padStart(2, "0");
-    //     let seconds = String(currentDate.getSeconds()).padStart(2, "0");
-    //     let currentTime = year + '-' + month + '-' + date + ' ' + houres + ':' + minutes + ':' + seconds;
-
-    //     if (chatContent.replace(/ /g,"") === ""){
-    //         setInputChattingContent("");
-    //         return;
-    //     }
-
-    //     props.stomp.send('/pub/chat/message', {}, JSON.stringify({
-    //         departmentId: props.departmentId,
-    //         email: localStorage.getItem('loginMemberEmail'),
-    //         content: inputChattingContent,
-    //         contentType: 0,
-    //         date : currentTime
-    //     }))
-        
-    //     setInputChattingContent("");
-    // }
 
     const uploadFile = (file) => {
         let currentDate = new Date();
@@ -320,7 +294,7 @@ const Workspace = function () {
                     content: file.name,
                     contentType: 1,
                     date : currentTime,
-                    Link:"https://"+S3_BUCKET+".s3."+REGION+"amazonaws.com/"+key
+                    link:"https://"+S3_BUCKET+".s3."+REGION+".amazonaws.com/"+key
             }))
     }
 
@@ -342,11 +316,10 @@ const Workspace = function () {
         setDrag(false)
     
         var files = e.dataTransfer.files;
-        if(files.length>3){
-            alert("최대 3개까지 업로드 하실 수 있습니다!")
+        if(files.length>1){
+            alert("한번에 1개의 파일만 업로드 하실 수 있습니다!")
             return
         }
-        let uploadList=[];
         for (var i = 0, f; f = files[i]; i++) { // iterate in the files dropped
             if (f.type=="") {
                 alert(f.name+"\n해당 파일은 지원하지 않는 형식입니다!")
@@ -360,10 +333,6 @@ const Workspace = function () {
         }
     }
     
-
-    // function isFolderOrFile(event){
-    //     if
-    // }
 
     function handleDragEnter(e) {
         e.preventDefault();
@@ -554,7 +523,6 @@ const Workspace = function () {
                                         버켓
                                         
                                     </div>
-                                    <input type="image" src="https://passta-lobster-bucket.s3.ap-northeast-2.amazonaws.com/upload/1" />
                                     <div className='child'></div>
                                 </div>
                             </div>
