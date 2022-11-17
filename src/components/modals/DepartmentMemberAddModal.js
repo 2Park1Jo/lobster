@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
+import { ListGroup } from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 
 import './Modal.css';
@@ -49,7 +50,13 @@ const CustomMenu = React.forwardRef(
 
 const DepartmentMemberAddModal = ({modalIsOpen, setModalIsOpen, accessedDepartmentId, departmentMembers, workspaceMembers, stomp}) => {
     let [inputDepartmentMemberData, setInputDepartmentMemberData] = useState([]);
+    let [selectedMemberNameList, setSelectedMemberNameList] = useState([]);
     let workspaceMemberData = workspaceMembers;
+
+    useEffect( () => {
+        console.log(inputDepartmentMemberData)
+        setSelectedMemberName()
+    }, [inputDepartmentMemberData])
 
     function isAlreadyJoinMember(memberEmail){
         for (let index = 0; index < departmentMembers.length; index++) {
@@ -81,30 +88,51 @@ const DepartmentMemberAddModal = ({modalIsOpen, setModalIsOpen, accessedDepartme
 
         for (let index = 0; index < copiedMemberData.length; index++){
             if (copiedMemberData[index].email === memberEmail && copiedMemberData[index].memberName === memberName){
+                deleteMemberInList(memberEmail)
                 return;
             }
         }
         copiedMemberData.push(
             {
+                key : memberEmail,
                 email: memberEmail,
                 memberName: memberName,
             }
         )
         setInputDepartmentMemberData(copiedMemberData)
+
+    }
+
+    function deleteMemberInList(memberEmail){
+        let index = selectedMemberNameList.findIndex((e) => e.key === memberEmail)
+
+        inputDepartmentMemberData.splice(index,1)
+        selectedMemberNameList.splice(index,1)
+
+        setInputDepartmentMemberData([...inputDepartmentMemberData])
+        setSelectedMemberNameList([...selectedMemberNameList])
     }
     
-    function getSelectedMemberName() {
-        let selectedMemberNameList = [];
+    function setSelectedMemberName() {
+        let memberNameList = [];
 
         for (let index = 0; index < inputDepartmentMemberData.length; index++){
-            selectedMemberNameList.push(inputDepartmentMemberData[index].memberName)
+            let email = inputDepartmentMemberData[index].email
+            let memberName = inputDepartmentMemberData[index].memberName
+
+            memberNameList.push(
+                <span key={email} className='selected-member-div' onClick={() => deleteMemberInList(email)}>
+                    <span style={{color:'black', fontSize : '16px'}}>{memberName}</span>
+                    <span style={{color:'black', fontSize : '10px'}}>X</span>
+                </span>
+            )
         }
 
-        return selectedMemberNameList;
+        setSelectedMemberNameList(memberNameList);
     }
 
     function addDepartmentData() {
-        let selectedMemberLength = getSelectedMemberName().length;
+        let selectedMemberLength = selectedMemberNameList.length;
         if (selectedMemberLength === 0){
             alert("추가할 멤버를 선택해주세요")
             return
@@ -120,15 +148,8 @@ const DepartmentMemberAddModal = ({modalIsOpen, setModalIsOpen, accessedDepartme
                 role: '',
                 grade: ''
             },)
-            // stomp.send('departmentMember추가 주소', {}, JSON.stringify({
-            //     departmentId: accessedDepartmentId,
-            //     email: inputDepartmentMemberData[index].email,
-            //     memberName: inputDepartmentMemberData[index].memberName,
-            //     role: '',
-            //     grade: ''
-            // }))
         }
-        console.log(JSON.stringify(departmentMemberList))
+
         stomp.send('/pub/chat/invitation', {}, JSON.stringify(departmentMemberList))
 
         setModalIsOpen(false);
@@ -139,21 +160,15 @@ const DepartmentMemberAddModal = ({modalIsOpen, setModalIsOpen, accessedDepartme
             <button className="modal-close" type="button" onClick={() => setModalIsOpen(false)}>X</button>
             <h3 className="Auth-form-title">멤버추가</h3>
             <div className="form-group mt-3">
-                <label>멤버추가</label>
-                <input
-                    type="text"
-                    className="form-control mt-1"
-                    disabled="disabled"
-                    placeholder="멤버를 추가해주세요"
-                    value={ getSelectedMemberName() }
-                />
+                <div className='selected-member-container'>
+                    {selectedMemberNameList}
+                </div>
                 <Dropdown>
-                    <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                    </Dropdown.Toggle>
-
+                    <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components"></Dropdown.Toggle>
                     <Dropdown.Menu as={CustomMenu}>
                         { applyWorkspaceMemberListInDropdown() }
                     </Dropdown.Menu>
+                    &nbsp;멤버추가
                 </Dropdown>
             </div>
 

@@ -306,7 +306,7 @@ const Workspace = function () {
                                 <span className="h5">{ accessedDepartment.name } </span>
                                 <p className="small text-muted">&nbsp;{ departmentViewModel.getGoal(localStorage.getItem('accessedDepartmentId')) }</p>
                             </div>
-                            <Dropzone onDrop={acceptedFiles=>console.log(acceptedFiles)} onDragLeave={()=>setDrag(false)} noClick={true} onDragOver={()=>setDrag(true)}>
+                            <Dropzone onDrop={()=>setDrag(false)} onDragLeave={()=>setDrag(false)} noClick={true} onDragOver={()=>setDrag(true)}>
                                 {({getRootProps, getInputProps}) => (
                                 <div className='third-col-ChatContainer'>
                                     <div {...getRootProps()} >

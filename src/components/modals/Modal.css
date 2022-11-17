@@ -9,6 +9,28 @@
     cursor: pointer;
 }
 
+.selected-member-container{
+    background-color:gainsboro;
+    word-break: break-all;
+    border-radius: 5px;
+    min-height: 40px;
+    padding: 10px;
+    height: auto;
+}
+
+.selected-member-div{
+    background-color:whitesmoke;
+    border-radius: 5px;
+    border-radius: 2px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-right: 5px;
+    height: 20px;
+}
+.selected-member-div:hover{
+    background-color: gray;
+}
+
 .searched-member-container{
     display: flex;
 }
@@ -36,10 +58,4 @@
     flex-direction: column;
     align-content: center;
     justify-content: center;
-}
-
-.added-member-container{
-    margin-top: 20px;
-    margin-bottom: 20px;
-    flex-direction: column;
 }
