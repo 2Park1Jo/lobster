@@ -107,7 +107,7 @@ const Workspace = function () {
     useEffect( () => {
         if (stomp.connected){
             if (departmentIdList.length > 0){
-                if (departmentIdList.length !== stomp.counter - 1){
+                if (departmentIdList.length !== stomp.counter - 2){
                     console.log('구독추가')
                     stomp.subscribe("/sub/chat/department/" + departmentIdList[departmentIdList.length - 1], function (chat) {
                         let result = JSON.parse(chat.body);
@@ -306,7 +306,7 @@ const Workspace = function () {
                                 <span className="h5">{ accessedDepartment.name } </span>
                                 <p className="small text-muted">&nbsp;{ departmentViewModel.getGoal(localStorage.getItem('accessedDepartmentId')) }</p>
                             </div>
-                            <Dropzone onDrop={acceptedFiles=>console.log(acceptedFiles)} onDragLeave={()=>setDrag(false)} noClick={true} onDragOver={()=>setDrag(true)}>
+                            <Dropzone onDrop={()=>setDrag(false)} onDragLeave={()=>setDrag(false)} noClick={true} onDragOver={()=>setDrag(true)}>
                                 {({getRootProps, getInputProps}) => (
                                 <div className='third-col-ChatContainer'>
                                     <div {...getRootProps()} >
