@@ -2,3 +2,8 @@
     word-break: break-all;
     padding-bottom: 7px;
 }
+.text-Area{
+    width: 100%;
+    border: none;
+    outline-color: none;
+}
