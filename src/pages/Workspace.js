@@ -68,7 +68,6 @@ const chatViewModel = new ChatViewModel(chat);
 // const sockJs = new SockJS(BACK_BASE_URL + "chat");
 let stomp;
 
-
 const Workspace = function () {
     const messageEndRef = useRef(null); // 채팅메세지의 마지막
     // let loginMember = useRecoilValue(LOGIN_MEMBER);
@@ -198,32 +197,34 @@ const Workspace = function () {
     },[drag])
 
     function onConnected() {
-        // chat 
-        for (let index = 0; index < departmentIdList.length; index++){
-            stomp.subscribe("/sub/chat/department/" + departmentIdList[index], function (chat) {
-                let result = JSON.parse(chat.body);
-                if (chatUpdateState !== result.body){
-                    setChatUpdateState(result.content);
-                }
-                if (result.contentType === "-1"){ // invite
-                    setChatUpdateState(result.content);
-                    setDpMemberUpdateState(result.content);
-                }
+        if (stomp.connected){
+            // chat 
+            for (let index = 0; index < departmentIdList.length; index++){
+                stomp.subscribe("/sub/chat/department/" + departmentIdList[index], function (chat) {
+                    let result = JSON.parse(chat.body);
+                    if (chatUpdateState !== result.body){
+                        setChatUpdateState(result.content);
+                    }
+                    if (result.contentType === "-1"){ // invite
+                        setChatUpdateState(result.content);
+                        setDpMemberUpdateState(result.content);
+                    }
+                });
+            }
+
+            //dp add
+            stomp.subscribe("/sub/chat/workspace/" + localStorage.getItem('accessedWorkspaceId'), function (data) {
+                let result = JSON.parse(data.body);
+                setDepartmentUpdateState(result.content);
             });
+
+            stomp.subscribe("/sub/chat/workspace", function (data) {
+                let result = data.body;
+                setWorkspaceMemberUpdateState(result.content);
+            });
+
+            stomp.send('/pub/chat/enter', {}, JSON.stringify({departmentId: localStorage.getItem('accessedDepartmentId'), email: localStorage.getItem('loginMemberEmail')}))
         }
-
-        //dp add
-        stomp.subscribe("/sub/chat/workspace/" + localStorage.getItem('accessedWorkspaceId'), function (data) {
-            let result = JSON.parse(data.body);
-            setDepartmentUpdateState(result.content);
-        });
-
-        stomp.subscribe("/sub/chat/workspace", function (data) {
-            let result = data.body;
-            setWorkspaceMemberUpdateState(result.content);
-        });
-
-        stomp.send('/pub/chat/enter', {}, JSON.stringify({departmentId: localStorage.getItem('accessedDepartmentId'), email: localStorage.getItem('loginMemberEmail')}))
     }
     
     const modalStyles = {
