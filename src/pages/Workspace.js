@@ -65,8 +65,9 @@ const departmentMemberViewModel = new DepartmentMemberViewModel(departmentMember
 const chat = new Chat();
 const chatViewModel = new ChatViewModel(chat);
 
-const sockJs = new SockJS(BACK_BASE_URL + "chat");
-let stomp = Stomp.over(sockJs);
+// const sockJs = new SockJS(BACK_BASE_URL + "chat");
+let stomp;
+
 
 const Workspace = function () {
     const messageEndRef = useRef(null); // 채팅메세지의 마지막
@@ -104,13 +105,17 @@ const Workspace = function () {
                 setIsReceivedWorkspace(true)
             }
         )
+
+        stomp = Stomp.over(new SockJS(BACK_BASE_URL + "chat"));
+        stomp.connect({}, onConnected, (error) => {
+            console.log('sever error : ' + error );
+        });
     },[])
 
     useEffect( () => {
         if (stomp.connected){
             if (departmentIdList.length > 0){
                 if (departmentIdList.length !== stomp.counter - 2){
-                    console.log('구독추가')
                     stomp.subscribe("/sub/chat/department/" + departmentIdList[departmentIdList.length - 1], function (chat) {
                         let result = JSON.parse(chat.body);
                         if (chatUpdateState !== result.body){
