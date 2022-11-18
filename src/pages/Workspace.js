@@ -8,7 +8,7 @@ import WorkspaceMemberAdd from '../components/modals/WorkspaceMemberAdd';
 import FileUploadConfirm from '../components/modals/FileUploadConfirm';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Modal from 'react-modal';
 import { useRecoilState } from "recoil";
 
@@ -95,6 +95,16 @@ const Workspace = function () {
     let selectedFileName=""
 
     let navigate = useNavigate();
+
+    const location = useLocation();
+    
+    useEffect(() => {
+        localStorage.setItem('accessedDepartmentId', location.pathname.split('department/')[1].replace("%20", " "))
+        setAccessedDepartment({
+            id: localStorage.getItem('accessedDepartmentId'),
+            name: departmentViewModel.getName(localStorage.getItem('accessedDepartmentId'))
+        })
+    }, [ location ])
     
     useEffect( () => {     
         getWorkspaceData(localStorage.getItem('loginMemberEmail'))
