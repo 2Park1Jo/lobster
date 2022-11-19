@@ -13,7 +13,7 @@ const CustomMenu = React.forwardRef(
                 {selectedMemberNameList}
             </span>
             <input
-                style={{backgroundColor:'gainsboro', border:'none', width:'auto', outline:'none'}}
+                style={{backgroundColor:'gainsboro', border:'none', width:'90%', outline:'none'}}
                 placeholder="멤버 검색"
                 onChange={(e) => setValue(e.target.value)}
                 value={value}
@@ -21,7 +21,7 @@ const CustomMenu = React.forwardRef(
         </div>
 
         <div ref={ref} className={className} aria-labelledby={labeledBy}>
-            <ul className="list-unstyled" style={{width:'280px', height:'200px', overflowY:'auto'}}>
+            <ul className="list-unstyled" style={{width:'300px', height:'200px', overflowY:'auto'}}>
                 {React.Children.toArray(children).filter(
                     (child) =>
                     !value || child.props.children.includes(value),
@@ -70,7 +70,7 @@ const DepartmentMemberAddModal = ({modalIsOpen, setModalIsOpen, accessedDepartme
             if (!isAlreadyJoinMember(memberEmail)){
                 if (isSelectedMember(memberEmail)){
                     htmlArrayForDepartmentMember.push(
-                        <Dropdown.Item style={{backgroundColor:'gainsboro'}} className='dropdown-member-div' key={ memberEmail } eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName + " (" + memberEmail + ")"}</Dropdown.Item>
+                        <Dropdown.Item style={{backgroundColor:'rgb(156, 156, 156)'}} className='dropdown-member-div' key={ memberEmail } eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName + " (" + memberEmail + ")"}</Dropdown.Item>
                     )
                 }
                 else{
@@ -122,8 +122,8 @@ const DepartmentMemberAddModal = ({modalIsOpen, setModalIsOpen, accessedDepartme
 
             memberNameList.push(
                 <span key={email} className='selected-member-div' onClick={() => deleteMemberInList(email)}>
-                    <span style={{color:'black', fontSize : '16px', marginLeft:'5px'}}>{memberName}</span>
-                    <span style={{color:'black', fontSize : '12px', marginRight:'5px'}}> X</span>
+                    <span style={{color:'black', fontSize : '15px', marginLeft:'5px'}}>{memberName}</span>
+                    <span style={{color:'black', fontSize : '12px', marginLeft:'5px', marginRight:'5px'}}>X</span>
                 </span>
             )
         }
@@ -168,7 +168,7 @@ const DepartmentMemberAddModal = ({modalIsOpen, setModalIsOpen, accessedDepartme
             </div>
 
             <div className="d-grid gap-2 mt-3">
-                <button className="btn btn-primary" onClick={ () => addDepartmentData() }>
+                <button className="btn btn-secondary" onClick={ () => addDepartmentData() }>
                     추가하기
                 </button>
             </div>

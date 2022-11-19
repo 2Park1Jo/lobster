@@ -10,13 +10,14 @@
 }
 
 .departmentMember-add-modal-container{
-    width: 280px;
+    width: 300px;
     height: auto;
 }
 
 .selected-member-container{
+    word-break: keep-all;
+    word-wrap: break-word;
     background-color:gainsboro;
-    /* word-break: break-all; */
     border-radius: 5px;
     padding: 5px;
     height: auto;

@@ -8,7 +8,7 @@ import WorkspaceMemberAdd from '../components/modals/WorkspaceMemberAdd';
 import FileUploadConfirm from '../components/modals/FileUploadConfirm';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Modal from 'react-modal';
 import { useRecoilState } from "recoil";
 
@@ -65,8 +65,8 @@ const departmentMemberViewModel = new DepartmentMemberViewModel(departmentMember
 const chat = new Chat();
 const chatViewModel = new ChatViewModel(chat);
 
-const sockJs = new SockJS(BACK_BASE_URL + "chat");
-let stomp = Stomp.over(sockJs);
+// const sockJs = new SockJS(BACK_BASE_URL + "chat");
+let stomp;
 
 const Workspace = function () {
     const messageEndRef = useRef(null); // 채팅메세지의 마지막
@@ -91,9 +91,20 @@ const Workspace = function () {
     let [selectedMenu,setSelectedMenu]=useState(1);
 
     let [departmentIdList, setDepartmentIdList] = useState([]);
-    let selectedFileName=""
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [progress , setProgress] = useState(0);
 
     let navigate = useNavigate();
+
+    const location = useLocation();
+    
+    useEffect(() => {
+        localStorage.setItem('accessedDepartmentId', location.pathname.split('department/')[1].replace("%20", " "))
+        setAccessedDepartment({
+            id: localStorage.getItem('accessedDepartmentId'),
+            name: departmentViewModel.getName(localStorage.getItem('accessedDepartmentId'))
+        })
+    }, [ location ])
     
     useEffect( () => {     
         getWorkspaceData(localStorage.getItem('loginMemberEmail'))
@@ -104,13 +115,17 @@ const Workspace = function () {
                 setIsReceivedWorkspace(true)
             }
         )
+
+        stomp = Stomp.over(new SockJS(BACK_BASE_URL + "chat"));
+        stomp.connect({}, onConnected, (error) => {
+            console.log('sever error : ' + error );
+        });
     },[])
 
     useEffect( () => {
         if (stomp.connected){
             if (departmentIdList.length > 0){
                 if (departmentIdList.length !== stomp.counter - 2){
-                    console.log('구독추가')
                     stomp.subscribe("/sub/chat/department/" + departmentIdList[departmentIdList.length - 1], function (chat) {
                         let result = JSON.parse(chat.body);
                         if (chatUpdateState !== result.body){
@@ -183,32 +198,34 @@ const Workspace = function () {
     },[drag])
 
     function onConnected() {
-        // chat 
-        for (let index = 0; index < departmentIdList.length; index++){
-            stomp.subscribe("/sub/chat/department/" + departmentIdList[index], function (chat) {
-                let result = JSON.parse(chat.body);
-                if (chatUpdateState !== result.body){
-                    setChatUpdateState(result.content);
-                }
-                if (result.contentType === "-1"){ // invite
-                    setChatUpdateState(result.content);
-                    setDpMemberUpdateState(result.content);
-                }
+        if (stomp.connected){
+            // chat 
+            for (let index = 0; index < departmentIdList.length; index++){
+                stomp.subscribe("/sub/chat/department/" + departmentIdList[index], function (chat) {
+                    let result = JSON.parse(chat.body);
+                    if (chatUpdateState !== result.body){
+                        setChatUpdateState(result.content);
+                    }
+                    if (result.contentType === "-1"){ // invite
+                        setChatUpdateState(result.content);
+                        setDpMemberUpdateState(result.content);
+                    }
+                });
+            }
+
+            //dp add
+            stomp.subscribe("/sub/chat/workspace/" + localStorage.getItem('accessedWorkspaceId'), function (data) {
+                let result = JSON.parse(data.body);
+                setDepartmentUpdateState(result.content);
             });
+
+            stomp.subscribe("/sub/chat/workspace", function (data) {
+                let result = data.body;
+                setWorkspaceMemberUpdateState(result.content);
+            });
+
+            stomp.send('/pub/chat/enter', {}, JSON.stringify({departmentId: localStorage.getItem('accessedDepartmentId'), email: localStorage.getItem('loginMemberEmail')}))
         }
-
-        //dp add
-        stomp.subscribe("/sub/chat/workspace/" + localStorage.getItem('accessedWorkspaceId'), function (data) {
-            let result = JSON.parse(data.body);
-            setDepartmentUpdateState(result.content);
-        });
-
-        stomp.subscribe("/sub/chat/workspace", function (data) {
-            let result = data.body;
-            setWorkspaceMemberUpdateState(result.content);
-        });
-
-        stomp.send('/pub/chat/enter', {}, JSON.stringify({departmentId: localStorage.getItem('accessedDepartmentId'), email: localStorage.getItem('loginMemberEmail')}))
     }
     
     const modalStyles = {
@@ -243,8 +260,6 @@ const Workspace = function () {
         params:{Bucket: S3_BUCKET},
         region: REGION
     });
-    const [selectedFile, setSelectedFile] = useState(null);
-    const [progress , setProgress] = useState(0);
 
     const handleFileInput = (e) => {
         const file = e.target.files[0];
@@ -255,11 +270,10 @@ const Workspace = function () {
         // }
         setProgress(0);
         setSelectedFile(e.target.files[0]);
-        selectedFileName=e.target.files[0].name;
         setFileUploadConfirmModalIsOpen(true)
     }
 
-    const uploadFile = (file) => {
+    const uploadFile = async (file) => {
         let currentDate = new Date();
         let year = currentDate.getFullYear();
         let month = currentDate.getMonth() + 1;
@@ -269,6 +283,7 @@ const Workspace = function () {
         let seconds = String(currentDate.getSeconds()).padStart(2, "0");
         let currentTime = year + '-' + month + '-' + date + ' ' + houres + ':' + minutes + ':' + seconds;
         let key=("upload/"+currentTime+"/"+ file.name).replace(/ /g, '')
+        let contentType
         const params = {
           ACL: 'public-read',
           Body: file,
@@ -277,25 +292,34 @@ const Workspace = function () {
           Key: key
         };
         
+        
         myBucket.putObject(params)
           .on('httpUploadProgress', (evt) => {
             setProgress(Math.round((evt.loaded / evt.total) * 100))
           })
-          .send((err) => {
+          .send((err,data) => {
             if (err){ console.log(err)
                 alert("서버에 에러가 발생하였습니다!")
                 return;
             }
+            else{
+                if(file.type.indexOf("image")==-1){
+                            contentType=1
+                          }
+                        else{
+                            contentType=2
+                          }
+                        stomp.send('/pub/chat/message', {}, JSON.stringify({
+                            departmentId: localStorage.getItem('accessedDepartmentId'),
+                            email: localStorage.getItem('loginMemberEmail'),
+                            content: file.name,
+                            contentType: contentType,
+                            date : currentTime,
+                            link:"https://"+S3_BUCKET+".s3."+REGION+".amazonaws.com/"+key
+                         }))
+            }
           })
 
-          stomp.send('/pub/chat/message', {}, JSON.stringify({
-                    departmentId: localStorage.getItem('accessedDepartmentId'),
-                    email: localStorage.getItem('loginMemberEmail'),
-                    content: file.name,
-                    contentType: 1,
-                    date : currentTime,
-                    link:"https://"+S3_BUCKET+".s3."+REGION+".amazonaws.com/"+key
-            }))
     }
 
     function containsFiles(event) {
@@ -523,6 +547,7 @@ const Workspace = function () {
                                         버켓
                                         
                                     </div>
+                                    <img src="https://passta-lobster-bucket.s3.ap-northeast-2.amazonaws.com/upload/2022-11-1813%3A57%3A08/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA2022-10-29%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB3.13.25.png"/>
                                     <div className='child'></div>
                                 </div>
                             </div>
