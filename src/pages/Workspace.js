@@ -21,6 +21,8 @@ import MemberList from '../components/workspace/MemberList';
 import DepartmentList from '../components/workspace/DepartmentList';
 import ChatBox from '../components/workspace/chat/ChatBox';
 import ChatInputBox from '../components/workspace/chat/ChatInputBox';
+import ImgList from '../components/workspace/ImgList';
+import FileList from '../components/workspace/FileList';
 
 import { WorkspaceModel } from '../models/model/Workspace';
 import { WorkspaceViewModel } from '../models/view-model/WorkspaceViewModel';
@@ -94,9 +96,17 @@ const Workspace = function () {
     const [selectedFile, setSelectedFile] = useState(null);
     const [progress , setProgress] = useState(0);
 
-    let navigate = useNavigate();
+    let [fileList, setFileList] = useState([]);
+    let [imgList, setImgList] = useState([]);
+    let [fileClassification, setFileClassification] = useState('file');
 
+    let navigate = useNavigate();
     const location = useLocation();
+
+    useEffect( () => {
+        console.log(fileList)
+        console.log(imgList)
+    }, [fileList, imgList])
     
     useEffect(() => {
         localStorage.setItem('accessedDepartmentId', location.pathname.split('department/')[1].replace("%20", " "))
@@ -151,7 +161,16 @@ const Workspace = function () {
         .then(
             (res) => {
                 if (res.length > 0){
+                    let files = chatViewModel.getFiles(localStorage.getItem('accessedDepartmentId'))
+                    let imgs = chatViewModel.getImgs(localStorage.getItem('accessedDepartmentId'))
+
                     chatViewModel.update(res);
+                    if (fileList.length !== files.length){
+                        setFileList(files)
+                    }
+                    if (imgList.length !== imgs.length){
+                        setImgList(imgs)
+                    }
                     setChatUpdateState(res.at(Last).chatId);
                 }
             }
@@ -285,41 +304,40 @@ const Workspace = function () {
         let key=("upload/"+currentTime+"/"+ file.name).replace(/ /g, '')
         let contentType
         const params = {
-          ACL: 'public-read',
-          Body: file,
-          ACL: AWS.config.acl,
-          Bucket: S3_BUCKET,
-          Key: key
+            ACL: 'public-read',
+            Body: file,
+            ACL: AWS.config.acl,
+            Bucket: S3_BUCKET,
+            Key: key
         };
         
         
         myBucket.putObject(params)
-          .on('httpUploadProgress', (evt) => {
+        .on('httpUploadProgress', (evt) => {
             setProgress(Math.round((evt.loaded / evt.total) * 100))
-          })
-          .send((err,data) => {
+        })
+        .send((err,data) => {
             if (err){ console.log(err)
                 alert("서버에 에러가 발생하였습니다!")
                 return;
             }
             else{
                 if(file.type.indexOf("image")==-1){
-                            contentType=1
-                          }
-                        else{
-                            contentType=2
-                          }
-                        stomp.send('/pub/chat/message', {}, JSON.stringify({
-                            departmentId: localStorage.getItem('accessedDepartmentId'),
-                            email: localStorage.getItem('loginMemberEmail'),
-                            content: file.name,
-                            contentType: contentType,
-                            date : currentTime,
-                            link:"https://"+S3_BUCKET+".s3."+REGION+".amazonaws.com/"+key
-                         }))
+                    contentType=1
+                }
+                else{
+                    contentType=2
+                }
+                stomp.send('/pub/chat/message', {}, JSON.stringify({
+                    departmentId: localStorage.getItem('accessedDepartmentId'),
+                    email: localStorage.getItem('loginMemberEmail'),
+                    content: file.name,
+                    contentType: contentType,
+                    date : currentTime,
+                    link:"https://"+S3_BUCKET+".s3."+REGION+".amazonaws.com/"+key
+                }))
             }
-          })
-
+        })
     }
 
     function containsFiles(event) {
@@ -521,7 +539,9 @@ const Workspace = function () {
                                 </div>
                                 <div className='fourth-col-UploadedFile'>
                                     <div className='container-top'>
-                                        파일목록
+                                        <span onClick={() => setFileClassification('file')}>파일목록</span>
+                                        <span onClick={() => setFileClassification('img')} style={{paddingLeft:'5px'}}>이미지목록</span>
+                                    
                                         <input
                                             style={{display: 'none'}}
                                             ref={inputRef}
@@ -540,14 +560,24 @@ const Workspace = function () {
                                             setSelectedFile={setSelectedFile}
                                             />
                                     </Modal>
-                                    <div className='child'></div>
+                                    <div className='file-list-container'>
+                                        {fileClassification === 'file' ?
+                                            <FileList
+                                                fileList = {fileList}
+                                            />
+                                        :
+                                        <ImgList
+                                            imgList = {imgList}
+                                        />                                
+                                        }
+                                    </div>
                                 </div>
                                 <div className='fourth-col-Bucket'>
                                     <div className='container-top'>
                                         버켓
                                         
                                     </div>
-                                    <img src="https://passta-lobster-bucket.s3.ap-northeast-2.amazonaws.com/upload/2022-11-1813%3A57%3A08/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA2022-10-29%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB3.13.25.png"/>
+                                    {/* <img src="https://passta-lobster-bucket.s3.ap-northeast-2.amazonaws.com/upload/2022-11-1813%3A57%3A08/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA2022-10-29%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB3.13.25.png"/> */}
                                     <div className='child'></div>
                                 </div>
                             </div>

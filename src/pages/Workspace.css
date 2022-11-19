@@ -260,3 +260,14 @@ input::placeholder {
 .menu-unselected:hover{
     color:black;
 }
+
+.file-list-container{
+    background-color: white;
+    height: 180px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius:20px;
+    padding-top: 10px;
+    overflow-y: auto;
+    padding-left: 20px;
+    display: block;
+}
