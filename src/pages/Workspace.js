@@ -91,7 +91,8 @@ const Workspace = function () {
     let [selectedMenu,setSelectedMenu]=useState(1);
 
     let [departmentIdList, setDepartmentIdList] = useState([]);
-    let selectedFileName=""
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [progress , setProgress] = useState(0);
 
     let navigate = useNavigate();
 
@@ -259,8 +260,6 @@ const Workspace = function () {
         params:{Bucket: S3_BUCKET},
         region: REGION
     });
-    const [selectedFile, setSelectedFile] = useState(null);
-    const [progress , setProgress] = useState(0);
 
     const handleFileInput = (e) => {
         const file = e.target.files[0];
@@ -271,11 +270,10 @@ const Workspace = function () {
         // }
         setProgress(0);
         setSelectedFile(e.target.files[0]);
-        selectedFileName=e.target.files[0].name;
         setFileUploadConfirmModalIsOpen(true)
     }
 
-    const uploadFile = (file) => {
+    const uploadFile = async (file) => {
         let currentDate = new Date();
         let year = currentDate.getFullYear();
         let month = currentDate.getMonth() + 1;
@@ -285,6 +283,7 @@ const Workspace = function () {
         let seconds = String(currentDate.getSeconds()).padStart(2, "0");
         let currentTime = year + '-' + month + '-' + date + ' ' + houres + ':' + minutes + ':' + seconds;
         let key=("upload/"+currentTime+"/"+ file.name).replace(/ /g, '')
+        let contentType
         const params = {
           ACL: 'public-read',
           Body: file,
@@ -293,25 +292,34 @@ const Workspace = function () {
           Key: key
         };
         
+        
         myBucket.putObject(params)
           .on('httpUploadProgress', (evt) => {
             setProgress(Math.round((evt.loaded / evt.total) * 100))
           })
-          .send((err) => {
+          .send((err,data) => {
             if (err){ console.log(err)
                 alert("서버에 에러가 발생하였습니다!")
                 return;
             }
+            else{
+                if(file.type.indexOf("image")==-1){
+                            contentType=1
+                          }
+                        else{
+                            contentType=2
+                          }
+                        stomp.send('/pub/chat/message', {}, JSON.stringify({
+                            departmentId: localStorage.getItem('accessedDepartmentId'),
+                            email: localStorage.getItem('loginMemberEmail'),
+                            content: file.name,
+                            contentType: contentType,
+                            date : currentTime,
+                            link:"https://"+S3_BUCKET+".s3."+REGION+".amazonaws.com/"+key
+                         }))
+            }
           })
 
-          stomp.send('/pub/chat/message', {}, JSON.stringify({
-                    departmentId: localStorage.getItem('accessedDepartmentId'),
-                    email: localStorage.getItem('loginMemberEmail'),
-                    content: file.name,
-                    contentType: 1,
-                    date : currentTime,
-                    link:"https://"+S3_BUCKET+".s3."+REGION+".amazonaws.com/"+key
-            }))
     }
 
     function containsFiles(event) {
@@ -539,6 +547,7 @@ const Workspace = function () {
                                         버켓
                                         
                                     </div>
+                                    <img src="https://passta-lobster-bucket.s3.ap-northeast-2.amazonaws.com/upload/2022-11-1813%3A57%3A08/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA2022-10-29%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB3.13.25.png"/>
                                     <div className='child'></div>
                                 </div>
                             </div>
