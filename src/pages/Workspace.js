@@ -96,7 +96,7 @@ const Workspace = function () {
     const [selectedFile, setSelectedFile] = useState(null);
     const [progress , setProgress] = useState(0);
 
-    let [isShowFileList, setIsShowFileList]=useState(true);
+    let [isShowFileList, setIsShowFileList]=useState(false);
     let [fileList, setFileList] = useState([]);
     let [imgList, setImgList] = useState([]);
     let [fileClassification, setFileClassification] = useState('file');
@@ -539,31 +539,23 @@ const Workspace = function () {
                                     </div>
                                 </div>
                                 <div className='fourth-col-UploadedFile'>
-                                    <div className='container-top' style={{paddingTop:'19px'}}>
-                                        {fileClassification === 'file' ? 
-                                            <>
-                                                <div className='file-category' onClick={() => setFileClassification('file')} style={{backgroundColor:'white'}}> 파일목록</div>
-                                                <div className='file-category' onClick={() => setFileClassification('img')} style={{marginLeft:'1px', backgroundColor:'gainsboro'}}>이미지목록</div>
-                                            </>
-                                            :
-                                            <>
-                                                <div className='file-category' onClick={() => setFileClassification('file')} style={{backgroundColor:'gainsboro'}}>파일목록</div>
-                                                <div className='file-category' onClick={() => setFileClassification('img')} style={{marginLeft:'1px', backgroundColor:'white'}}>이미지목록</div>      
-                                            </>
-                                        }
-                                        <input
-                                            style={{display: 'none'}}
-                                            ref={inputRef}
-                                            type="file"
-                                            onChange={handleFileInput}
-                                        />
+                                    <div className='container-top'>
+                                        <div style={{float:'left'}}>파일함</div>
+                                            <input
+                                                style={{display: 'none'}}
+                                                ref={inputRef}
+                                                type="file"
+                                                onChange={handleFileInput}
+                                            />
 
-                                        <div style={{float:'right'}} onClick={()=>setIsShowFileList(!isShowFileList)}>{
-                                            isShowFileList===true?
-                                            <BiChevronsDown className='arrow'/>
-                                            :
-                                            <BiChevronsUp className='arrow'/>
-                                        }</div>
+                                        <div style={{float:'right'}} onClick={()=>setIsShowFileList(!isShowFileList)}>
+                                            {
+                                                isShowFileList===true?
+                                                    <BiChevronsDown className='arrow'/>
+                                                :
+                                                    <BiChevronsUp className='arrow'/>
+                                            }
+                                        </div>
 
                                         <FaUpload onClick={handleClick} style={{float:'right'}} className="arrow"/>
                                     </div>
@@ -576,21 +568,36 @@ const Workspace = function () {
                                             setSelectedFile={setSelectedFile}
                                             />
                                     </Modal>
-                                    <div className='file-list-container'>
-                                        {
-                                            isShowFileList === true ?
-                                                fileClassification === 'file' ?
+
+                                    {
+                                        isShowFileList === true ?
+                                            fileClassification === 'file' ?
+                                            <>
+                                                <div style={{backgroundColor:'rgb(246,189,189)'}}>
+                                                    <div className='file-category' onClick={() => setFileClassification('file')} style={{backgroundColor:'white'}}>파일</div>
+                                                    <div className='file-category' onClick={() => setFileClassification('img')} style={{backgroundColor:'gainsboro'}}>이미지</div>
+                                                </div>
+                                                <div className='file-list-container'>
                                                     <FileList
                                                         fileList = {fileList}
                                                     />
-                                                :
+                                                </div>
+                                            </>
+                                            :
+                                            <>
+                                                <div style={{backgroundColor:'rgb(246,189,189)'}}>
+                                                    <div className='file-category' onClick={() => setFileClassification('file')} style={{backgroundColor:'gainsboro'}}>파일</div>
+                                                    <div className='file-category' onClick={() => setFileClassification('img')} style={{backgroundColor:'white'}}>이미지</div>      
+                                                </div>
+                                                <div className='file-list-container'>
                                                     <ImgList
                                                         imgList = {imgList}
-                                                    />                                
-                                            :
-                                            <></>
-                                        }
-                                    </div>
+                                                    />  
+                                                </div>
+                                            </>                              
+                                        :
+                                        <></>
+                                    }
                                 </div>
                                 <div className='fourth-col-Bucket'>
                                     <div className='container-top'>
