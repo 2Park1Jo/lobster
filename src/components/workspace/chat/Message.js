@@ -33,7 +33,7 @@ export default function Message({ chatSender, chatDate, chatContent,chatType,lin
             :chatType==="0"?
                 <div className='message'>
                     <li className="small text-muted">{ chatSender } { chatDate.split(" ")[1] }</li>
-                    <ListGroup.Item style={{width: 'auto'}} action className="rounded">
+                    <ListGroup.Item style={{width: 'fit-content'}} className="rounded">
                         <span className="small"> { chatContent } </span>
                     </ListGroup.Item>
                 </div>
