@@ -8,7 +8,7 @@ export default function FileList(props){
         let link = file.link
         files.push(
             <a href={link} key={index} className="file-container">
-                <AiOutlineFileText style={{fontSize:"50px"}}/>
+                <AiOutlineFileText style={{fontSize:"50px", color:"black"}}/>
                 <div className="content">{file.content}</div>
             </a>
         )

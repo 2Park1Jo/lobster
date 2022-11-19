@@ -96,6 +96,7 @@ const Workspace = function () {
     const [selectedFile, setSelectedFile] = useState(null);
     const [progress , setProgress] = useState(0);
 
+    let [isShowFileList, setIsShowFileList]=useState(true);
     let [fileList, setFileList] = useState([]);
     let [imgList, setImgList] = useState([]);
     let [fileClassification, setFileClassification] = useState('file');
@@ -103,10 +104,10 @@ const Workspace = function () {
     let navigate = useNavigate();
     const location = useLocation();
 
-    useEffect( () => {
-        console.log(fileList)
-        console.log(imgList)
-    }, [fileList, imgList])
+    // useEffect( () => {
+    //     console.log(fileList)
+    //     console.log(imgList)
+    // }, [fileList, imgList])
     
     useEffect(() => {
         localStorage.setItem('accessedDepartmentId', location.pathname.split('department/')[1].replace("%20", " "))
@@ -538,16 +539,31 @@ const Workspace = function () {
                                     </div>
                                 </div>
                                 <div className='fourth-col-UploadedFile'>
-                                    <div className='container-top'>
-                                        <span onClick={() => setFileClassification('file')}>파일목록</span>
-                                        <span onClick={() => setFileClassification('img')} style={{paddingLeft:'5px'}}>이미지목록</span>
-                                    
+                                    <div className='container-top' style={{paddingTop:'19px'}}>
+                                        {fileClassification === 'file' ? 
+                                            <>
+                                                <div className='file-category' onClick={() => setFileClassification('file')} style={{backgroundColor:'white'}}> 파일목록</div>
+                                                <div className='file-category' onClick={() => setFileClassification('img')} style={{marginLeft:'1px', backgroundColor:'gainsboro'}}>이미지목록</div>
+                                            </>
+                                            :
+                                            <>
+                                                <div className='file-category' onClick={() => setFileClassification('file')} style={{backgroundColor:'gainsboro'}}>파일목록</div>
+                                                <div className='file-category' onClick={() => setFileClassification('img')} style={{marginLeft:'1px', backgroundColor:'white'}}>이미지목록</div>      
+                                            </>
+                                        }
                                         <input
                                             style={{display: 'none'}}
                                             ref={inputRef}
                                             type="file"
                                             onChange={handleFileInput}
                                         />
+
+                                        <div style={{float:'right'}} onClick={()=>setIsShowFileList(!isShowFileList)}>{
+                                            isShowFileList===true?
+                                            <BiChevronsDown className='arrow'/>
+                                            :
+                                            <BiChevronsUp className='arrow'/>
+                                        }</div>
 
                                         <FaUpload onClick={handleClick} style={{float:'right'}} className="arrow"/>
                                     </div>
@@ -561,14 +577,18 @@ const Workspace = function () {
                                             />
                                     </Modal>
                                     <div className='file-list-container'>
-                                        {fileClassification === 'file' ?
-                                            <FileList
-                                                fileList = {fileList}
-                                            />
-                                        :
-                                        <ImgList
-                                            imgList = {imgList}
-                                        />                                
+                                        {
+                                            isShowFileList === true ?
+                                                fileClassification === 'file' ?
+                                                    <FileList
+                                                        fileList = {fileList}
+                                                    />
+                                                :
+                                                    <ImgList
+                                                        imgList = {imgList}
+                                                    />                                
+                                            :
+                                            <></>
                                         }
                                     </div>
                                 </div>
