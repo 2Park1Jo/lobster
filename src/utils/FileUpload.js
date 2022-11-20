@@ -25,9 +25,9 @@ const myBucket=new AWS.S3({
 //     setSelectedFile(e.target.files[0]);
 // }
 
-export const uploadFiles=(files,departmentId,setDrag)=>{
+export const uploadFiles=(e)=>{
     
-    setDrag(false);
+    console.log(e.target.files[0].name)
 }
 
 // const uploadFile = (file,departmentId,time) => {

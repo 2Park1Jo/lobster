@@ -260,3 +260,19 @@ input::placeholder {
 .menu-unselected:hover{
     color:black;
 }
+.file-category{
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    background-color: whitesmoke;
+    font-size: 15px;
+    display: inline;
+    padding-left: 7px;
+    padding-right: 7px;
+    padding-top: 5px;
+    padding-bottom: 3px;
+    cursor: pointer;
+}
+
+.file-category:hover{
+    background-color: gray;
+}
