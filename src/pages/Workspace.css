@@ -272,6 +272,19 @@ input::placeholder {
     display: block;
 }
 
+.file-search{
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    background-color: whitesmoke;
+    font-size: 10px;
+    width: 185px;
+    height: 24px;
+    float: right;
+    padding-left: 7px;
+    padding-right: 7px;
+}
+
 .file-category{
     border-top-left-radius: 7px;
     border-top-right-radius: 7px;

@@ -1,9 +1,10 @@
 import './List.css'
 import { AiOutlineFileText } from "react-icons/ai";
+import { Children } from 'react';
 
 export default function FileList(props){
     let files = [];
-
+    
     props.fileList.map( (file, index) => {
         let link = file.link
         files.push(

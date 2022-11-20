@@ -67,7 +67,6 @@ const departmentMemberViewModel = new DepartmentMemberViewModel(departmentMember
 const chat = new Chat();
 const chatViewModel = new ChatViewModel(chat);
 
-// const sockJs = new SockJS(BACK_BASE_URL + "chat");
 let stomp;
 
 const Workspace = function () {
@@ -100,15 +99,11 @@ const Workspace = function () {
     let [fileList, setFileList] = useState([]);
     let [imgList, setImgList] = useState([]);
     let [fileClassification, setFileClassification] = useState('file');
+    let [fileSearch, setFileSearch] = useState('');
 
     let navigate = useNavigate();
     const location = useLocation();
 
-    // useEffect( () => {
-    //     console.log(fileList)
-    //     console.log(imgList)
-    // }, [fileList, imgList])
-    
     useEffect(() => {
         localStorage.setItem('accessedDepartmentId', location.pathname.split('department/')[1].replace("%20", " "))
         setAccessedDepartment({
@@ -303,7 +298,8 @@ const Workspace = function () {
         let seconds = String(currentDate.getSeconds()).padStart(2, "0");
         let currentTime = year + '-' + month + '-' + date + ' ' + houres + ':' + minutes + ':' + seconds;
         let key=("upload/"+currentTime+"/"+ file.name).replace(/ /g, '')
-        let contentType
+        let contentType;
+
         const params = {
             ACL: 'public-read',
             Body: file,
@@ -311,7 +307,6 @@ const Workspace = function () {
             Bucket: S3_BUCKET,
             Key: key
         };
-        
         
         myBucket.putObject(params)
         .on('httpUploadProgress', (evt) => {
@@ -323,16 +318,17 @@ const Workspace = function () {
                 return;
             }
             else{
-                if(file.type.indexOf("image")==-1){
+                if(file.type.indexOf("image")===-1){
                     contentType=1
                 }
                 else{
                     contentType=2
                 }
+
                 stomp.send('/pub/chat/message', {}, JSON.stringify({
                     departmentId: localStorage.getItem('accessedDepartmentId'),
                     email: localStorage.getItem('loginMemberEmail'),
-                    content: file.name,
+                    content: file.name, 
                     contentType: contentType,
                     date : currentTime,
                     link:"https://"+S3_BUCKET+".s3."+REGION+".amazonaws.com/"+key
@@ -576,10 +572,16 @@ const Workspace = function () {
                                                 <div style={{backgroundColor:'rgb(246,189,189)'}}>
                                                     <div className='file-category' onClick={() => setFileClassification('file')} style={{backgroundColor:'white'}}>파일</div>
                                                     <div className='file-category' onClick={() => setFileClassification('img')} style={{backgroundColor:'gainsboro'}}>이미지</div>
+                                                    <input
+                                                        className="file-search"
+                                                        placeholder="search"
+                                                        value={ fileSearch }
+                                                        onChange={e => setFileSearch(e.target.value)}
+                                                    />
                                                 </div>
                                                 <div className='file-list-container'>
                                                     <FileList
-                                                        fileList = {fileList}
+                                                        fileList = {fileList.filter(file => file.content.includes(fileSearch))}
                                                     />
                                                 </div>
                                             </>
@@ -588,10 +590,16 @@ const Workspace = function () {
                                                 <div style={{backgroundColor:'rgb(246,189,189)'}}>
                                                     <div className='file-category' onClick={() => setFileClassification('file')} style={{backgroundColor:'gainsboro'}}>파일</div>
                                                     <div className='file-category' onClick={() => setFileClassification('img')} style={{backgroundColor:'white'}}>이미지</div>      
+                                                    <input
+                                                        className="file-search"
+                                                        placeholder="search"
+                                                        value={ fileSearch }
+                                                        onChange={e => setFileSearch(e.target.value)}
+                                                    />
                                                 </div>
                                                 <div className='file-list-container'>
                                                     <ImgList
-                                                        imgList = {imgList}
+                                                        imgList = {imgList.filter(img => img.content.includes(fileSearch))}
                                                     />  
                                                 </div>
                                             </>                              
