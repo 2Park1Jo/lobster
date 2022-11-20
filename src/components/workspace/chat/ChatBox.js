@@ -22,7 +22,7 @@ export default function ChatBox(props){
     }, [props.departmentId])
 
     return (
-        <div className="px-4 py-3 bg-white">
+        <div className="px-4 py-3">
             <ListGroup>
                 { chats }
                 <div ref={ props.messageEnd }></div>

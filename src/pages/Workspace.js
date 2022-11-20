@@ -40,7 +40,7 @@ import { BsGearFill } from "react-icons/bs";
 import { MdPostAdd } from "react-icons/md";
 import { BiChevronsDown,BiChevronsUp,BiUserPlus } from "react-icons/bi";
 import {SiBitbucket} from "react-icons/si";
-import {MdOutlineWork} from "react-icons/md";
+import {MdOutlineWork, MdSensorDoor} from "react-icons/md";
 
 import { ListGroup } from 'react-bootstrap';
 import Bucket from '../components/workspace/Bucket';
@@ -494,10 +494,11 @@ const Workspace = function () {
                             <div className='fourth-col-DepartmentInfo'>
                                 <span>{ departmentViewModel.getDeadLine(localStorage.getItem('accessedDepartmentId')) }</span>
                                 <FaPowerOff className='setting' style={{marginLeft:'10px'}} onClick={()=> logout()}/>
-                                <BsGearFill className='setting' onClick={()=> setdpModifyModalIsOpen(true)}/>
+                                <BsGearFill className='setting' style={{marginLeft:'10px'}} onClick={()=> setdpModifyModalIsOpen(true)}/>
                                     <Modal isOpen= {dpModifyModalIsOpen} style={modalStyles} onRequestClose={() => setdpModifyModalIsOpen(false)}>
                                         <DepartmentModifyModal departmentName={accessedDepartment.name} departmentGoal={departmentViewModel.getGoal(localStorage.getItem('accessedDepartmentId'))} departmentDeadLine={departmentViewModel.getDeadLine(localStorage.getItem('accessedDepartmentId'))} setdpModifyModalIsOpen={setdpModifyModalIsOpen}/>
                                     </Modal>
+                                <MdSensorDoor className='setting' onClick={()=> navigate('/workspacebanner')}/>
                                 <p className="h5 mb-0 py-1">&nbsp;{ departmentViewModel.getDDay(localStorage.getItem('accessedDepartmentId')) }</p>
                             </div>
 

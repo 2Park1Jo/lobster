@@ -12,7 +12,7 @@ export default function ChatInputBox(props){
     }
 
     useEffect( () => {
-        scrollToBottom("smooth");
+        scrollToBottom("auto");
     }, [props.chatUpdateState])
 
     useEffect( () => {

@@ -34,7 +34,7 @@
     min-width: 240px;
     flex-shrink: 0;
     align-items: center;
-    border-left: 1px solid black;
+    /* border-left: 1px solid black; */
 }
 .second-col-container{
     flex-direction: column;
@@ -45,11 +45,11 @@
     height: calc(100% - 80px);
     flex-shrink: 0;
     align-items: center;
-    border-right: 2px solid black;
+    /* border-right: 2px solid black; */
 }
 .third-col{
     flex-direction: column;
-    background-color: white;
+    background-color: gainsboro;
     flex-basis: 400px;
     min-width: 400px;
     flex-grow: 1;
@@ -74,7 +74,7 @@
     height: calc(100% - 80px);
     overflow-y: auto;
     align-items: center;
-    border-left: 1px solid black;
+    /* border-left: 1px solid black; */
 }
 .fourth-col::-webkit-scrollbar-track-piece{
     background-color: black;
@@ -92,10 +92,11 @@
     color:black;
 }
 .second-col-WorkspaceInfo{
+    font-size:larger;
     width: 100%;
-    height: 80px;
+    height: 80px; /* top height */
     background-color: rgb(246,189,189);
-    border-bottom: 1px solid black;
+    /* border-bottom: 1px solid black; */
 }
 .second-col-UserInfo{
     width: 100%;
@@ -121,9 +122,9 @@
 }
 .third-col-DepartmentInfo{
     width: 100%;
-    height: 80px;
+    height: 80px; /* top height */
     background-color: rgb(246,189,189);
-    border-bottom: 1px solid black;
+    /* border-bottom: 1px solid black; */
     padding-top: 5px;
 }
 .third-col-DepartmentInfo-Top{
@@ -166,9 +167,9 @@
 }
 .fourth-col-DepartmentInfo{
     width: 100%;
-    height: 80px;
+    height: 80px; /* top height */
     background-color: rgb(246,189,189);
-    border-bottom: 1px solid black;
+    /* border-bottom: 1px solid black; */
     padding-top: 10px;
     padding-right: 10px;
 }
