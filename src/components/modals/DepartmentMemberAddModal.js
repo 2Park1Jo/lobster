@@ -5,7 +5,7 @@ import './Modal.css';
 const CustomMenu = React.forwardRef(
 ({ children, style, className, 'aria-labelledby': labeledBy, selectedMemberNameList }, ref) => {
     const [value, setValue] = useState('');
-
+    
     return (
     <div>
         <div className='selected-member-container'>
@@ -22,7 +22,8 @@ const CustomMenu = React.forwardRef(
 
         <div ref={ref} className={className} aria-labelledby={labeledBy}>
             <ul className="list-unstyled" style={{width:'300px', height:'200px', overflowY:'auto'}}>
-                {React.Children.toArray(children).filter(
+                {
+                React.Children.toArray(children).filter(
                     (child) =>
                     !value || child.props.children.includes(value),
                 )}
