@@ -1,7 +1,7 @@
 import React from 'react'
-import Button from 'react-bootstrap/Button';
 import { useState, useEffect } from 'react';
 import { BiPaperPlane } from "react-icons/bi";
+import './ChatInputBox.css';
 
 const fileTypes = ["JPG", "PNG", "GIF"];
 export default function ChatInputBox(props){
@@ -56,10 +56,17 @@ export default function ChatInputBox(props){
 
     
     return(
-        <div className="input-group px-1">
-            <textarea placeholder="Type a message" className="form-control bg-light" value={ inputChattingContent }
-                onChange={e => setInputChattingContent(e.target.value)} onKeyPress={handleOnKeyPress} style={{paddingBottom:"10px"}}/>
-            <Button variant="secondary" onClick={ () => addChattingData(inputChattingContent) }> {<BiPaperPlane style={{fontSize:'20px'}}/>} </Button>
+        <div className='chat-input-box-container'>
+            <textarea 
+                className='chat-input-box'
+                placeholder="Type a message" 
+                value={ inputChattingContent }
+                onChange={e => setInputChattingContent(e.target.value)} 
+                onKeyPress={handleOnKeyPress}
+            />
+            <button className="send-button" onClick={ () => addChattingData(inputChattingContent) }> 
+                {<BiPaperPlane/>} 
+            </button>
         </div>
     )
 }

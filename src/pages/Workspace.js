@@ -8,7 +8,7 @@ import WorkspaceMemberAdd from '../components/modals/WorkspaceMemberAdd';
 import FileUploadConfirm from '../components/modals/FileUploadConfirm';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Modal from 'react-modal';
 import { useRecoilState } from "recoil";
 
@@ -328,7 +328,7 @@ const Workspace = function () {
                 stomp.send('/pub/chat/message', {}, JSON.stringify({
                     departmentId: localStorage.getItem('accessedDepartmentId'),
                     email: localStorage.getItem('loginMemberEmail'),
-                    content: file.name, 
+                    content: decodeURI(encodeURI(file.name)), 
                     contentType: contentType,
                     date : currentTime,
                     link:"https://"+S3_BUCKET+".s3."+REGION+".amazonaws.com/"+key
@@ -387,14 +387,14 @@ const Workspace = function () {
                 <div className='first-col'>
                     <div className='first-col-Button'>
                         {selectedMenu===1?
-                            <MdOutlineWork style={{color:'black'}} onClick={()=>setSelectedMenu(1)}/>
+                            <MdOutlineWork style={{color:'white'}} onClick={()=>setSelectedMenu(1)}/>
                             :
                             <MdOutlineWork className='menu-unselected' onClick={()=>setSelectedMenu(1)}/>
                         }
                     </div>
                     <div className='first-col-Button'>
                         {selectedMenu===2?
-                            <SiBitbucket style={{color:'black'}} onClick={()=>setSelectedMenu(2)}/>
+                            <SiBitbucket style={{color:'white'}} onClick={()=>setSelectedMenu(2)}/>
                             :
                             <SiBitbucket className='menu-unselected' onClick={()=>setSelectedMenu(2)}/>
                         }
@@ -404,7 +404,7 @@ const Workspace = function () {
                     <div className='contents-container'>
                         <div className='second-col'>
                             <div className='second-col-WorkspaceInfo'>
-                                { workspaceViewModel.getName(localStorage.getItem('accessedWorkspaceId') ) }
+                                <span className='workspace-name'>{ workspaceViewModel.getName(localStorage.getItem('accessedWorkspaceId') ) }</span>
                             </div>
                             <div className='second-col-container'>
                                 <div className='second-col-UserInfo'>
@@ -412,12 +412,13 @@ const Workspace = function () {
                                         <MemberCard 
                                             profilePicture='https://therichpost.com/wp-content/uploads/2020/06/avatar2.png'
                                             name={departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail'))}
+                                            email={localStorage.getItem('loginMemberEmail')}
                                             onClicked={() => alert(departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail')))}
                                         />
                                     </ListGroup>
                                 </div>
                             
-                                <div className='container-top'>
+                                <div className='container-top' style={{backgroundColor:'#E0E0E0'}}>
                                     <p>그룹 <MdPostAdd className="setting" onClick={()=> setModalIsOpen(true)}/> </p>
                                     <Modal ariaHideApp={false} isOpen= {modalIsOpen} style={modalStyles} onRequestClose={() => setModalIsOpen(false)}>
                                         <DepartmentAddModal 
@@ -437,7 +438,7 @@ const Workspace = function () {
                                     />
                                 </div>
 
-                                <div className='container-top'>
+                                <div className='container-top'style={{backgroundColor:'#E0E0E0'}}>
                                     <p>멤버 <BiUserPlus className="setting" onClick={()=> setWorkspaceMemberAddModalIsOpen(true)}/> </p>
                                     <Modal ariaHideApp={false} isOpen= {WorkspaceMemberAddModalIsOpen} style={modalStyles} onRequestClose={() => setWorkspaceMemberAddModalIsOpen(false)}>
                                         <WorkspaceMemberAdd 
@@ -459,8 +460,8 @@ const Workspace = function () {
 
                         <div className='third-col'>
                             <div className='third-col-DepartmentInfo'>
-                                <span className="h5">{ accessedDepartment.name } </span>
-                                <p className="small text-muted">&nbsp;{ departmentViewModel.getGoal(localStorage.getItem('accessedDepartmentId')) }</p>
+                                <span className='department-name'>{ accessedDepartment.name } </span>
+                                <div className='department-goal'>{ departmentViewModel.getGoal(localStorage.getItem('accessedDepartmentId')) }</div>
                             </div>
                             <div onDrop={e=>handleDrop(e)} onDragLeave={()=>setDrag(false)} onDragOver={e=>handleDragEnter(e)}>
                                 <div className='third-col-ChatContainer'>
@@ -492,21 +493,21 @@ const Workspace = function () {
                         </div>
                         <div className='fourth-col-container'>
                             <div className='fourth-col-DepartmentInfo'>
-                                <span>{ departmentViewModel.getDeadLine(localStorage.getItem('accessedDepartmentId')) }</span>
+                                <span className='department-deadline'>{ departmentViewModel.getDeadLine(localStorage.getItem('accessedDepartmentId')) }</span>
                                 <FaPowerOff className='setting' style={{marginLeft:'10px'}} onClick={()=> logout()}/>
                                 <BsGearFill className='setting' style={{marginLeft:'10px'}} onClick={()=> setdpModifyModalIsOpen(true)}/>
                                     <Modal isOpen= {dpModifyModalIsOpen} style={modalStyles} onRequestClose={() => setdpModifyModalIsOpen(false)}>
                                         <DepartmentModifyModal departmentName={accessedDepartment.name} departmentGoal={departmentViewModel.getGoal(localStorage.getItem('accessedDepartmentId'))} departmentDeadLine={departmentViewModel.getDeadLine(localStorage.getItem('accessedDepartmentId'))} setdpModifyModalIsOpen={setdpModifyModalIsOpen}/>
                                     </Modal>
                                 <MdSensorDoor className='setting' onClick={()=> navigate('/workspacebanner')}/>
-                                <p className="h5 mb-0 py-1">&nbsp;{ departmentViewModel.getDDay(localStorage.getItem('accessedDepartmentId')) }</p>
+                                <div className='department-dday'>{ departmentViewModel.getDDay(localStorage.getItem('accessedDepartmentId')) }</div>
                             </div>
 
                             <div className='fourth-col'>
 
                                 <div className='fourth-col-DPMemberListContainer'>
                                     <div className='container-top'>
-                                        <div style={{float:'left'}}>참여자 {departmentMemberViewModel.getMembers(localStorage.getItem('accessedDepartmentId')).length}</div>
+                                        <div style={{float:'left', color:'white'}}>참여자 ({departmentMemberViewModel.getMembers(localStorage.getItem('accessedDepartmentId')).length})</div>
                                         
                                         <div style={{float:'right'}} onClick={()=>setIsShowDPmemberList(!isShowDPmemberList)}>{
                                             isShowDPmemberList===true?
@@ -537,7 +538,7 @@ const Workspace = function () {
                                 </div>
                                 <div className='fourth-col-UploadedFile'>
                                     <div className='container-top'>
-                                        <div style={{float:'left'}}>파일함</div>
+                                        <div style={{float:'left', color:'white'}}>파일함</div>
                                             <input
                                                 style={{display: 'none'}}
                                                 ref={inputRef}
@@ -570,9 +571,9 @@ const Workspace = function () {
                                         isShowFileList === true ?
                                             fileClassification === 'file' ?
                                             <>
-                                                <div style={{backgroundColor:'rgb(246,189,189)'}}>
-                                                    <div className='file-category' onClick={() => setFileClassification('file')} style={{backgroundColor:'white'}}>파일</div>
-                                                    <div className='file-category' onClick={() => setFileClassification('img')} style={{backgroundColor:'gainsboro'}}>이미지</div>
+                                                <div>
+                                                    <div className='file-category' onClick={() => setFileClassification('file')} style={{backgroundColor:'black'}}>파일</div>
+                                                    <div className='file-category' onClick={() => setFileClassification('img')} style={{backgroundColor:'#717171'}}>이미지</div>
                                                     <input
                                                         className="file-search"
                                                         placeholder="search"
@@ -588,9 +589,9 @@ const Workspace = function () {
                                             </>
                                             :
                                             <>
-                                                <div style={{backgroundColor:'rgb(246,189,189)'}}>
-                                                    <div className='file-category' onClick={() => setFileClassification('file')} style={{backgroundColor:'gainsboro'}}>파일</div>
-                                                    <div className='file-category' onClick={() => setFileClassification('img')} style={{backgroundColor:'white'}}>이미지</div>      
+                                                <div>
+                                                    <div className='file-category' onClick={() => setFileClassification('file')} style={{backgroundColor:'#717171'}}>파일</div>
+                                                    <div className='file-category' onClick={() => setFileClassification('img')} style={{backgroundColor:'black'}}>이미지</div>      
                                                     <input
                                                         className="file-search"
                                                         placeholder="search"
@@ -610,8 +611,7 @@ const Workspace = function () {
                                 </div>
                                 <div className='fourth-col-Bucket'>
                                     <div className='container-top'>
-                                        버켓
-                                        
+                                        <div style={{float:'left', color:'white'}}>버켓</div>
                                     </div>
                                     {/* <img src="https://passta-lobster-bucket.s3.ap-northeast-2.amazonaws.com/upload/2022-11-1813%3A57%3A08/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA2022-10-29%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB3.13.25.png"/> */}
                                     <div className='child'></div>
