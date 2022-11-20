@@ -1,0 +1,21 @@
+.file-container{
+    border: 1px solid #CFCFCF;
+    background-color: #F1F1F1;
+    border-radius: 10px;
+    text-align: center;
+    /* height: fit-content; */
+    height: 92px;
+    width: 70px;
+    margin-right: 10px;
+    padding: 5px;
+    display: inline-block;
+    margin-top: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    overflow-y:auto;
+}
+
+.content{
+    font-size: 10px;
+    color: black;
+}

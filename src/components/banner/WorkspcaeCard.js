@@ -61,7 +61,7 @@ export default function WorkspaceCard({image, overline, heading, body}) {
                     className={styles.plus}
                     image={image}
                 />
-                <CardContent className={styles.content}>
+                <CardContent className={styles.content} style={{textAlign:'center'}}>
                     <TextInfoContent
                         classes={textCardContentStyles}
                         heading={heading}

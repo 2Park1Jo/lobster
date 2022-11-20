@@ -10,6 +10,7 @@ export default function MemberList(props){
             <MemberCard
                 profilePicture='https://therichpost.com/wp-content/uploads/2020/06/avatar2.png'
                 name={member.memberName}
+                email={member.email}
                 role={member.departmentRole}
                 onClicked={() => alert(member.memberName)}
                 key = {index}

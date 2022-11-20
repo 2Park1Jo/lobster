@@ -55,6 +55,11 @@ export class DepartmentViewModel{
                 deadLine = department.departmentDeadline;
             }
         })
+
+        if (deadLine !== null){
+            deadLine = "마감일 : " + deadLine;
+        }
+
         return deadLine;
     }
 

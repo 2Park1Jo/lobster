@@ -21,4 +21,26 @@ export class ChatViewModel{
 
         return chats;
     }
+
+    getFiles(departmentId){
+        let files = [];
+        this.getChats(departmentId).map( (chat) => {
+            if(chat.contentType === '1'){
+                files.push(chat)
+            }
+        })
+
+        return files;
+    }
+
+    getImgs(departmentId){
+        let imgs = [];
+        this.getChats(departmentId).map( (chat) => {
+            if(chat.contentType === '2'){
+                imgs.push(chat)
+            }
+        })
+
+        return imgs;
+    }
 }

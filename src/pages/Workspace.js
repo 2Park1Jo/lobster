@@ -9,7 +9,7 @@ import FileUploadConfirm from '../components/modals/FileUploadConfirm';
 import BucketModal from '../components/modals/BucketModal';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Modal from 'react-modal';
 import { useRecoilState } from "recoil";
 
@@ -22,6 +22,8 @@ import MemberList from '../components/workspace/MemberList';
 import DepartmentList from '../components/workspace/DepartmentList';
 import ChatBox from '../components/workspace/chat/ChatBox';
 import ChatInputBox from '../components/workspace/chat/ChatInputBox';
+import ImgList from '../components/workspace/ImgList';
+import FileList from '../components/workspace/FileList';
 
 import { WorkspaceModel } from '../models/model/Workspace';
 import { WorkspaceViewModel } from '../models/view-model/WorkspaceViewModel';
@@ -34,12 +36,12 @@ import { Chat } from '../models/model/Chat';
 import { ChatViewModel } from '../models/view-model/ChatViewModel';
 import { Department } from '../models/model/Department';
 
-import { FaPowerOff, FaUpload} from "react-icons/fa";
-import { BsBucketFill, BsGearFill } from "react-icons/bs";
+import { FaPowerOff, FaUpload, FaFileUpload} from "react-icons/fa";
+import { BsGearFill } from "react-icons/bs";
 import { MdPostAdd } from "react-icons/md";
 import { BiChevronsDown,BiChevronsUp,BiUserPlus } from "react-icons/bi";
-import {SiBitbucket} from "react-icons/si";
-import {MdOutlineWork} from "react-icons/md";
+import { SiBitbucket } from "react-icons/si";
+import { MdOutlineWork, MdSensorDoor } from "react-icons/md";
 
 import { ListGroup } from 'react-bootstrap';
 import Bucket from '../components/workspace/Bucket';
@@ -66,7 +68,6 @@ const departmentMemberViewModel = new DepartmentMemberViewModel(departmentMember
 const chat = new Chat();
 const chatViewModel = new ChatViewModel(chat);
 
-// const sockJs = new SockJS(BACK_BASE_URL + "chat");
 let stomp;
 
 const Workspace = function () {
@@ -96,10 +97,15 @@ const Workspace = function () {
     const [selectedFile, setSelectedFile] = useState([]);
     const [progress , setProgress] = useState(0);
 
-    let navigate = useNavigate();
+    let [isShowFileList, setIsShowFileList]=useState(false);
+    let [fileList, setFileList] = useState([]);
+    let [imgList, setImgList] = useState([]);
+    let [fileClassification, setFileClassification] = useState('file');
+    let [fileSearch, setFileSearch] = useState('');
 
+    let navigate = useNavigate();
     const location = useLocation();
-    
+
     useEffect(() => {
         localStorage.setItem('accessedDepartmentId', location.pathname.split('department/')[1].replace("%20", " "))
         setAccessedDepartment({
@@ -153,7 +159,16 @@ const Workspace = function () {
         .then(
             (res) => {
                 if (res.length > 0){
+                    let files = chatViewModel.getFiles(localStorage.getItem('accessedDepartmentId'))
+                    let imgs = chatViewModel.getImgs(localStorage.getItem('accessedDepartmentId'))
+
                     chatViewModel.update(res);
+                    if (fileList.length !== files.length){
+                        setFileList(files)
+                    }
+                    if (imgList.length !== imgs.length){
+                        setImgList(imgs)
+                    }
                     setChatUpdateState(res.at(Last).chatId);
                 }
             }
@@ -285,26 +300,26 @@ const Workspace = function () {
         let seconds = String(currentDate.getSeconds()).padStart(2, "0");
         let currentTime = year + '-' + month + '-' + date + ' ' + houres + ':' + minutes + ':' + seconds;
         let key=("upload/"+currentTime+"/"+ file.name).replace(/ /g, '')
-        let contentType
+        let contentType;
+
         const params = {
-          ACL: 'public-read',
-          Body: file,
-          ACL: AWS.config.acl,
-          Bucket: S3_BUCKET,
-          Key: key
+            ACL: 'public-read',
+            Body: file,
+            ACL: AWS.config.acl,
+            Bucket: S3_BUCKET,
+            Key: key
         };
         
-        
         myBucket.putObject(params)
-          .on('httpUploadProgress', (evt) => {
+        .on('httpUploadProgress', (evt) => {
             setProgress(Math.round((evt.loaded / evt.total) * 100))
-          })
-          .send((err,data) => {
+        })
+        .send((err,data) => {
             if (err){ console.log(err)
                 alert("서버에 에러가 발생하였습니다!")
             }
             else{
-                if(file.type.indexOf("image")==-1){
+                if(file.type.indexOf("image")===-1){
                             contentType=1
                           }
                         else{
@@ -388,14 +403,14 @@ const Workspace = function () {
                 <div className='first-col'>
                     <div className='first-col-Button'>
                         {selectedMenu===1?
-                            <MdOutlineWork style={{color:'black'}} onClick={()=>setSelectedMenu(1)}/>
+                            <MdOutlineWork style={{color:'white'}} onClick={()=>setSelectedMenu(1)}/>
                             :
                             <MdOutlineWork className='menu-unselected' onClick={()=>setSelectedMenu(1)}/>
                         }
                     </div>
                     <div className='first-col-Button'>
                         {selectedMenu===2?
-                            <SiBitbucket style={{color:'black'}} onClick={()=>setSelectedMenu(2)}/>
+                            <SiBitbucket style={{color:'white'}} onClick={()=>setSelectedMenu(2)}/>
                             :
                             <SiBitbucket className='menu-unselected' onClick={()=>setSelectedMenu(2)}/>
                         }
@@ -405,7 +420,7 @@ const Workspace = function () {
                     <div className='contents-container'>
                         <div className='second-col'>
                             <div className='second-col-WorkspaceInfo'>
-                                { workspaceViewModel.getName(localStorage.getItem('accessedWorkspaceId') ) }
+                                <span className='workspace-name'>{ workspaceViewModel.getName(localStorage.getItem('accessedWorkspaceId') ) }</span>
                             </div>
                             <div className='second-col-container'>
                                 <div className='second-col-UserInfo'>
@@ -413,12 +428,13 @@ const Workspace = function () {
                                         <MemberCard 
                                             profilePicture='https://therichpost.com/wp-content/uploads/2020/06/avatar2.png'
                                             name={departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail'))}
+                                            email={localStorage.getItem('loginMemberEmail')}
                                             onClicked={() => alert(departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail')))}
                                         />
                                     </ListGroup>
                                 </div>
                             
-                                <div className='container-top'>
+                                <div className='container-top' style={{backgroundColor:'#E0E0E0'}}>
                                     <p>그룹 <MdPostAdd className="setting" onClick={()=> setModalIsOpen(true)}/> </p>
                                     <Modal ariaHideApp={false} isOpen= {modalIsOpen} style={modalStyles} onRequestClose={() => setModalIsOpen(false)}>
                                         <DepartmentAddModal 
@@ -438,7 +454,7 @@ const Workspace = function () {
                                     />
                                 </div>
 
-                                <div className='container-top'>
+                                <div className='container-top'style={{backgroundColor:'#E0E0E0'}}>
                                     <p>멤버 <BiUserPlus className="setting" onClick={()=> setWorkspaceMemberAddModalIsOpen(true)}/> </p>
                                     <Modal ariaHideApp={false} isOpen= {WorkspaceMemberAddModalIsOpen} style={modalStyles} onRequestClose={() => setWorkspaceMemberAddModalIsOpen(false)}>
                                         <WorkspaceMemberAdd 
@@ -452,7 +468,7 @@ const Workspace = function () {
 
                                 <div className='second-col-WholeMemberList'>
                                     <MemberList 
-                                        members = {workspaceMemberViewModel.getMembers(localStorage.getItem('accessedWorkspaceId') )}
+                                        members = {workspaceMemberViewModel.getMembers(localStorage.getItem('accessedWorkspaceId')).filter(member => member.email !== localStorage.getItem('loginMemberEmail'))}
                                     />
                                 </div>
                             </div>
@@ -460,8 +476,8 @@ const Workspace = function () {
 
                         <div className='third-col'>
                             <div className='third-col-DepartmentInfo'>
-                                <span className="h5">{ accessedDepartment.name } </span>
-                                <p className="small text-muted">&nbsp;{ departmentViewModel.getGoal(localStorage.getItem('accessedDepartmentId')) }</p>
+                                <span className='department-name'>{ accessedDepartment.name } </span>
+                                <div className='department-goal'>{ departmentViewModel.getGoal(localStorage.getItem('accessedDepartmentId')) }</div>
                             </div>
                             <div onDrop={e=>handleDrop(e)} onDragLeave={()=>setDrag(false)} onDragOver={e=>handleDragEnter(e)}>
                                 <div className='third-col-ChatContainer'>
@@ -493,20 +509,21 @@ const Workspace = function () {
                         </div>
                         <div className='fourth-col-container'>
                             <div className='fourth-col-DepartmentInfo'>
-                                <span>{ departmentViewModel.getDeadLine(localStorage.getItem('accessedDepartmentId')) }</span>
+                                <span className='department-deadline'>{ departmentViewModel.getDeadLine(localStorage.getItem('accessedDepartmentId')) }</span>
                                 <FaPowerOff className='setting' style={{marginLeft:'10px'}} onClick={()=> logout()}/>
-                                <BsGearFill className='setting' onClick={()=> setdpModifyModalIsOpen(true)}/>
+                                <BsGearFill className='setting' style={{marginLeft:'10px'}} onClick={()=> setdpModifyModalIsOpen(true)}/>
                                     <Modal isOpen= {dpModifyModalIsOpen} style={modalStyles} onRequestClose={() => setdpModifyModalIsOpen(false)}>
                                         <DepartmentModifyModal departmentName={accessedDepartment.name} departmentGoal={departmentViewModel.getGoal(localStorage.getItem('accessedDepartmentId'))} departmentDeadLine={departmentViewModel.getDeadLine(localStorage.getItem('accessedDepartmentId'))} setdpModifyModalIsOpen={setdpModifyModalIsOpen}/>
                                     </Modal>
-                                <p className="h5 mb-0 py-1">&nbsp;{ departmentViewModel.getDDay(localStorage.getItem('accessedDepartmentId')) }</p>
+                                <MdSensorDoor className='setting' onClick={()=> navigate('/workspacebanner')}/>
+                                <div className='department-dday'>{ departmentViewModel.getDDay(localStorage.getItem('accessedDepartmentId')) }</div>
                             </div>
 
                             <div className='fourth-col'>
 
                                 <div className='fourth-col-DPMemberListContainer'>
                                     <div className='container-top'>
-                                        <div style={{float:'left'}}>참여자 {departmentMemberViewModel.getMembers(localStorage.getItem('accessedDepartmentId')).length}</div>
+                                        <div style={{float:'left', color:'white'}}>참여자 ({departmentMemberViewModel.getMembers(localStorage.getItem('accessedDepartmentId')).length})</div>
                                         
                                         <div style={{float:'right'}} onClick={()=>setIsShowDPmemberList(!isShowDPmemberList)}>{
                                             isShowDPmemberList===true?
@@ -537,15 +554,24 @@ const Workspace = function () {
                                 </div>
                                 <div className='fourth-col-UploadedFile'>
                                     <div className='container-top'>
-                                        파일목록
-                                        <input
-                                            style={{display: 'none'}}
-                                            ref={inputRef}
-                                            type="file"
-                                            onChange={handleFileInput}
-                                        />
+                                        <div style={{float:'left', color:'white'}}>파일함</div>
+                                            <input
+                                                style={{display: 'none'}}
+                                                ref={inputRef}
+                                                type="file"
+                                                onChange={handleFileInput}
+                                            />
 
-                                        <FaUpload onClick={handleClick} style={{float:'right'}} className="arrow"/>
+                                        <div style={{float:'right'}} onClick={()=>setIsShowFileList(!isShowFileList)}>
+                                            {
+                                                isShowFileList===true?
+                                                    <BiChevronsDown className='arrow'/>
+                                                :
+                                                    <BiChevronsUp className='arrow'/>
+                                            }
+                                        </div>
+
+                                        <FaFileUpload onClick={handleClick} style={{float:'right', fontSize:'16px', marginTop:'2px', marginRight:'3px'}} className="arrow"/>
                                     </div>
                                     <Modal ariaHideApp={false} isOpen= {FileUploadConfirmModalIsOpen} style={modalStyles} onRequestClose={() => closeUploadModal}>
                                         <FileUploadConfirm 
@@ -556,18 +582,53 @@ const Workspace = function () {
                                             setSelectedFile={setSelectedFile}
                                             />
                                     </Modal>
-                                    <div className='child'></div>
+
+                                    {
+                                        isShowFileList === true ?
+                                            fileClassification === 'file' ?
+                                            <>
+                                                <div>
+                                                    <div className='file-category' onClick={() => setFileClassification('file')} style={{backgroundColor:'black'}}>파일</div>
+                                                    <div className='file-category' onClick={() => setFileClassification('img')} style={{backgroundColor:'#717171'}}>이미지</div>
+                                                    <input
+                                                        className="file-search"
+                                                        placeholder="search"
+                                                        value={ fileSearch }
+                                                        onChange={e => setFileSearch(e.target.value)}
+                                                    />
+                                                </div>
+                                                <div className='file-list-container'>
+                                                    <FileList
+                                                        fileList = {fileList.filter(file => file.content.includes(fileSearch))}
+                                                    />
+                                                </div>
+                                            </>
+                                            :
+                                            <>
+                                                <div>
+                                                    <div className='file-category' onClick={() => setFileClassification('file')} style={{backgroundColor:'#717171'}}>파일</div>
+                                                    <div className='file-category' onClick={() => setFileClassification('img')} style={{backgroundColor:'black'}}>이미지</div>      
+                                                    <input
+                                                        className="file-search"
+                                                        placeholder="search"
+                                                        value={ fileSearch }
+                                                        onChange={e => setFileSearch(e.target.value)}
+                                                    />
+                                                </div>
+                                                <div className='file-list-container'>
+                                                    <ImgList
+                                                        imgList = {imgList.filter(img => img.content.includes(fileSearch))}
+                                                    />  
+                                                </div>
+                                            </>                              
+                                        :
+                                        <></>
+                                    }
                                 </div>
                                 <div className='fourth-col-Bucket'>
                                     <div className='container-top'>
-                                        버켓
-                                        <SiBitbucket onClick={()=>setBucketModalIsOpen(true)} style={{float:'right'}} className="arrow"/>
+                                        <div style={{float:'left', color:'white'}}>버켓</div>
                                     </div>
-                                    <Modal ariaHideApp={false} isOpen= {BucketModalIsOpen} style={modalStyles} onRequestClose={() => setBucketModalIsOpen(false)}>
-                                        <BucketModal 
-                                            setBucketModalIsOpen={setBucketModalIsOpen}
-                                            />
-                                    </Modal>
                                     <div className='child'></div>
                                 </div>
                             </div>
