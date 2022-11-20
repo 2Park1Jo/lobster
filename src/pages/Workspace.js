@@ -6,6 +6,7 @@ import DepartmentMemberAddModal from '../components/modals/DepartmentMemberAddMo
 import DepartmentModifyModal from '../components/modals/DepartmentModifyModal';
 import WorkspaceMemberAdd from '../components/modals/WorkspaceMemberAdd';
 import FileUploadConfirm from '../components/modals/FileUploadConfirm';
+import BucketModal from '../components/modals/BucketModal';
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -82,6 +83,7 @@ const Workspace = function () {
     let [dpModifyModalIsOpen, setdpModifyModalIsOpen] = useState(false);  
     let [WorkspaceMemberAddModalIsOpen,setWorkspaceMemberAddModalIsOpen]=useState(false); 
     let [FileUploadConfirmModalIsOpen,setFileUploadConfirmModalIsOpen]=useState(false);
+    let [BucketModalIsOpen,setBucketModalIsOpen]=useState(false);
     let [drag,setDrag]=useState("")
     let [chatUpdateState, setChatUpdateState] = useState("");
     let [departmentUpdateState, setDepartmentUpdateState] = useState("");
@@ -92,7 +94,7 @@ const Workspace = function () {
     let [selectedMenu,setSelectedMenu]=useState(1);
 
     let [departmentIdList, setDepartmentIdList] = useState([]);
-    const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedFile, setSelectedFile] = useState([]);
     const [progress , setProgress] = useState(0);
 
     let [isShowFileList, setIsShowFileList]=useState(false);
@@ -212,6 +214,12 @@ const Workspace = function () {
         console.log(drag)
     },[drag])
 
+    function closeUploadModal(){
+        setSelectedFile([])
+        setFileUploadConfirmModalIsOpen(false)
+        console.log("close")
+    }
+
     function onConnected() {
         if (stomp.connected){
             // chat 
@@ -277,18 +285,12 @@ const Workspace = function () {
     });
 
     const handleFileInput = (e) => {
-        const file = e.target.files[0];
-        const fileExt = file.name.split('.').pop();
-        // if(file.type !== 'image/jpeg' || fileExt !=='jpg'){
-        //   alert('jpg 파일만 Upload 가능합니다.');
-        //   return;
-        // }
         setProgress(0);
-        setSelectedFile(e.target.files[0]);
+        setSelectedFile([e.target.files[0]]);
         setFileUploadConfirmModalIsOpen(true)
     }
 
-    const uploadFile = async (file) => {
+    const uploadFile = async (file,completeList,setCompleteList) => {
         let currentDate = new Date();
         let year = currentDate.getFullYear();
         let month = currentDate.getMonth() + 1;
@@ -315,26 +317,25 @@ const Workspace = function () {
         .send((err,data) => {
             if (err){ console.log(err)
                 alert("서버에 에러가 발생하였습니다!")
-                return;
             }
             else{
                 if(file.type.indexOf("image")===-1){
-                    contentType=1
-                }
-                else{
-                    contentType=2
-                }
-
-                stomp.send('/pub/chat/message', {}, JSON.stringify({
-                    departmentId: localStorage.getItem('accessedDepartmentId'),
-                    email: localStorage.getItem('loginMemberEmail'),
-                    content: decodeURI(encodeURI(file.name)), 
-                    contentType: contentType,
-                    date : currentTime,
-                    link:"https://"+S3_BUCKET+".s3."+REGION+".amazonaws.com/"+key
-                }))
+                            contentType=1
+                          }
+                        else{
+                            contentType=2
+                          }
+                        stomp.send('/pub/chat/message', {}, JSON.stringify({
+                            departmentId: localStorage.getItem('accessedDepartmentId'),
+                            email: localStorage.getItem('loginMemberEmail'),
+                            content: file.name,
+                            contentType: contentType,
+                            date : currentTime,
+                            link:"https://"+S3_BUCKET+".s3."+REGION+".amazonaws.com/"+key
+                         }))
+                        // setCompleteList([...completeList],file.name)
             }
-        })
+          })
     }
 
     function containsFiles(event) {
@@ -355,20 +356,35 @@ const Workspace = function () {
         setDrag(false)
     
         var files = e.dataTransfer.files;
-        if(files.length>1){
-            alert("한번에 1개의 파일만 업로드 하실 수 있습니다!")
+        if(files.length>5){
+            alert("한번에 최대 5개의 파일까지 업로드 하실 수 있습니다!")
             return
         }
-        for (var i = 0, f; f = files[i]; i++) { // iterate in the files dropped
-            if (f.type=="") {
-                alert(f.name+"\n해당 파일은 지원하지 않는 형식입니다!")
-            } else {
-                console.log("file")
-                setSelectedFile(f);
-                setFileUploadConfirmModalIsOpen(true)
+        else{
+            let files = e.dataTransfer ? e.dataTransfer.files : 'null';
+            let isFile=true
+            let list=[]
+            console.log(files.length)
+            for(let i=0, file; file = files[i]; i++) {
+                var reader = new FileReader();
+
+                reader.onload=function(e){
+                    list.push(file)
+                    setSelectedFile([...list]);
+                    if(i===files.length-1){
+                        setFileUploadConfirmModalIsOpen(true)
+                    }
+                }
                 
+                reader.onerror = function (e) {
+                    isFile=false
+                    alert("거부된 파일명 :"+file.name+"\n폴더는 업로드 하실 수 없습니다!")
+                    if(i===files.length-1){
+                        setFileUploadConfirmModalIsOpen(true)
+                    }
+                };
+                reader.readAsText(file);
             }
-            console.log(f.name)
         }
     }
     
@@ -557,7 +573,7 @@ const Workspace = function () {
 
                                         <FaFileUpload onClick={handleClick} style={{float:'right', fontSize:'16px', marginTop:'2px', marginRight:'3px'}} className="arrow"/>
                                     </div>
-                                    <Modal ariaHideApp={false} isOpen= {FileUploadConfirmModalIsOpen} style={modalStyles} onRequestClose={() => setFileUploadConfirmModalIsOpen(false)}>
+                                    <Modal ariaHideApp={false} isOpen= {FileUploadConfirmModalIsOpen} style={modalStyles} onRequestClose={() => closeUploadModal}>
                                         <FileUploadConfirm 
                                             setFileUploadConfirmModalIsOpen={setFileUploadConfirmModalIsOpen}
                                             uploadFile={uploadFile}
@@ -613,7 +629,6 @@ const Workspace = function () {
                                     <div className='container-top'>
                                         <div style={{float:'left', color:'white'}}>버켓</div>
                                     </div>
-                                    {/* <img src="https://passta-lobster-bucket.s3.ap-northeast-2.amazonaws.com/upload/2022-11-1813%3A57%3A08/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA2022-10-29%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB3.13.25.png"/> */}
                                     <div className='child'></div>
                                 </div>
                             </div>
