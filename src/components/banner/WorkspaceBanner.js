@@ -25,7 +25,7 @@ export default function workSpaceBanner({ allWorkspace, modalIsOpen, setModalIsO
             content: 
                 <WorkspcaeCard 
                     image="assets/images/plus.png"
-                    heading="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;워크스페이스 추가하기"
+                    heading="워크스페이스 추가하기"
                     overline={WORKSPACE_ADD_KEY}
                 />
         },

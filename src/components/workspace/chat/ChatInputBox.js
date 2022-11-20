@@ -1,43 +1,25 @@
 import React from 'react'
-import Button from 'react-bootstrap/Button';
 import { useState, useEffect } from 'react';
 import { BiPaperPlane } from "react-icons/bi";
-import { FileUploader } from "react-drag-drop-files";
-import Dropzone from 'react-dropzone'
-
-
+import './ChatInputBox.css';
 
 const fileTypes = ["JPG", "PNG", "GIF"];
 export default function ChatInputBox(props){
     let [inputChattingContent, setInputChattingContent] = useState(""); // 사용자가 입력한 채팅 컨텐츠 데이터
-    let [drag,setDrag]=useState(false)
 
     function scrollToBottom(behavior) {
         props.messageEnd.current?.scrollIntoView({behavior: behavior})
     }
 
     useEffect( () => {
-        scrollToBottom("smooth");
+        scrollToBottom("auto");
     }, [props.chatUpdateState])
 
     useEffect( () => {
         if(inputChattingContent === '\n'){
             setInputChattingContent("");
         }
-    },[inputChattingContent])
-
-    const handleChange = (e) => {
-        const file = e.target.files[0];
-        let reader = new FileReader();
-    
-        reader.onload = (e) => {
-            const file = e.target.result;
-        };
-    
-        reader.onerror = (e) => alert(e.target.error.name);
-        reader.readAsText(file);
-    };
-    
+    },[inputChattingContent])    
 
     function addChattingData(chatContent) {
         let currentDate = new Date();
@@ -74,13 +56,17 @@ export default function ChatInputBox(props){
 
     
     return(
-        <>
-        <div className="input-group px-1">
-            <textarea placeholder="Type a message" className="form-control bg-light" value={ inputChattingContent }
-                onChange={e => setInputChattingContent(e.target.value)} onKeyPress={handleOnKeyPress} style={{paddingBottom:"10px"}}/>
-            <Button variant="secondary" onClick={ () => addChattingData(inputChattingContent) }> {<BiPaperPlane style={{fontSize:'20px'}}/>} </Button>
+        <div className='chat-input-box-container'>
+            <textarea 
+                className='chat-input-box'
+                placeholder="Type a message" 
+                value={ inputChattingContent }
+                onChange={e => setInputChattingContent(e.target.value)} 
+                onKeyPress={handleOnKeyPress}
+            />
+            <button className="send-button" onClick={ () => addChattingData(inputChattingContent) }> 
+                {<BiPaperPlane/>} 
+            </button>
         </div>
-        {/* <input type="file" name="input" onChange={handleChange} /> */}
-        </>
     )
 }

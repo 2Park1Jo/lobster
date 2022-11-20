@@ -1,22 +1,18 @@
 import "./WorkspaceSelection.css"
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAllMemberData } from "../api/MemberAPI"
 import { getWorkspaceData } from "../api/WorkspaceAPI";
 
 import Modal from 'react-modal';
 import WorkspaceAddModal from "../components/modals/WorkspaceAddModal";
 import WorkSpaceBanner from "../components/banner/WorkspaceBanner";
 
-import { Member } from "../models/model/Member";
-import { MemberViewModel } from "../models/view-model/MemberViewModel";
 import { WorkspaceModel } from "../models/model/Workspace";
 import { WorkspaceViewModel } from "../models/view-model/WorkspaceViewModel";
-import { First, Last } from "react-bootstrap/esm/PageItem";
+import { FaPowerOff, FaUpload} from "react-icons/fa";
 
 const workspace = new WorkspaceModel();
 const workspaceViewModel = new WorkspaceViewModel(workspace);
-
 
 export default function WorkspaceSelection() {
     let [modalIsOpen, setModalIsOpen] = useState(false);
@@ -79,7 +75,7 @@ export default function WorkspaceSelection() {
                     setIsReceivedWorkspace = {setIsReceivedWorkspace}
                 />
             </Modal>
-            <button className="logout-button" onClick={()=> logout()}> Logout </button>
+            <FaPowerOff className='logout-button' onClick={()=> logout()}/>
             <div className="banner-top">
                 <h2>LOBSTER</h2>
             </div>
@@ -91,10 +87,6 @@ export default function WorkspaceSelection() {
                     setModalIsOpen={setModalIsOpen}
                 />
             </div>
-
-            {/* <div className="banner-bottom">
-                <button style={{border:'none',backgroundColor:'transparent'}} onClick={()=> logout()}> Logout </button>
-            </div> */}
         </div>
     );
     }

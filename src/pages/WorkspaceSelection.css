@@ -16,11 +16,13 @@
     z-index: 0;
 }
 
-.banner-bottom {
-    text-align: center;
-}
-
 .logout-button{
-    background-color: transparent;
     float: right;
+    margin: 10px;
+    font-size: 25px;
+    color: gray;
+    cursor: pointer;
+}
+.logout-button:hover{
+    color: black;
 }

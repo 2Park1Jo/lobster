@@ -33,34 +33,34 @@ export default function Message({ chatSender, chatDate, chatContent,chatType,lin
             :chatType==="0"?
                 <div className='message'>
                     <li className="small text-muted">{ chatSender } { chatDate.split(" ")[1] }</li>
-                    <ListGroup.Item style={{width: 'auto'}} action className="rounded">
+                    <ListGroup.Item style={{width: 'fit-content'}} className="rounded">
                         <span className="small"> { chatContent } </span>
                     </ListGroup.Item>
                 </div>
-                :chatType==="1"?<div className='message'>
-                <li className="small text-muted">{ chatSender } { chatDate.split(" ")[1] }</li>
-                <div >               
-                <ListGroup.Item style={{width: 'auto', float:"left"}} action className="rounded" onClick={handleClick}>
-                    <AiOutlineFileText style={{fontSize:"40px"}}/>
-                    <span className="small"> { chatContent } </span>
-                    <a href={link} ref={inputRef} />
-                </ListGroup.Item>
-                </div>
+                :chatType==="1"?
+                <div className='message'>
+                    <li className="small text-muted">{ chatSender } { chatDate.split(" ")[1] }</li>
+                    <div>               
+                        <ListGroup.Item style={{width: 'auto', float:"left"}} action className="rounded" onClick={handleClick}>
+                            <AiOutlineFileText style={{fontSize:"40px"}}/>
+                            <span className="small"> { chatContent } </span>
+                            <a href={link} ref={inputRef} />
+                        </ListGroup.Item>
+                    </div>
                 </div>
                 :
                 <div className='message'>
-                <li className="small text-muted">{ chatSender } { chatDate.split(" ")[1] }</li>
-                <ListGroup.Item style={{width: 'auto'}} action className="rounded">
-                    <img src={link} style={{width:"200px", height:"200px"}} onClick={()=>setImageShowModalIsOpen(true)}/>
-                </ListGroup.Item>
-                <Modal ariaHideApp={false} isOpen= {imageShowModalIsOpen} style={modalStyles} onRequestClose={() => setImageShowModalIsOpen(false)}>
-                                        <ImageShow 
-                                            setImageShowModalIsOpen={setImageShowModalIsOpen}
-                                            link={link}
-                                            />
-                                    </Modal>
+                    <li className="small text-muted">{ chatSender } { chatDate.split(" ")[1] }</li>
+                    <ListGroup.Item style={{width: 'auto'}} action className="rounded">
+                        <img src={link} style={{width:"200px", height:"200px"}} onClick={()=>setImageShowModalIsOpen(true)}/>
+                    </ListGroup.Item>
+                    <Modal ariaHideApp={false} isOpen= {imageShowModalIsOpen} style={modalStyles} onRequestClose={() => setImageShowModalIsOpen(false)}>
+                        <ImageShow 
+                            setImageShowModalIsOpen={setImageShowModalIsOpen}
+                            link={link}
+                            />
+                    </Modal>
                 </div>
-                
         )   
     )
 }

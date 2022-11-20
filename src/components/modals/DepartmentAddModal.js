@@ -98,8 +98,8 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen, workspaceMembers, logi
     }
 
     function addDepartmentData() {
-        let selectedMemberLength = getSelectedMemberName().length;
-        if (inputDepartmentDeadLine === "" || inputDepartmentGoal === "" || inputDepartmentName === "" || selectedMemberLength === 0){
+        // let selectedMemberLength = getSelectedMemberName().length;
+        if (inputDepartmentDeadLine === "" || inputDepartmentGoal === "" || inputDepartmentName === ""){
             alert("모든정보를 입력해주세요")
             return
         }
