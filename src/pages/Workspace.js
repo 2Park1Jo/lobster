@@ -35,12 +35,12 @@ import { Chat } from '../models/model/Chat';
 import { ChatViewModel } from '../models/view-model/ChatViewModel';
 import { Department } from '../models/model/Department';
 
-import { FaPowerOff, FaUpload} from "react-icons/fa";
+import { FaPowerOff, FaUpload, FaFileUpload} from "react-icons/fa";
 import { BsGearFill } from "react-icons/bs";
 import { MdPostAdd } from "react-icons/md";
 import { BiChevronsDown,BiChevronsUp,BiUserPlus } from "react-icons/bi";
-import {SiBitbucket} from "react-icons/si";
-import {MdOutlineWork, MdSensorDoor} from "react-icons/md";
+import { SiBitbucket } from "react-icons/si";
+import { MdOutlineWork, MdSensorDoor } from "react-icons/md";
 
 import { ListGroup } from 'react-bootstrap';
 import Bucket from '../components/workspace/Bucket';
@@ -555,7 +555,7 @@ const Workspace = function () {
                                             }
                                         </div>
 
-                                        <FaUpload onClick={handleClick} style={{float:'right'}} className="arrow"/>
+                                        <FaFileUpload onClick={handleClick} style={{float:'right', fontSize:'16px', marginTop:'2px', marginRight:'3px'}} className="arrow"/>
                                     </div>
                                     <Modal ariaHideApp={false} isOpen= {FileUploadConfirmModalIsOpen} style={modalStyles} onRequestClose={() => setFileUploadConfirmModalIsOpen(false)}>
                                         <FileUploadConfirm 
