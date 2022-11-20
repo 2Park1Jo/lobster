@@ -452,7 +452,7 @@ const Workspace = function () {
 
                                 <div className='second-col-WholeMemberList'>
                                     <MemberList 
-                                        members = {workspaceMemberViewModel.getMembers(localStorage.getItem('accessedWorkspaceId') )}
+                                        members = {workspaceMemberViewModel.getMembers(localStorage.getItem('accessedWorkspaceId')).filter(member => member.email !== localStorage.getItem('loginMemberEmail'))}
                                     />
                                 </div>
                             </div>
