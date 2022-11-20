@@ -185,6 +185,7 @@
 }
 .fourth-col-DPMemberList{
     width: 100%;
+    background-color: #F3F3F3;
     height: auto;
     max-height: 183px;
     overflow-y: auto;
