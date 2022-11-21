@@ -87,6 +87,7 @@ export default function Bucket(){
       </div>
     </div>
     <FileUploader handleChange={handleChange} name="file" types={fileTypes} />
+    <img src="assets/images/rightCrab.png" width="140px"/>
         </div>
     );
     

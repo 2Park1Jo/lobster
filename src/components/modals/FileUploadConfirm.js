@@ -1,45 +1,30 @@
-import { useState,useEffect } from "react";
-import { Alert } from 'reactstrap';
+import { useState,useEffect,useRef } from "react";
+import FileUpload from "../../utils/FileUpload";
 
-const FileUploadConfirm=({setFileUploadConfirmModalIsOpen,uploadFile,selectedFile,progress,setSelectedFile})=>{
+const FileUploadConfirm=({setFileUploadConfirmModalIsOpen,selectedFile,setSelectedFile,stomp})=>{
     let [isConfirmed,setIsConfirmed]=useState(false);
-    let [fileList,setFileList]=useState()
-    let [completeList,setCompleteList]=useState([])
-    let [completeHTML,setCompleteHTML]=useState([])
+    let [isUpload,setIsUpload]=useState(false);
+    let [isCanceled,setIsCancled]=useState(false);
+    let [fileList,setFileList]=useState();
     useEffect(()=>{
-        let list=[]
+        const list=[]
         for(var i=0;i<selectedFile.length;i++){
-            list.push(<h1>{i+1}.{selectedFile.at(i).name}</h1>)
+            const file=selectedFile.at(i)
+            let fileUpload=<FileUpload file={file} stomp={stomp} isConfirmed={isConfirmed} setIsConfirmed={setIsConfirmed} isCancled={isCanceled}/>
+            list.push(fileUpload)
         }
         setFileList([...list])
-    },[selectedFile])
-
-    useEffect(()=>{
-        let list=[]
-        for(var i=0;i<selectedFile.length;i++){
-            list.push(<Alert color="secondary">{selectedFile.at(i).name}의 업로드가 완료되었습니다!</Alert>)
-        }
-        setCompleteHTML([...list])
-    },[completeList])
-
-    function sleep(sec) {
-        return new Promise(resolve => setTimeout(resolve, sec * 1000));
-      } 
-
-    async function confirm(selectedFile){
-        setIsConfirmed(true);
-        console.log(selectedFile)
-        for(var i=0;i<selectedFile.length;i++){
-            uploadFile(selectedFile.at(i),completeList,setCompleteList)
-            await sleep(1)
-        }
-    }
-
+    },[selectedFile, isConfirmed,isCanceled])
+    
     function close(){
+        setIsCancled(true)
         setFileUploadConfirmModalIsOpen(false)
         setSelectedFile([]);
-        setCompleteList([]);
-        setCompleteHTML([]);
+    }
+
+    function upload(){
+        setIsConfirmed(true)
+        setIsUpload(true)
     }
 
 
@@ -48,20 +33,17 @@ const FileUploadConfirm=({setFileUploadConfirmModalIsOpen,uploadFile,selectedFil
         <div>
             <button className="modal-close" type="button" onClick={() => close()}>X</button>
             <div className="upload-modal-container">
+            <h1>파일목록</h1>
             {fileList}
-            <h1>을(를) 업로드 하시겠습니까?</h1>
-            {isConfirmed===false?
-                <button className="btn btn-secondary" onClick={()=>confirm(selectedFile)}>
+            <h1>업로드 하시겠습니까?</h1>
+            {isUpload===false?
+                <button className="btn btn-primary" onClick={()=>upload()}>
                 확인
                 </button>
                 :
-                <div >
-                <Alert color="secondary">업로드 비율: {progress}%</Alert>
-                {/* {completeList} */}
-                <button className="btn btn-secondary" onClick={()=>close()}>
+                <button className="btn btn-primary" onClick={()=>close()}>
                 닫기
                 </button>
-                </div>
             }
             </div>
         </div>
