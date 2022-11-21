@@ -327,13 +327,11 @@ const Workspace = function () {
                     contentType=2
                     }
 
-                let fileName = "";
-                fileName = file.name;
 
                 stomp.send('/pub/chat/message', {}, JSON.stringify({
                     departmentId: localStorage.getItem('accessedDepartmentId'),
                     email: localStorage.getItem('loginMemberEmail'),
-                    content: fileName,
+                    content: file.name,
                     contentType: contentType,
                     date : currentTime,
                     link:"https://"+S3_BUCKET+".s3."+REGION+".amazonaws.com/"+key

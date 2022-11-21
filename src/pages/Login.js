@@ -59,58 +59,55 @@ const Login = function () {
     }, []); 
 
     return(
-        <div style={{backgroundColor:'#494949'}}>
-            <div className='top'></div>
-            <div className="Auth-form-container">
-                <img src="assets/images/leftCrab.png" width="160px"/>
-                <div>
-                    <div className="Logo-style">
-                        <p className="Login-sentence">Enjoy Lobster!</p>
-                    </div>
-                    <div className="Auth-form" style={{color:'white'}}>
-                        <h3 className="Auth-form-title">로그인</h3>
-                        <div className="Auth-form-content">
-                            <div className="form-group mt-3">
-                                <label>이메일</label>
-                                <input
-                                    type="email"
-                                    className="form-control mt-1"
-                                    placeholder="이메일을 입력해주세요"
-                                    value={ email }
-                                    onChange={e => setEmail(e.target.value)}
-                                />
-                            </div>
-                            <div className="form-group mt-3">
-                                <label>비밀번호</label>
-                                <input
-                                    type="password"
-                                    className="form-control mt-1"
-                                    placeholder="비밀번호를 입력해주세요"
-                                    value={ password }
-                                    onChange={e => setPassword(e.target.value)}
-                                    onKeyPress={ handleOnKeyPress }
-                                />
-                            </div>
-                            <div className="d-grid gap-2 mt-5">
+        <div className="Auth-form-container">
+            <img src="assets/images/leftCrab.png" width="160px" style={{paddingBottom:'380px'}}/>
+            <div>
+                <div className="Logo-style">
+                    <p className="Login-sentence">Enjoy Lobster!</p>
+                </div>
+                <div className="Auth-form" style={{color:'white'}}>
+                    <h3 className="Auth-form-title">로그인</h3>
+                    <div className="Auth-form-content">
+                        <div className="form-group mt-3">
+                            <label>이메일</label>
+                            <input
+                                type="email"
+                                className="form-control mt-1"
+                                placeholder="이메일을 입력해주세요"
+                                value={ email }
+                                onChange={e => setEmail(e.target.value)}
+                            />
+                        </div>
+                        <div className="form-group mt-3">
+                            <label>비밀번호</label>
+                            <input
+                                type="password"
+                                className="form-control mt-1"
+                                placeholder="비밀번호를 입력해주세요"
+                                value={ password }
+                                onChange={e => setPassword(e.target.value)}
+                                onKeyPress={ handleOnKeyPress }
+                            />
+                        </div>
+                        <div className="d-grid gap-2 mt-5">
+                    
+                        <button className="btn btn-secondary btn-lg" onClick={ checkLoginSuccess }>
+                            로그인
+                        </button>
+                    
+                        </div>
                         
-                            <button className="btn btn-secondary btn-lg" onClick={ checkLoginSuccess }>
-                                로그인
-                            </button>
-                        
-                            </div>
-                            
-                            <div className="mt-3 col">
-                            <span style={{fontSize:'14px', color:'white', paddingLeft:'15px'}}>계정이 없으신가요? </span>
-                                <a href='/signup'>회원가입</a>
-                            </div>
+                        <div className="mt-3 col">
+                        <span style={{fontSize:'14px', color:'white', paddingLeft:'15px'}}>계정이 없으신가요? </span>
+                            <a href='/signup'>회원가입</a>
                         </div>
                     </div>
-                    <div className='tail'>
-                        <img src="assets/images/tail.png" width="300px"/>
-                    </div>
                 </div>
-                <img src="assets/images/rightCrab.png" width="150px"/>
+                <div className='tail'>
+                    <img src="assets/images/tail.png" width="300px"/>
+                </div>
             </div>
+            <img src="assets/images/rightCrab.png" width="150px" style={{paddingBottom:'400px'}}/>
         </div>
     );
 }

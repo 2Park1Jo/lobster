@@ -1,10 +1,4 @@
 
-/* .App {
-    background-color: white;
-} */
-.top{
-    padding-top: 100px;
-}
 .tail{
     display: flex;
     justify-content: center;
@@ -27,8 +21,9 @@
 }
 .Auth-form-container {
     display: flex;
+    background-color: #494949;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
     width: 100vw;
     height: 100vh;
 }
