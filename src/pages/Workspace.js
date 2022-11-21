@@ -97,7 +97,7 @@ const Workspace = function () {
     const [selectedFile, setSelectedFile] = useState([]);
     const [progress , setProgress] = useState(0);
 
-    let [isShowFileList, setIsShowFileList]=useState(false);
+    let [isShowFileList, setIsShowFileList]=useState(true);
     let [fileList, setFileList] = useState([]);
     let [imgList, setImgList] = useState([]);
     let [fileClassification, setFileClassification] = useState('file');
@@ -320,22 +320,26 @@ const Workspace = function () {
             }
             else{
                 if(file.type.indexOf("image")===-1){
-                            contentType=1
-                          }
-                        else{
-                            contentType=2
-                          }
-                        stomp.send('/pub/chat/message', {}, JSON.stringify({
-                            departmentId: localStorage.getItem('accessedDepartmentId'),
-                            email: localStorage.getItem('loginMemberEmail'),
-                            content: file.name,
-                            contentType: contentType,
-                            date : currentTime,
-                            link:"https://"+S3_BUCKET+".s3."+REGION+".amazonaws.com/"+key
-                         }))
-                        // setCompleteList([...completeList],file.name)
+                    contentType=1
+                    }
+                else{
+                    contentType=2
+                    }
+
+                let fileName = "";
+                fileName = file.name;
+
+                stomp.send('/pub/chat/message', {}, JSON.stringify({
+                    departmentId: localStorage.getItem('accessedDepartmentId'),
+                    email: localStorage.getItem('loginMemberEmail'),
+                    content: fileName,
+                    contentType: contentType,
+                    date : currentTime,
+                    link:"https://"+S3_BUCKET+".s3."+REGION+".amazonaws.com/"+key
+                    }))
+                // setCompleteList([...completeList],file.name)
             }
-          })
+        })
     }
 
     function containsFiles(event) {
@@ -477,6 +481,7 @@ const Workspace = function () {
                         <div className='third-col'>
                             <div className='third-col-DepartmentInfo'>
                                 <span className='department-name'>{ accessedDepartment.name } </span>
+                                {/* <img src="assets/images/lobsterLeft.png" width="100px" style={{float:'right'}}/> */}
                                 <div className='department-goal'>{ departmentViewModel.getGoal(localStorage.getItem('accessedDepartmentId')) }</div>
                             </div>
                             <div onDrop={e=>handleDrop(e)} onDragLeave={()=>setDrag(false)} onDragOver={e=>handleDragEnter(e)}>

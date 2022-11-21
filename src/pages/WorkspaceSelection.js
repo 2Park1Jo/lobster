@@ -77,7 +77,7 @@ export default function WorkspaceSelection() {
             </Modal>
             <FaPowerOff className='logout-button' onClick={()=> logout()}/>
             <div className="banner-top">
-                <h2>LOBSTER</h2>
+                <span>LOBSTER</span>
             </div>
 
             <div className="banner-body">

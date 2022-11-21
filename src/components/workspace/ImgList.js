@@ -15,7 +15,8 @@ export default function ImgList(props){
 
     if (imgs.length === 0){
         imgs.push(
-            <div key='0' className="file-container" style={{fontSize:"10px"}}>등록된 이미지가 없습니다.</div>
+            <div className='empty-text'>등록된 이미지가 없습니다.</div>
+            // <div key='0' className="file-container" style={{fontSize:"10px"}}>등록된 이미지가 없습니다.</div>
         )
     }
 

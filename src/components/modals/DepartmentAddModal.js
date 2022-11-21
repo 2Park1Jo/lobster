@@ -193,7 +193,7 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen, workspaceMembers, logi
             </div>
 
             <div className="d-grid gap-2 mt-3">
-                <button className="btn btn-primary" onClick={ () => addDepartmentData() }>
+                <button className="btn btn-secondary" onClick={ () => addDepartmentData() }>
                     추가하기
                 </button>
             </div>

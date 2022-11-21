@@ -17,7 +17,7 @@ const FileUploadConfirm=({setFileUploadConfirmModalIsOpen,uploadFile,selectedFil
     useEffect(()=>{
         let list=[]
         for(var i=0;i<selectedFile.length;i++){
-            list.push(<Alert color="primary">{selectedFile.at(i).name}의 업로드가 완료되었습니다!</Alert>)
+            list.push(<Alert color="secondary">{selectedFile.at(i).name}의 업로드가 완료되었습니다!</Alert>)
         }
         setCompleteHTML([...list])
     },[completeList])
@@ -51,14 +51,14 @@ const FileUploadConfirm=({setFileUploadConfirmModalIsOpen,uploadFile,selectedFil
             {fileList}
             <h1>을(를) 업로드 하시겠습니까?</h1>
             {isConfirmed===false?
-                <button className="btn btn-primary" onClick={()=>confirm(selectedFile)}>
+                <button className="btn btn-secondary" onClick={()=>confirm(selectedFile)}>
                 확인
                 </button>
                 :
                 <div >
-                <Alert color="primary">업로드 비율: {progress}%</Alert>
+                <Alert color="secondary">업로드 비율: {progress}%</Alert>
                 {/* {completeList} */}
-                <button className="btn btn-primary" onClick={()=>close()}>
+                <button className="btn btn-secondary" onClick={()=>close()}>
                 닫기
                 </button>
                 </div>

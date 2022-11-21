@@ -59,15 +59,15 @@ const Login = function () {
     }, []); 
 
     return(
-        <div>
+        <div style={{backgroundColor:'#494949'}}>
             <div className='top'></div>
             <div className="Auth-form-container">
-                <img src="assets/images/leftCrab.png" width="150px"/>
+                <img src="assets/images/leftCrab.png" width="160px"/>
                 <div>
                     <div className="Logo-style">
                         <p className="Login-sentence">Enjoy Lobster!</p>
                     </div>
-                    <div className="Auth-form">
+                    <div className="Auth-form" style={{color:'white'}}>
                         <h3 className="Auth-form-title">로그인</h3>
                         <div className="Auth-form-content">
                             <div className="form-group mt-3">
@@ -93,14 +93,14 @@ const Login = function () {
                             </div>
                             <div className="d-grid gap-2 mt-5">
                         
-                            <button className="btn btn-primary btn-lg" onClick={ checkLoginSuccess }>
+                            <button className="btn btn-secondary btn-lg" onClick={ checkLoginSuccess }>
                                 로그인
                             </button>
                         
                             </div>
                             
                             <div className="mt-3 col">
-                            <span style={{fontSize:'14px'}}>계정이 없으신가요? </span>
+                            <span style={{fontSize:'14px', color:'white', paddingLeft:'15px'}}>계정이 없으신가요? </span>
                                 <a href='/signup'>회원가입</a>
                             </div>
                         </div>
@@ -109,7 +109,7 @@ const Login = function () {
                         <img src="assets/images/tail.png" width="300px"/>
                     </div>
                 </div>
-                <img src="assets/images/rightCrab.png" width="140px"/>
+                <img src="assets/images/rightCrab.png" width="150px"/>
             </div>
         </div>
     );

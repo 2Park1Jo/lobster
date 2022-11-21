@@ -1,9 +1,9 @@
 
-.App {
+/* .App {
     background-color: white;
-}
+} */
 .top{
-    margin-top: 100px;
+    padding-top: 100px;
 }
 .tail{
     display: flex;
@@ -16,13 +16,13 @@
 .Login-sentence{
     font-size: 50px;
     font-weight: bolder;
-    color: rgb(153, 14, 14);
+    color: #C61C1C;
     text-align: center;
 }
 .Signup-sentence{
     font-size: 40px;
     font-weight: bolder;
-    color: rgb(153, 14, 14);
+    color: #C61C1C;
     text-align: center;
 }
 .Auth-form-container {
@@ -38,8 +38,8 @@
     box-shadow: rgb(0 0 0 / 16%) 1px 1px 10px;
     padding-top: 30px;
     padding-bottom: 20px;
-    border-radius: 8px;
-    background-color: white;
+    border-radius: 120px;
+    background-color: #2B2B2B;
 }
 
 .Auth-form-content {
@@ -51,12 +51,10 @@
     text-align: center;
     margin-bottom: 1em;
     font-size: 24px;
-    color: rgb(34, 34, 34);
     font-weight: 800;
 }
 
 label {
     font-size: 14px;
     font-weight: 600;
-    color: rgb(34, 34, 34);
 }

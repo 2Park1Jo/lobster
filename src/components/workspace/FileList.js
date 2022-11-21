@@ -18,7 +18,8 @@ export default function FileList(props){
 
     if (files.length === 0){
         files.push(
-            <div key='0' className="file-container" style={{fontSize:"10px"}}>등록된 파일이 없습니다.</div>
+            <div className='empty-text'>등록된 파일이 없습니다.</div>
+            // <div key='0' className="file-container" style={{fontSize:"10px"}}>등록된 파일이 없습니다.</div>
         )
     }
 

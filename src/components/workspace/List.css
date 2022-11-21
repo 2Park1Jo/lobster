@@ -3,7 +3,6 @@
     background-color: #F1F1F1;
     border-radius: 10px;
     text-align: center;
-    /* height: fit-content; */
     height: 92px;
     width: 70px;
     margin-right: 10px;
@@ -13,9 +12,26 @@
     cursor: pointer;
     text-decoration: none;
     overflow-y:auto;
+    overflow-x: hidden;
+    word-wrap: break-word;
 }
 
 .content{
     font-size: 10px;
     color: black;
+}
+
+.empty-text{
+    font-family: 'Noto Sans CJK KR';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 18px;
+
+    letter-spacing: -0.02em;
+    color: #FFFFFF;
+
+    height: 40px;
+    margin-top: 20px;
+    /* text-align: center; */
 }

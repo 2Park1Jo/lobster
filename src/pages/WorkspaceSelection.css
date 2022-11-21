@@ -1,17 +1,28 @@
 .banner-container {
-    background-color:rgb(246, 189, 189);
+    background-color: #2B2B2B;
     justify-content: center;
     align-items: center;
+    vertical-align: center;
     width: 100vw;
     height: 100vh;
 }
 
 .banner-top {
+    height: auto;
     padding-top: 4%;
     text-align: center;
+    font-family: 'Noto Sans CJK KR';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 40px;
+    line-height: 40px;
+    letter-spacing: -0.04em;
+    /* color: #FF4D4D; */
+    color: #C61C1C;
 }
 
 .banner-body{
+    height: 80%;
     position: relative;
     z-index: 0;
 }
@@ -20,7 +31,7 @@
     float: right;
     margin: 10px;
     font-size: 25px;
-    color: gray;
+    color: white;
     cursor: pointer;
 }
 .logout-button:hover{

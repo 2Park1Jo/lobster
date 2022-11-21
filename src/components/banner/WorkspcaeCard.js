@@ -41,8 +41,8 @@ media: {
 plus: {
     height : '128px',
     width : '128px',
-    padding: '30%',
-    margin: '60px'
+    // paddingLeft: '90px',
+    margin: '90px'
 },
 }));
 
@@ -82,7 +82,7 @@ export default function WorkspaceCard({image, overline, heading, body}) {
                         body={body}
                         />
                         <Button color={"primary"} fullWidth className={styles.cta}>
-                            Find Out More <ChevronRightRounded />
+                            입장하기 <ChevronRightRounded />
                         </Button>
                 </CardContent>
             </Card>

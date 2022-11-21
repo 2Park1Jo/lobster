@@ -120,7 +120,7 @@ const WorkspaceAddModal = ({modalIsOpen, setModalIsOpen, workspaceUpdateState, s
     }
 
     return(
-        <div>
+        <div style={{width:'280px', height:'auto'}}>
             <button className="modal-close" type="button" onClick={() => setModalIsOpen(false)}>X</button>
             <h3 className="Auth-form-title">워크스페이스 추가하기</h3>
             <div className="form-group mt-3">
@@ -175,7 +175,7 @@ const WorkspaceAddModal = ({modalIsOpen, setModalIsOpen, workspaceUpdateState, s
             </div> */}
 
             <div className="d-grid gap-2 mt-3">
-                <button className="btn btn-primary" onClick={ () => addWorkspaceData() }>
+                <button className="btn btn-secondary" onClick={ () => addWorkspaceData() }>
                     추가하기
                 </button>
             </div>
