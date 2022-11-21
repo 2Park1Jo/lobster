@@ -130,7 +130,7 @@ return(
                         onChange={e => setinputMemberEmail(e.target.value)}
                         style={{float:'left', height:"38px"}}
                     />
-                    <button className="btn btn-primary" style={{float:'right'}} onClick={()=>searchMember()}>검색</button>
+                    <button className="btn btn-secondary" style={{float:'right'}} onClick={()=>searchMember()}>검색</button>
                 </div>
             </div>
             
@@ -143,7 +143,7 @@ return(
                 {addedMemberHTML}
             </div>
 
-            <button className="btn btn-primary" onClick={()=>inviteMember()}>
+            <button className="btn btn-secondary" onClick={()=>inviteMember()}>
                 초대하기
             </button>
         </div>

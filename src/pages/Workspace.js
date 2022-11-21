@@ -95,7 +95,7 @@ const Workspace = function () {
     let [departmentIdList, setDepartmentIdList] = useState([]);
     const [selectedFile, setSelectedFile] = useState([]);
 
-    let [isShowFileList, setIsShowFileList]=useState(false);
+    let [isShowFileList, setIsShowFileList]=useState(true);
     let [fileList, setFileList] = useState([]);
     let [imgList, setImgList] = useState([]);
     let [fileClassification, setFileClassification] = useState('file');
@@ -243,6 +243,7 @@ const Workspace = function () {
             stomp.subscribe("/sub/chat/workspace", function (data) {
                 let result = data.body;
                 setWorkspaceMemberUpdateState(result.content);
+                setDpMemberUpdateState(result.content);
             });
 
             stomp.send('/pub/chat/enter', {}, JSON.stringify({departmentId: localStorage.getItem('accessedDepartmentId'), email: localStorage.getItem('loginMemberEmail')}))
@@ -277,7 +278,7 @@ const Workspace = function () {
         setSelectedFile([e.target.files[0]]);
         setFileUploadConfirmModalIsOpen(true)
     }
-
+    
     function containsFiles(event) {
         if (event.dataTransfer.types) {
             for (var i=0; i<event.dataTransfer.types.length; i++) {
@@ -416,8 +417,11 @@ const Workspace = function () {
 
                         <div className='third-col'>
                             <div className='third-col-DepartmentInfo'>
-                                <span className='department-name'>{ accessedDepartment.name } </span>
-                                <div className='department-goal'>{ departmentViewModel.getGoal(localStorage.getItem('accessedDepartmentId')) }</div>
+                                <div style={{float:'left', paddingTop:'10px'}}>
+                                    <div className='department-name'>{ accessedDepartment.name } </div>
+                                    <div className='department-goal'>{ departmentViewModel.getGoal(localStorage.getItem('accessedDepartmentId')) }</div>
+                                </div>
+                                <img style={{float:'right'}} draggable="false" src = "https://paasta-lobster-bucket.s3.ap-northeast-2.amazonaws.com/image/lobster_img.png" height="74px"/>
                             </div>
                             <div onDrop={e=>handleDrop(e)} onDragLeave={()=>setDrag(false)} onDragOver={e=>handleDragEnter(e)}>
                                 <div className='third-col-ChatContainer'>

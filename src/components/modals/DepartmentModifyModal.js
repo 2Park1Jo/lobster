@@ -44,7 +44,7 @@ return(
         </div>
 
         <div className="d-grid gap-2 mt-3">
-                <button className="btn btn-primary">
+                <button className="btn btn-secondary">
                     수정하기
                 </button>
         </div>
