@@ -48,9 +48,8 @@ import Bucket from '../components/workspace/Bucket';
 
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
-import { BACK_BASE_URL,ACCESS_KEY,SECRET_ACCESS_KEY,S3_BUCKET,REGION } from '../Config';
+import { BACK_BASE_URL} from '../Config';
 import { Last } from 'react-bootstrap/esm/PageItem';
-import AWS from 'aws-sdk';
 
 
 const workspace = new WorkspaceModel();
@@ -95,7 +94,6 @@ const Workspace = function () {
 
     let [departmentIdList, setDepartmentIdList] = useState([]);
     const [selectedFile, setSelectedFile] = useState([]);
-    const [progress , setProgress] = useState(0);
 
     let [isShowFileList, setIsShowFileList]=useState(false);
     let [fileList, setFileList] = useState([]);
@@ -274,68 +272,10 @@ const Workspace = function () {
         inputRef.current.click();
     };
 
-    AWS.config.update({
-        accessKeyId:ACCESS_KEY,
-        secretAccessKey:SECRET_ACCESS_KEY
-    });
-    
-    const myBucket=new AWS.S3({
-        params:{Bucket: S3_BUCKET},
-        region: REGION
-    });
-
     const handleFileInput = (e) => {
-        setProgress(0);
+        console.log(e.target.files[0].size)
         setSelectedFile([e.target.files[0]]);
         setFileUploadConfirmModalIsOpen(true)
-    }
-
-    const uploadFile = async (file,completeList,setCompleteList) => {
-        let currentDate = new Date();
-        let year = currentDate.getFullYear();
-        let month = currentDate.getMonth() + 1;
-        let date = currentDate.getDate();
-        let houres = String(currentDate.getHours()).padStart(2, "0");
-        let minutes = String(currentDate.getMinutes()).padStart(2, "0");
-        let seconds = String(currentDate.getSeconds()).padStart(2, "0");
-        let currentTime = year + '-' + month + '-' + date + ' ' + houres + ':' + minutes + ':' + seconds;
-        let key=("upload/"+currentTime+"/"+ file.name).replace(/ /g, '')
-        let contentType;
-
-        const params = {
-            ACL: 'public-read',
-            Body: file,
-            ACL: AWS.config.acl,
-            Bucket: S3_BUCKET,
-            Key: key
-        };
-        
-        myBucket.putObject(params)
-        .on('httpUploadProgress', (evt) => {
-            setProgress(Math.round((evt.loaded / evt.total) * 100))
-        })
-        .send((err,data) => {
-            if (err){ console.log(err)
-                alert("서버에 에러가 발생하였습니다!")
-            }
-            else{
-                if(file.type.indexOf("image")===-1){
-                            contentType=1
-                          }
-                        else{
-                            contentType=2
-                          }
-                        stomp.send('/pub/chat/message', {}, JSON.stringify({
-                            departmentId: localStorage.getItem('accessedDepartmentId'),
-                            email: localStorage.getItem('loginMemberEmail'),
-                            content: file.name,
-                            contentType: contentType,
-                            date : currentTime,
-                            link:"https://"+S3_BUCKET+".s3."+REGION+".amazonaws.com/"+key
-                         }))
-                        // setCompleteList([...completeList],file.name)
-            }
-          })
     }
 
     function containsFiles(event) {
@@ -576,10 +516,9 @@ const Workspace = function () {
                                     <Modal ariaHideApp={false} isOpen= {FileUploadConfirmModalIsOpen} style={modalStyles} onRequestClose={() => closeUploadModal}>
                                         <FileUploadConfirm 
                                             setFileUploadConfirmModalIsOpen={setFileUploadConfirmModalIsOpen}
-                                            uploadFile={uploadFile}
                                             selectedFile={selectedFile}
-                                            progress={progress}
                                             setSelectedFile={setSelectedFile}
+                                            stomp={stomp}
                                             />
                                     </Modal>
 
@@ -628,8 +567,15 @@ const Workspace = function () {
                                 <div className='fourth-col-Bucket'>
                                     <div className='container-top'>
                                         <div style={{float:'left', color:'white'}}>버켓</div>
+                                        <SiBitbucket onClick={()=>setBucketModalIsOpen(true)} style={{float:'right'}} className="arrow"/>
                                     </div>
-                                    <div className='child'></div>
+                                    <Modal ariaHideApp={false} isOpen= {BucketModalIsOpen} style={modalStyles} onRequestClose={() => setBucketModalIsOpen(false)}>
+                                        <BucketModal 
+                                            setBucketModalIsOpen={setBucketModalIsOpen}
+                                            />
+                                    </Modal>
+                                    <div className='child'>
+                                    </div>
                                 </div>
                             </div>
                         </div>
