@@ -479,9 +479,11 @@ const Workspace = function () {
 
                         <div className='third-col'>
                             <div className='third-col-DepartmentInfo'>
-                                <span className='department-name'>{ accessedDepartment.name } </span>
-                                {/* <img src="assets/images/lobsterLeft.png" width="100px" style={{float:'right'}}/> */}
-                                <div className='department-goal'>{ departmentViewModel.getGoal(localStorage.getItem('accessedDepartmentId')) }</div>
+                                <div style={{float:'left', paddingTop:'10px'}}>
+                                    <div className='department-name'>{ accessedDepartment.name } </div>
+                                    <div className='department-goal'>{ departmentViewModel.getGoal(localStorage.getItem('accessedDepartmentId')) }</div>
+                                </div>
+                                <img style={{float:'right'}} draggable="false" src = "https://paasta-lobster-bucket.s3.ap-northeast-2.amazonaws.com/image/lobster_img.png" height="74px"/>
                             </div>
                             <div onDrop={e=>handleDrop(e)} onDragLeave={()=>setDrag(false)} onDragOver={e=>handleDragEnter(e)}>
                                 <div className='third-col-ChatContainer'>

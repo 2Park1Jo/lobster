@@ -16,6 +16,10 @@
     word-wrap: break-word;
 }
 
+.file-container::-webkit-scrollbar {
+    width: 0px;
+}
+
 .content{
     font-size: 10px;
     color: black;
