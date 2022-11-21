@@ -3,6 +3,7 @@ import { uploadFiles } from "../../utils/FileUpload"
 const BucketModal=({setBucketModalIsOpen})=>{
     let [bucketMenu,setBucketMenu]=useState(0)
     let [inputTitle,setInputTitle]=useState("")
+    const [selectedFile, setSelectedFile] = useState([]);
     let [fileList,setFileList]=useState([])
     const inputRef = useRef(null);
 
@@ -11,14 +12,7 @@ const BucketModal=({setBucketModalIsOpen})=>{
         inputRef.current.click();
     };
     const handleFileInput = (e) => {
-        if(fileList.length<5){
-            
-            setFileList([...fileList,e.target.files[0]])
-            console.log(fileList)
-        }
-        else{
-            alert("최대 5개의 파일만 업로드 하실 수 있습니다!")
-        }
+        setSelectedFile([e.target.files[0]]);
     }
     return(
         <div>
@@ -44,6 +38,9 @@ const BucketModal=({setBucketModalIsOpen})=>{
                     onChange={e => setInputTitle(e.target.value)} style={{paddingBottom:"10px"}}/>
                     <input style={{display: 'none'}} ref={inputRef} type="file" onChange={handleFileInput}/>
                     <span>파일</span><button onClick={handleClick}>PC</button>
+                    <div className="file-list-container">
+
+                    </div>
 
                 </div>
             </>
