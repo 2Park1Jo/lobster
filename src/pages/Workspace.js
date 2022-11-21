@@ -575,7 +575,6 @@ const Workspace = function () {
                                             />
                                     </Modal>
                                     <div className='child'>
-                                    <img src="assets/images/rightCrab.png" width="140px"/>
                                     </div>
                                 </div>
                             </div>
