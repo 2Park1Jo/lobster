@@ -245,6 +245,7 @@ const Workspace = function () {
             stomp.subscribe("/sub/chat/workspace", function (data) {
                 let result = data.body;
                 setWorkspaceMemberUpdateState(result.content);
+                setDpMemberUpdateState(result.content);
             });
 
             stomp.send('/pub/chat/enter', {}, JSON.stringify({departmentId: localStorage.getItem('accessedDepartmentId'), email: localStorage.getItem('loginMemberEmail')}))
