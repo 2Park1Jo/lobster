@@ -1,27 +1,29 @@
 import './List.css'
 import { AiOutlineFileText } from "react-icons/ai";
-import { Children } from 'react';
+import { useMemo } from "react";
 
 export default function FileList(props){
-    let files = [];
-    
-    props.fileList.map( (file, index) => {
-        let link = file.link
-        files.push(
-            <a href={link} key={index} className="file-container">
-                <AiOutlineFileText style={{fontSize:"50px", color:"black"}}/>
-                <div className="content">{file.content}</div>
-            </a>
-        )
-    })
 
+    let files = useMemo( () => {
 
-    if (files.length === 0){
-        files.push(
-            <div className='empty-text'>등록된 파일이 없습니다.</div>
-            // <div key='0' className="file-container" style={{fontSize:"10px"}}>등록된 파일이 없습니다.</div>
-        )
-    }
+        let fileList = [];
+
+        props.fileList.map( (file, index) => {
+            let link = file.link
+            fileList.push(
+                <a href={link} key={index} className="file-container">
+                    <AiOutlineFileText style={{fontSize:"50px", color:"black"}}/>
+                    <div className="content">{file.content}</div>
+                </a>
+            )
+        })
+
+        if (fileList.length === 0){
+            fileList.push(
+                <div key="-1" className='empty-text'>등록된 파일이 없습니다.</div>
+            )
+        }
+        return fileList;}, [props.fileList.length]);
 
     return files;
 }
