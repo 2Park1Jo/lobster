@@ -22,6 +22,19 @@ export class ChatViewModel{
         return chats;
     }
 
+    getChatLength(departmentId){
+        let length = this.getChats(departmentId).length;
+
+        return length;
+    }
+
+    getLastChatData(departmentId){
+        let chatData =  this.getChats(departmentId);
+        let lastChat = chatData[chatData.length - 1]
+
+        return lastChat;
+    }
+
     getFiles(departmentId){
         let files = [];
         this.getChats(departmentId).map( (chat) => {

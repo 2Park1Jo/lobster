@@ -13,7 +13,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Modal from 'react-modal';
 import { useRecoilState } from "recoil";
 
-import { getWorkspaceMemberData, getWorkspaceData } from '../api/WorkspaceAPI';
+import { getLastChatData } from '../api/MemberAPI';
+import { getWorkspaceMemberData, getWorkspaceData, getWorkspaceChatCountData } from '../api/WorkspaceAPI';
 import { getDepartmentMemberData, getChattingData, getDepartments } from '../api/DepartmentAPI';
 
 import { ACCESSED_DEPARTMENT, WORKSPACE_ID } from '../recoil/Atoms';
@@ -49,8 +50,10 @@ import Bucket from '../components/workspace/Bucket';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { BACK_BASE_URL} from '../Config';
-import { Last } from 'react-bootstrap/esm/PageItem';
+import { First, Last } from 'react-bootstrap/esm/PageItem';
 
+import useSound from 'use-sound'
+import mySound from './2.mp4'
 
 const workspace = new WorkspaceModel();
 const workspaceViewModel = new WorkspaceViewModel(workspace);
@@ -68,6 +71,7 @@ const chat = new Chat();
 const chatViewModel = new ChatViewModel(chat);
 
 let stomp;
+let testChatLengttData = [];
 
 const Workspace = function () {
     const messageEndRef = useRef(null); // 채팅메세지의 마지막
@@ -104,6 +108,55 @@ const Workspace = function () {
     let navigate = useNavigate();
     const location = useLocation();
 
+    let [connectedMemberList, setConnectedMemberList] = useState([]);
+
+    let lastChatLengthRef = useRef([]);
+    // let isGapUpperZero = useRef(false);
+    let [messageCountGap, setMessageCountGap] = useState([{
+        departmentId:"",
+        countGap:""
+    }]);
+    const [play] = useSound(mySound);
+
+    useEffect(() => {
+        console.log(messageCountGap)
+        let isGapUpperZero = false;
+        for (let index = 0; index < messageCountGap.length; index++){
+            if (messageCountGap[index].countGap > 0){
+                isGapUpperZero = true;
+                break;
+            }
+        }
+
+        if (isGapUpperZero){
+            play();
+            console.log("beep")
+        }
+    },[messageCountGap])
+
+    function setLastChatLength(workspaceChatCountData){
+        let gap = [];
+
+        workspaceChatCountData.map((departmentLastChatData) => {
+            for (let index = 0; index < lastChatLengthRef.current.length; index++){
+                if (lastChatLengthRef.current[index].departmentId === departmentLastChatData.departmentId){
+                    let countGap = Number(departmentLastChatData.messageCount) - Number(lastChatLengthRef.current[index].messageCount);
+                    if (departmentLastChatData.departmentId === localStorage.getItem('accessedDepartmentId')){
+                        countGap = 0;
+                    }
+                    
+                    gap.push({
+                        departmentId: departmentLastChatData.departmentId,
+                        countGap: countGap
+                    }
+                    );
+                }
+            }
+        })
+        
+        setMessageCountGap(gap)
+    }
+
     useEffect(() => {
         localStorage.setItem('accessedDepartmentId', location.pathname.split('department/')[1].replace("%20", " "))
         setAccessedDepartment({
@@ -126,12 +179,28 @@ const Workspace = function () {
         stomp.connect({}, onConnected, (error) => {
             console.log('sever error : ' + error );
         });
+
+        getLastChatData(localStorage.getItem('loginMemberEmail'), localStorage.getItem('accessedWorkspaceId'))
+        .then(
+            (res) => {
+                console.log("FitstSet")
+                console.log(res)
+                lastChatLengthRef.current = res;
+            }
+        )
+
+        getWorkspaceChatCountData(localStorage.getItem('accessedWorkspaceId'))
+        .then(
+            (res) => {
+                setLastChatLength(res)
+            }
+        )
     },[])
 
     useEffect( () => {
         if (stomp.connected){
             if (departmentIdList.length > 0){
-                if (departmentIdList.length !== stomp.counter - 2){
+                if (departmentIdList.length !== stomp.counter - 3){
                     stomp.subscribe("/sub/chat/department/" + departmentIdList[departmentIdList.length - 1], function (chat) {
                         let result = JSON.parse(chat.body);
                         if (chatUpdateState !== result.body){
@@ -172,6 +241,17 @@ const Workspace = function () {
             }
         )
     }, [chatUpdateState, accessedDepartment])
+
+    useEffect( () => {
+        getLastChatData(localStorage.getItem('loginMemberEmail'), localStorage.getItem('accessedWorkspaceId'))
+        .then(
+            (res) => {
+                console.log("FitstSet")
+                // console.log(res)
+                lastChatLengthRef.current = res;
+            }
+        )
+    },[accessedDepartment])
 
     useEffect( () => {
         getDepartments(localStorage.getItem('accessedWorkspaceId'),localStorage.getItem('loginMemberEmail'))
@@ -224,6 +304,14 @@ const Workspace = function () {
             for (let index = 0; index < departmentIdList.length; index++){
                 stomp.subscribe("/sub/chat/department/" + departmentIdList[index], function (chat) {
                     let result = JSON.parse(chat.body);
+                    // 서버에서 받아오는 데이터 - MessageCount gap에 쓰임
+                    getWorkspaceChatCountData(localStorage.getItem('accessedWorkspaceId'))
+                    .then(
+                        (res) => {
+                            setLastChatLength(res)
+                        }
+                    )
+
                     if (chatUpdateState !== result.body){
                         setChatUpdateState(result.content);
                     }
@@ -246,6 +334,13 @@ const Workspace = function () {
                 setDpMemberUpdateState(result.content);
             });
 
+            stomp.subscribe("/sub/chat/session", function (data) {
+                let result = data.body;
+                if (result.length > 0){
+                    setConnectedMemberList(result)
+                } 
+            });
+
             stomp.send('/pub/chat/enter', {}, JSON.stringify({departmentId: localStorage.getItem('accessedDepartmentId'), email: localStorage.getItem('loginMemberEmail')}))
         }
     }
@@ -263,7 +358,13 @@ const Workspace = function () {
 
     function logout(){
         localStorage.clear();
+        stomp.disconnect()
         navigate('/')
+    }
+
+    function moveToWorkspaceBanner(){
+        stomp.disconnect();
+        navigate('/workspacebanner');
     }
 
     const inputRef = useRef(null);
@@ -383,6 +484,7 @@ const Workspace = function () {
                                             setModalIsOpen={setModalIsOpen}
                                             workspaceMembers={workspaceMemberViewModel.getMembers(localStorage.getItem('accessedWorkspaceId') )}
                                             loginMemberName={departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail'))}
+                                            departmentMembers={departmentMemberViewModel.getMembers(localStorage.getItem('accessedDepartmentId'))}
                                             stomp = {stomp}
                                         />
                                     </Modal>
@@ -391,7 +493,11 @@ const Workspace = function () {
                                 <div className='second-col-DPList'>
                                     <DepartmentList
                                         workspaceId = {localStorage.getItem('accessedWorkspaceId') }
+                                        departmentId = {localStorage.getItem('accessedDepartmentId')}
                                         departments = {departmentViewModel.get(localStorage.getItem('accessedWorkspaceId') )}
+                                        lastChatData = {chatViewModel.getLastChatData(localStorage.getItem('accessedDepartmentId'))}
+                                        checkedMessageCount = {chatViewModel.getChatLength(localStorage.getItem('accessedDepartmentId'))}
+                                        messageCountGap = {messageCountGap}
                                     />
                                 </div>
 
@@ -409,7 +515,8 @@ const Workspace = function () {
 
                                 <div className='second-col-WholeMemberList'>
                                     <MemberList 
-                                        members = {workspaceMemberViewModel.getMembers(localStorage.getItem('accessedWorkspaceId')).filter(member => member.email !== localStorage.getItem('loginMemberEmail'))}
+                                        members = {workspaceMemberViewModel.getMembers(localStorage.getItem('accessedWorkspaceId'))}//.filter(member => member.email !== localStorage.getItem('loginMemberEmail'))}
+                                        connectedMemberList = {connectedMemberList}
                                     />
                                 </div>
                             </div>
@@ -440,12 +547,12 @@ const Workspace = function () {
                                         </div>
                                         <div className='third-col-ChatInput'>
                                             <ChatInputBox 
-                                            chatViewModel = {chatViewModel}
-                                            departmentId = {localStorage.getItem('accessedDepartmentId')}
-                                            chatUpdateState = {chatUpdateState}
-                                            setChatUpdateState = {setChatUpdateState}
-                                            messageEnd = {messageEndRef}
-                                            stomp = {stomp}
+                                                chatViewModel = {chatViewModel}
+                                                departmentId = {localStorage.getItem('accessedDepartmentId')}
+                                                chatUpdateState = {chatUpdateState}
+                                                setChatUpdateState = {setChatUpdateState}
+                                                messageEnd = {messageEndRef}
+                                                stomp = {stomp}
                                             />
                                         </div>
                                 </div>
@@ -459,7 +566,7 @@ const Workspace = function () {
                                     <Modal isOpen= {dpModifyModalIsOpen} style={modalStyles} onRequestClose={() => setdpModifyModalIsOpen(false)}>
                                         <DepartmentModifyModal departmentName={accessedDepartment.name} departmentGoal={departmentViewModel.getGoal(localStorage.getItem('accessedDepartmentId'))} departmentDeadLine={departmentViewModel.getDeadLine(localStorage.getItem('accessedDepartmentId'))} setdpModifyModalIsOpen={setdpModifyModalIsOpen}/>
                                     </Modal>
-                                <MdSensorDoor className='setting' onClick={()=> navigate('/workspacebanner')}/>
+                                <MdSensorDoor className='setting' onClick={()=> moveToWorkspaceBanner()}/>
                                 <div className='department-dday'>{ departmentViewModel.getDDay(localStorage.getItem('accessedDepartmentId')) }</div>
                             </div>
 
@@ -489,7 +596,10 @@ const Workspace = function () {
                                     </div>
                                     <div className='fourth-col-DPMemberList'>
                                         {isShowDPmemberList===true?
-                                            <MemberList members = {departmentMemberViewModel.getMembers(localStorage.getItem('accessedDepartmentId'))}/>
+                                            <MemberList 
+                                                members = {departmentMemberViewModel.getMembers(localStorage.getItem('accessedDepartmentId'))}
+                                                connectedMemberList = {connectedMemberList}
+                                            />
                                         :
                                             <></>
                                         }

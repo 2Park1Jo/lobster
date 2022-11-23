@@ -10,6 +10,30 @@ export const getAllMemberData = async () =>{
     return responose.data;
 }
 
+export const setLastChatData = async (memberEmail, departmentId, workspaceId, lastChatId, checkedMessageCount) =>{
+    const data=await axios.post(BACK_BASE_URL+'workspace/last-chat/create',
+        {
+            email:memberEmail,
+            departmentId:departmentId,
+            workspaceId: workspaceId,
+            lastChatId:lastChatId,
+            messageCount:checkedMessageCount
+        },
+        {
+            headers: {
+            'Access-Control-Allow-Origin': '*',
+            },
+            withCredentials: true
+        
+        })
+    return data; //success -> 201
+}
+
+export const getLastChatData = async (memberEmail, workspaceId) =>{
+    const responose = await axios.get(BACK_BASE_URL + memberEmail + '/workspace/' + workspaceId + '/last-chat')
+    return responose.data;
+}
+
 export const isLoginSuccessed =async function(email,password){
     const data=await axios.post(BACK_BASE_URL+'member/login',
         {

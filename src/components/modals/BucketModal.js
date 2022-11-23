@@ -38,7 +38,7 @@ const BucketModal=({setBucketModalIsOpen})=>{
                     onChange={e => setInputTitle(e.target.value)} style={{paddingBottom:"10px"}}/>
                     <input style={{display: 'none'}} ref={inputRef} type="file" onChange={handleFileInput}/>
                     <span>파일</span><button onClick={handleClick}>PC</button>
-                    <div className="file-list-container">
+                    <div className="file-upload-container">
 
                     </div>
 

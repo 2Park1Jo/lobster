@@ -133,7 +133,8 @@
 .bucket-menu-unselected:hover{
     background-color: rgb(246,189,189);
 }
-.file-list-container{
+
+.file-upload-container{
     width: 80%;
     height: 200px;
     border: 1px solid black;
