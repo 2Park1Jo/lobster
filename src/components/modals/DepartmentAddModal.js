@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import './Modal.css';
+import { BiChevronsDown,BiChevronsUp } from "react-icons/bi";
 
 // const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 // <a
@@ -22,21 +23,16 @@ const CustomMenu = React.forwardRef(
         
         return (
         <div>
-            <div className='selected-member-container'>
-                <span className='selected-member-container'>
-                    {selectedMemberNameList}
-                </span>
-                <input
-                    style={{backgroundColor:'gainsboro', border:'none', width:'90%', outline:'none'}}
-                    placeholder="멤버 검색"
-                    onChange={(e) => setValue(e.target.value)}
-                    value={value}
-                    disabled={!memberListShowState}
-                />
-            </div>
-    
-            <div ref={ref} className={className} aria-labelledby={labeledBy}>
-                <ul className="list-unstyled" style={{width:'300px', height:'200px', overflowY:'auto'}}>
+            <div ref={ref} className={className} aria-labelledby={labeledBy} style={{border:'1px solid #717171'}}>
+                <div className='selected-member-container'>
+                    <input
+                        style={{backgroundColor:'gainsboro', border:'none', width:'90%', outline:'none'}}
+                        placeholder="멤버 검색"
+                        onChange={(e) => setValue(e.target.value)}
+                        value={value}
+                    />
+                </div>
+                <ul className="list-unstyled" style={{width:'300px', height:'160px', overflowY:'auto'}}>
                     {
                     React.Children.toArray(children).filter(
                         (child) =>
@@ -57,8 +53,6 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen, workspaceMembers, logi
     let [inputDepartmentMemberData, setInputDepartmentMemberData] = useState([]);
     let [selectedMemberNameList, setSelectedMemberNameList] = useState([]);
     let [memberListShowState, setMemberListShowState] = useState(false);
-
-    let workspaceMemberData = workspaceMembers;
 
     useEffect( () => {
         setSelectedMemberName()
@@ -202,57 +196,69 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen, workspaceMembers, logi
     }
 
     return(
-        <div className='departmentMember-add-modal-container'>
-            <button className="modal-close" type="button" onClick={() => setModalIsOpen(false)}>X</button>
-            <h3 className="Auth-form-title">그룹추가하기</h3>
-            <div className="form-group mt-3">
-                <label>그룹명</label>
-                <input
-                    type="text"
-                    className="form-control bg-light"
-                    placeholder="그룹명을 입력해주세요"
-                    value={ inputDepartmentName }
-                    onChange={e => setName(e)}
-                />
-            </div>
-            <div className="form-group mt-3">
-                <label>목적</label>
-                <input
-                    type="text"
-                    className="form-control bg-light"
-                    placeholder="목적을 입력해주세요"
-                    value={ inputDepartmentGoal }
-                    onChange={e => setGoal(e)}
-                />
-            </div>
-            <div className="form-group mt-3">
-                <label>마감일</label>
-                <input
-                    type="date"
-                    className="form-control bg-light"
-                    placeholder="마감일을 입력해주세요"
-                    value={ inputDepartmentDeadLine }
-                    onChange={e => setInputDepartmentDeadLine(e.target.value)}
-                    // onKeyDown="return false"
-                />
-            </div>
-            
-            <div className="form-group mt-3">
-                <label>멤버추가</label>
-                <button onClick={() => setMemberListShowState(!memberListShowState)}>화살표</button>
+            <div className='departmentMember-add-modal-container'>
+                <button className="modal-close" type="button" onClick={() => setModalIsOpen(false)}>X</button>
+                <h3 className="Auth-form-title">그룹추가하기</h3>
                 <Dropdown show={memberListShowState}>
                     <Dropdown.Menu as={CustomMenu} selectedMemberNameList={selectedMemberNameList} memberListShowState={memberListShowState}>
                         { applyWorkspaceMemberListInDropdown() }
                     </Dropdown.Menu>
                 </Dropdown>
-            </div>
+                <div className="form-group mt-3">
+                    <label>그룹명</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="그룹명을 입력해주세요"
+                        value={ inputDepartmentName }
+                        onChange={e => setName(e)}
+                    />
+                </div>
+                <div className="form-group mt-3">
+                    <label>목적</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="목적을 입력해주세요"
+                        value={ inputDepartmentGoal }
+                        onChange={e => setGoal(e)}
+                    />
+                </div>
+                <div className="form-group mt-3">
+                    <label>마감일</label>
+                    <input
+                        type="date"
+                        className="form-control"
+                        placeholder="마감일을 입력해주세요"
+                        value={ inputDepartmentDeadLine }
+                        onChange={e => setInputDepartmentDeadLine(e.target.value)}
+                        // onKeyDown="return false"
+                    />
+                </div>
+                <div className="form-group mt-3">
+                    <label>멤버추가</label>
 
-            <div className="d-grid gap-2 mt-3">
-                <button className="btn btn-secondary" onClick={ () => addDepartmentData() }>
-                    추가하기
-                </button>
+                    <div style={{display:'inline-block'}} onClick={()=>setMemberListShowState(!memberListShowState)}>
+                        {
+                            memberListShowState === true ?
+                            <BiChevronsDown className='memberShowArrow'/>
+                            :
+                            <BiChevronsUp className='memberShowArrow'/>
+                        }
+                    </div>
+                    <div className='selected-member-container'>
+                        <span className='selected-member-container'>
+                            {selectedMemberNameList}
+                        </span>
+                    </div>
+                </div>
+
+                <div className="d-grid gap-2 mt-3">
+                    <button className="btn btn-secondary" onClick={ () => addDepartmentData() }>
+                        추가하기
+                    </button>
+                </div>
             </div>
-        </div>
     );
 }
 

@@ -140,3 +140,10 @@
     border: 1px solid black;
 }
 
+.memberShowArrow{
+    font-size: 18px;
+    margin-bottom: 2px;
+    color: black;
+    cursor: pointer;
+    margin-left: 5px;
+}
