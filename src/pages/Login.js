@@ -63,7 +63,7 @@ const Login = function () {
             <img src="assets/images/leftCrab.png" width="160px" style={{paddingBottom:'380px'}}/>
             <div>
                 <div className="Logo-style">
-                    <p className="Login-sentence">Enjoy Lobster!</p>
+                    <p className="Login-sentence">Lobster</p>
                 </div>
                 <div className="Auth-form" style={{color:'white'}}>
                     <h3 className="Auth-form-title">로그인</h3>

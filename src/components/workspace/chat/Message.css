@@ -1,6 +1,10 @@
 .message{
     word-break: break-all;
     padding-bottom: 7px;
+
+    font-family: 'Noto Sans CJK KR';
+    font-style: normal;
+    font-weight: 400;
 }
 .text-Area{
     width: 100%;

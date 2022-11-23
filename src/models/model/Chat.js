@@ -1,6 +1,6 @@
 export class Chat{
     #chats = [{
-        workspaceId: "",
+        chatId: "",
         departmentId: "",
         memberEmail: "",
         content: "",

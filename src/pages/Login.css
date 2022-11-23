@@ -8,33 +8,34 @@
     width: 420px;
 }
 .Login-sentence{
-    font-size: 50px;
+    font-size: 60px;
     font-weight: bolder;
     color: #C61C1C;
+    text-shadow: rgba(0, 0, 0, 0.4) 2px 2px 10px;
     text-align: center;
 }
 .Signup-sentence{
     font-size: 40px;
     font-weight: bolder;
     color: #C61C1C;
+    text-shadow: rgba(0, 0, 0, 0.4) 2px 2px 10px;
     text-align: center;
 }
 .Auth-form-container {
     display: flex;
-    background-color: #494949;
+    background-color: #2B2B2B;
     justify-content: center;
     align-items: center;
     width: 100vw;
-    height: 100vh;
+    min-height: 100vh;
 }
 
 .Auth-form {
     width: 420px;
-    box-shadow: rgb(0 0 0 / 16%) 1px 1px 10px;
+    box-shadow: rgba(255, 255, 255, 0.2) 1px 1px 10px;
     padding-top: 30px;
     padding-bottom: 20px;
     border-radius: 120px;
-    background-color: #2B2B2B;
 }
 
 .Auth-form-content {
