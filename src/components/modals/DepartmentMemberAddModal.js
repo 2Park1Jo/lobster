@@ -64,6 +64,12 @@ const DepartmentMemberAddModal = ({modalIsOpen, setModalIsOpen, accessedDepartme
     function applyWorkspaceMemberListInDropdown() {
         let htmlArrayForDepartmentMember = [];
 
+        workspaceMemberData = workspaceMemberData.sort((a,b) => { // 이름순으로 정렬
+            if(a.memberName > b.memberName) return 1;
+            if(a.memberName < b.memberName) return -1;
+            return 0;
+        });
+
         for (let index = 0; index < workspaceMemberData.length; index++) {
             let memberName = workspaceMemberData[index].memberName
             let memberEmail = workspaceMemberData[index].email
