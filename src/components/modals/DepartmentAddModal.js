@@ -64,15 +64,6 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen, workspaceMembers, logi
         setSelectedMemberName()
     }, [inputDepartmentMemberData])
 
-    function isAlreadyJoinMember(memberEmail){
-        for (let index = 0; index < departmentMembers.length; index++) {
-            if (memberEmail === departmentMembers[index].email){
-                return true
-            }
-        }
-        return false
-    }
-
     function isSelectedMember(memberEmail){
         for (let index = 0; index < selectedMemberNameList.length; index++){
             if (memberEmail === selectedMemberNameList[index].key){
@@ -85,21 +76,19 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen, workspaceMembers, logi
     function applyWorkspaceMemberListInDropdown() {
         let htmlArrayForDepartmentMember = [];
 
-        for (let index = 0; index < workspaceMemberData.length; index++) {
-            let memberName = workspaceMemberData[index].memberName
-            let memberEmail = workspaceMemberData[index].email
+        for (let index = 0; index < workspaceMembers.length; index++) {
+            let memberName = workspaceMembers[index].memberName
+            let memberEmail = workspaceMembers[index].email
 
-            if (!isAlreadyJoinMember(memberEmail)){
-                if (isSelectedMember(memberEmail)){
-                    htmlArrayForDepartmentMember.push(
-                        <Dropdown.Item style={{backgroundColor:'rgb(156, 156, 156)'}} className='dropdown-member-div' key={ memberEmail } eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName + " (" + memberEmail + ")"}</Dropdown.Item>
-                    )
-                }
-                else{
-                    htmlArrayForDepartmentMember.push(
-                        <Dropdown.Item className='dropdown-member-div' key={ memberEmail } eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName + " (" + memberEmail + ")"}</Dropdown.Item>
-                    )
-                }
+            if (isSelectedMember(memberEmail)){
+                htmlArrayForDepartmentMember.push(
+                    <Dropdown.Item style={{backgroundColor:'rgb(156, 156, 156)'}} className='dropdown-member-div' key={ memberEmail } eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName + " (" + memberEmail + ")"}</Dropdown.Item>
+                )
+            }
+            else{
+                htmlArrayForDepartmentMember.push(
+                    <Dropdown.Item className='dropdown-member-div' key={ memberEmail } eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName + " (" + memberEmail + ")"}</Dropdown.Item>
+                )
             }
         }
         return htmlArrayForDepartmentMember
