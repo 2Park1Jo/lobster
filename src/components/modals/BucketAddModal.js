@@ -2,9 +2,11 @@ import { useState,useRef,useEffect } from "react"
 import { FaUpload} from "react-icons/fa";
 import { AiOutlineFileText } from "react-icons/ai";
 import { SiBitbucket } from "react-icons/si";
+import {putBucket} from "../../api/BucketAPI.js"
 import AWS from 'aws-sdk';
 import { ACCESS_KEY, REGION, S3_BUCKET, SECRET_ACCESS_KEY } from '../../Config.js'
-const BucketAddModal=({setBucketMenu})=>{
+
+const BucketAddModal=({setBucketMenu,departmentId,workspaceId,email,memberName})=>{
     const [inputTitle,setInputTitle]=useState("")
     const [selectedFile, setSelectedFile] = useState([]);
     const [fileList,setFileList]=useState([])
@@ -14,7 +16,9 @@ const BucketAddModal=({setBucketMenu})=>{
     const [completeCount,setCompleteCount]=useState(0)
     const [complete,setComplete]=useState(false)
     const [isConfirmed,setIsConfirmed]=useState(false)
-    let a=0
+    const [urlList,setUrlList]=useState([])
+    let count=0
+    let url=[]
 
     useEffect(()=>{
         let list=[]
@@ -29,9 +33,9 @@ const BucketAddModal=({setBucketMenu})=>{
         setFileList([...list]);
     },[selectedFile])
 
-    useEffect(()=>{
-        console.log(completeCount)
-    },[completeCount])
+    // useEffect(()=>{
+    //     console.log(completeCount)
+    // },[completeCount])
 
     AWS.config.update({
         accessKeyId:ACCESS_KEY,
@@ -52,8 +56,6 @@ const BucketAddModal=({setBucketMenu})=>{
         let seconds = String(currentDate.getSeconds()).padStart(2, "0");
         let currentTime = year + '-' + month + '-' + date + ' ' + houres + ':' + minutes + ':' + seconds;
         let key=("bucket/"+currentTime+"/"+ file.name).replace(/ /g, '')
-        let contentType;
-
 
     
         const params = {
@@ -64,34 +66,18 @@ const BucketAddModal=({setBucketMenu})=>{
             Key: key
         };
         
-        // myBucket.putObject(params)
-        // .send((err,data) => {
-        //     if (err){ console.log(err)
-        //         alert("서버에 에러가 발생하였습니다!")
-        //     }
-        //     else{
-        //         if(file.type.indexOf("image")===-1){
-        //                     contentType=1
-        //                   }
-        //                 else{
-        //                     contentType=2
-        //                   }
-        //                 // stomp.send('/pub/chat/message', {}, JSON.stringify({
-        //                 //     departmentId: localStorage.getItem('accessedDepartmentId'),
-        //                 //     email: localStorage.getItem('loginMemberEmail'),
-        //                 //     content: file.name,
-        //                 //     contentType: contentType,
-        //                 //     date : currentTime,
-        //                 //     link:"https://"+S3_BUCKET+".s3."+REGION+".amazonaws.com/"+key
-        //                 //  }))
-                        
-                        
-        //     }
-        //   })
-        setTimeout(() => {
-            a+=1
-            setCompleteCount(a)
-        }, 1000*(i+1));
+        myBucket.putObject(params)
+        .send((err,data) => {
+            if (err){ console.log(err)
+                alert("서버에 에러가 발생하였습니다!")
+            }
+            else{
+                url.push("https://"+S3_BUCKET+".s3."+REGION+".amazonaws.com/"+key)
+                setUrlList([...url]);       
+                count+=1;
+                setCompleteCount(count);
+            }
+        })
 
     }
     function bucketUpload(){
@@ -212,13 +198,36 @@ const BucketAddModal=({setBucketMenu})=>{
             alert("300자 이하로 입력해주세요!")
         }
     }
+
+    function uploadBucket(){
+        console.log("보냄")
+        let currentDate = new Date();
+        let year = currentDate.getFullYear();
+        let month = currentDate.getMonth() + 1;
+        let date = currentDate.getDate();
+        let houres = String(currentDate.getHours()).padStart(2, "0");
+        let minutes = String(currentDate.getMinutes()).padStart(2, "0");
+        let seconds = String(currentDate.getSeconds()).padStart(2, "0");
+        let currentTime = year + '-' + month + '-' + date + ' ' + houres + ':' + minutes + ':' + seconds;
+
+        let request=Promise.resolve(putBucket(departmentId,workspaceId,currentTime,email,memberName,inputTitle,inputDetail,urlList))
+
+        request.then((value)=>{
+            console.log(value)
+            if(value===201){         
+                alert("업로드가 완료되었습니다!")
+                setBucketMenu(0)
+            }
+            else{
+                alert("서버에 오류가 발생하였습니다!")
+                setBucketMenu(0)
+            }
+        })
+
+    }
     
     if(isConfirmed&&completeCount===selectedFile.length){
-        setTimeout(() => {
-            setComplete(true)
-            alert("업로드가 완료되었습니다!")
-            setBucketMenu(0)
-        }, 500);
+        uploadBucket();
     }
     return(
         <>
@@ -232,8 +241,8 @@ const BucketAddModal=({setBucketMenu})=>{
             </div>//업로드 누르고 완료되기 전 사용자 클릭 막기
         }
         <div>
-            <div className='bucket-modal-menu-unselected' onClick={()=>setBucketMenu(0)}>버켓 내역</div>
-            <div className='bucket-modal-menu'>버켓 최신화</div>
+            <div className='bucket-modal-menu-unselected' onClick={()=>setBucketMenu(0)}>버킷 내역</div>
+            <div className='bucket-modal-menu'>버킷 최신화</div>
         </div>
             <div className="bucket-modal-container">
                 <div style={{flexDirection:"row", marginTop:"30px"}}>

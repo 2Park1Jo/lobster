@@ -74,7 +74,7 @@ const FileUpload=({file,stomp,isConfirmed,setIsConfirmed,index,callback})=>{
     
     return(
         <div>
-        <Alert color="primary">{file.name}의 업로드 비율: {progress}%</Alert>
+        <Alert color="secondary">{file.name}의 업로드 비율: {progress}%</Alert>
         </div>
     )    
 }

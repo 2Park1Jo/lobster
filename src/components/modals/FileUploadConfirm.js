@@ -49,7 +49,7 @@ const FileUploadConfirm=({setFileUploadConfirmModalIsOpen,selectedFile,setSelect
             {isUpload===false?
             <>
                 <h1>업로드 하시겠습니까?</h1>
-                <button className="btn btn-primary" onClick={()=>upload()}>
+                <button className="btn btn-secondary" onClick={()=>upload()}>
                 확인
                 </button>
             </>
@@ -63,7 +63,7 @@ const FileUploadConfirm=({setFileUploadConfirmModalIsOpen,selectedFile,setSelect
                     <h1>업로드 중입니다...</h1>   
                 </>
                 }   
-                <button className="btn btn-primary" onClick={()=>close()}>
+                <button className="btn btn-secondary" onClick={()=>close()}>
                 닫기
                 </button>
                 </>

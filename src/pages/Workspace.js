@@ -351,6 +351,11 @@ const Workspace = function () {
             setDrag(false)
         }
     }
+
+    function preventModalScroll(){
+        document.body.style.overflow = "unset"
+    }
+
     // if(isReceivedWorkspace && isReceivedDepertment && isReceivedDepertmentMember && isReceivedWorkspaceMember && isReceivedChat){
         return(
             <div className="maincontainer">
@@ -527,7 +532,7 @@ const Workspace = function () {
 
                                         <FaFileUpload onClick={handleClick} style={{float:'right', fontSize:'16px', marginTop:'2px', marginRight:'3px'}} className="arrow"/>
                                     </div>
-                                    <Modal ariaHideApp={false} isOpen= {FileUploadConfirmModalIsOpen} style={modalStyles} onRequestClose={() => closeUploadModal}>
+                                    <Modal ariaHideApp={false} isOpen= {FileUploadConfirmModalIsOpen} style={modalStyles} onRequestClose={() => document.body.style.overflow = "unset"}>
                                         <FileUploadConfirm 
                                             setFileUploadConfirmModalIsOpen={setFileUploadConfirmModalIsOpen}
                                             selectedFile={selectedFile}
@@ -583,9 +588,13 @@ const Workspace = function () {
                                         <div style={{float:'left', color:'white'}}>버켓</div>
                                         <SiBitbucket onClick={()=>setBucketModalIsOpen(true)} style={{float:'right'}} className="arrow"/>
                                     </div>
-                                    <Modal ariaHideApp={false} isOpen= {BucketModalIsOpen} style={modalStyles} onRequestClose={() => setBucketModalIsOpen}>
+                                    <Modal ariaHideApp={false} isOpen= {BucketModalIsOpen} style={modalStyles} onRequestClose={() => preventModalScroll()}>
                                         <BucketModal 
                                             setBucketModalIsOpen={setBucketModalIsOpen}
+                                            departmentId={localStorage.getItem('accessedDepartmentId')} 
+                                            workspaceId={localStorage.getItem('accessedWorkspaceId')}
+                                            email={localStorage.getItem('loginMemberEmail')} 
+                                            memberName={departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail'))}
                                             />
                                     </Modal>
                                     <div className='child'>
