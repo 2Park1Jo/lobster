@@ -94,6 +94,7 @@
     align-items: center;
     font-size: 30px;
     color: #717171;
+    margin-top: 10px;
 }
 .first-col-Button:hover{
     color:white;
@@ -269,7 +270,7 @@ input::placeholder {
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
     overflow-y: auto;
-    padding-left: 22px;
+    padding-left: 8%;
     display: block;
 }
 .file-list-container::-webkit-scrollbar {
@@ -288,7 +289,7 @@ input::placeholder {
 }
 
 .file-search{
-    width: 129px;
+    width: 43%;
     height: 22px;    
     border: 1px solid #717171;
     border-radius: 30px;

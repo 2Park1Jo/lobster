@@ -13,7 +13,7 @@ export default function ChatBox(props){
                     chatContent={chat.content}
                     chatType={chat.contentType}
                     link={chat.link}
-                    key = {index}s
+                    key = {index}
                 />
             )
         })

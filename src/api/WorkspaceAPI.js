@@ -19,6 +19,11 @@ export const getWorkspaceMemberData = async (workspaceId) =>{
     return responose.data;
 }
 
+export const getWorkspaceChatCountData = async (workspaceId) =>{
+    const responose = await axios.get(BACK_BASE_URL + 'workspace/' + workspaceId + '/chat/count')
+    return responose.data;
+}
+
 export const addWorkspace = async (email, workspaceName, workspaceGoal, workspaceDeadline) => {
     const response = await axios.post(BACK_BASE_URL + 'workspace/create',
     {
