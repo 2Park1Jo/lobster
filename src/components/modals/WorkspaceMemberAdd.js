@@ -19,10 +19,10 @@ const WorkspaceMemberAdd=({setWorkspaceMemberAddModalIsOpen,workspaceId,workspac
             let email=memberList.at(i)
             let name=memberNameList.at(i)
             // console.log(memberList.at(i));
-            memberListHTML.push(<div key={email} className='searched-Email-div' onClick={()=>deleteMemberAtList(email)}>
+            memberListHTML.push(<div key={email} className='searched-Email-div'>
                     <div>
                         <span style={{color:'black', fontSize : '14px', float:'left'}}>{name}&nbsp;({email})</span>
-                        <span style={{color:'black', fontSize : '14px', float:'right'}}>X</span>
+                        <span style={{color:'black', fontSize : '14px', float:'right',cursor:"pointer"}} onClick={()=>deleteMemberAtList(email)}>X</span>
                     </div>
                 </div>)
         }
@@ -93,7 +93,7 @@ const WorkspaceMemberAdd=({setWorkspaceMemberAddModalIsOpen,workspaceId,workspac
                 console.log(result)
                 let data=value.at(0)
                 let status=value.at(1)
-                if(status==200){
+                if(status===200){
                     console.log(data.email)
                     console.log(data.memberName)
                     setSearchedMemberHTML(
