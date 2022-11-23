@@ -477,7 +477,7 @@ const Workspace = function () {
                                             profilePicture='https://therichpost.com/wp-content/uploads/2020/06/avatar2.png'
                                             name={departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail'))}
                                             email={localStorage.getItem('loginMemberEmail')}
-                                            onClicked={() => alert(departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail')))}
+                                            // onClicked={() => alert(departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail')))}
                                         />
                                     </ListGroup>
                                 </div>

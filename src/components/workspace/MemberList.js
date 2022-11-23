@@ -47,7 +47,7 @@ export default function MemberList(props){
                     name={member.memberName}
                     email={member.email}
                     role={member.departmentRole}
-                    onClicked={() => alert(member.memberName)}
+                    // onClicked={() => alert(member.memberName)}
                     isConnected={member.isConnected}
                     key = {index}
                 />
