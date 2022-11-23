@@ -137,12 +137,12 @@ const Signup=function(){
             <div className="top">
             </div>
             <div className="Auth-form-container">
-                <img src="assets/images/leftCrab.png" width="150px"/>
+                <img src="assets/images/leftCrab.png" width="160px" style={{paddingBottom:'380px'}}/>
                 <div>
                     <div className="Logo-style">
                         <p className="Signup-sentence">Welcome to Lobster!</p>
                     </div>
-                    <div className="Auth-form">
+                    <div className="Auth-form" style={{color:'white'}}>
                         <h3 className="Auth-form-title">회원가입</h3>
                         <div className="Auth-form-content">
                             <div className="form-group mt-3">
@@ -196,7 +196,7 @@ const Signup=function(){
                             <div></div>
                             <div className="d-grid gap-2 mt-4">
                             
-                            <button className="btn btn-primary btn-lg" onClick={signUpBtnClicked} >
+                            <button className="btn btn-secondary btn-lg" onClick={signUpBtnClicked} >
                                 가입하기
                             </button>
                             </div>
@@ -210,7 +210,7 @@ const Signup=function(){
                         <img src="assets/images/tail.png" width="300px"/>
                     </div>
                 </div>
-                <img src="assets/images/rightCrab.png" width="140px"/>
+                <img src="assets/images/rightCrab.png" width="150px" style={{paddingBottom:'380px'}}/>
             </div>
         </div>
     );
