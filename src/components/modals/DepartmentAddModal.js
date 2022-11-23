@@ -80,15 +80,17 @@ const DepartmentAddModal = ({modalIsOpen, setModalIsOpen, workspaceMembers, logi
             let memberName = workspaceMembers[index].memberName
             let memberEmail = workspaceMembers[index].email
 
-            if (isSelectedMember(memberEmail)){
-                htmlArrayForDepartmentMember.push(
-                    <Dropdown.Item style={{backgroundColor:'rgb(156, 156, 156)'}} className='dropdown-member-div' key={ memberEmail } eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName + " (" + memberEmail + ")"}</Dropdown.Item>
-                )
-            }
-            else{
-                htmlArrayForDepartmentMember.push(
-                    <Dropdown.Item className='dropdown-member-div' key={ memberEmail } eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName + " (" + memberEmail + ")"}</Dropdown.Item>
-                )
+            if (localStorage.getItem('loginMemberEmail') !== memberEmail){
+                if (isSelectedMember(memberEmail)){
+                    htmlArrayForDepartmentMember.push(
+                        <Dropdown.Item style={{backgroundColor:'rgb(156, 156, 156)'}} className='dropdown-member-div' key={ memberEmail } eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName + " (" + memberEmail + ")"}</Dropdown.Item>
+                    )
+                }
+                else{
+                    htmlArrayForDepartmentMember.push(
+                        <Dropdown.Item className='dropdown-member-div' key={ memberEmail } eventKey={ memberEmail } onClick={ () => addMemberData(memberName, memberEmail) }>{ memberName + " (" + memberEmail + ")"}</Dropdown.Item>
+                    )
+                }
             }
         }
         return htmlArrayForDepartmentMember

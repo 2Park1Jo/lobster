@@ -13,7 +13,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Modal from 'react-modal';
 import { useRecoilState } from "recoil";
 
-import { getLastChatData } from '../api/MemberAPI';
+import { getLastChatData, setLastChatData } from '../api/MemberAPI';
 import { getWorkspaceMemberData, getWorkspaceData, getWorkspaceChatCountData } from '../api/WorkspaceAPI';
 import { getDepartmentMemberData, getChattingData, getDepartments } from '../api/DepartmentAPI';
 
@@ -71,7 +71,6 @@ const chat = new Chat();
 const chatViewModel = new ChatViewModel(chat);
 
 let stomp;
-let testChatLengttData = [];
 
 const Workspace = function () {
     const messageEndRef = useRef(null); // 채팅메세지의 마지막
@@ -111,12 +110,43 @@ const Workspace = function () {
     let [connectedMemberList, setConnectedMemberList] = useState([]);
 
     let lastChatLengthRef = useRef([]);
-    // let isGapUpperZero = useRef(false);
-    let [messageCountGap, setMessageCountGap] = useState([{
-        departmentId:"",
-        countGap:""
-    }]);
+    let receivedDepartmentId = useRef();
+
+    let [messageCountGap, setMessageCountGap] = useState([]);
+
     const [play] = useSound(mySound);
+
+
+    useEffect( () => {     
+        getWorkspaceData(localStorage.getItem('loginMemberEmail'))
+        .then(
+            (res) => {
+                workspaceViewModel.update(res);
+                setWorkspaceId(localStorage.getItem('accessedWorkspaceId'))
+                setIsReceivedWorkspace(true)
+            }
+        )
+
+        stomp = Stomp.over(new SockJS(BACK_BASE_URL + "chat"));
+        stomp.connect({}, onConnected, (error) => {
+            console.log('sever error : ' + error );
+        });
+        
+
+        getLastChatData(localStorage.getItem('loginMemberEmail'), localStorage.getItem('accessedWorkspaceId'))
+        .then(
+            (res) => {
+                lastChatLengthRef.current = res;
+            }
+        )
+
+        getWorkspaceChatCountData(localStorage.getItem('accessedWorkspaceId'))
+        .then(
+            (res) => {
+                setLastChatLength(res)
+            }
+        )
+    },[])
 
     useEffect(() => {
         console.log(messageCountGap)
@@ -127,8 +157,12 @@ const Workspace = function () {
                 break;
             }
         }
+        if (receivedDepartmentId.current === localStorage.getItem('accessedDepartmentId')){
+            return;
+        }
 
         if (isGapUpperZero){
+            
             play();
             console.log("beep")
         }
@@ -165,38 +199,6 @@ const Workspace = function () {
         })
     }, [ location ])
     
-    useEffect( () => {     
-        getWorkspaceData(localStorage.getItem('loginMemberEmail'))
-        .then(
-            (res) => {
-                workspaceViewModel.update(res);
-                setWorkspaceId(localStorage.getItem('accessedWorkspaceId'))
-                setIsReceivedWorkspace(true)
-            }
-        )
-
-        stomp = Stomp.over(new SockJS(BACK_BASE_URL + "chat"));
-        stomp.connect({}, onConnected, (error) => {
-            console.log('sever error : ' + error );
-        });
-
-        getLastChatData(localStorage.getItem('loginMemberEmail'), localStorage.getItem('accessedWorkspaceId'))
-        .then(
-            (res) => {
-                console.log("FitstSet")
-                console.log(res)
-                lastChatLengthRef.current = res;
-            }
-        )
-
-        getWorkspaceChatCountData(localStorage.getItem('accessedWorkspaceId'))
-        .then(
-            (res) => {
-                setLastChatLength(res)
-            }
-        )
-    },[])
-
     useEffect( () => {
         if (stomp.connected){
             if (departmentIdList.length > 0){
@@ -243,17 +245,6 @@ const Workspace = function () {
     }, [chatUpdateState, accessedDepartment])
 
     useEffect( () => {
-        getLastChatData(localStorage.getItem('loginMemberEmail'), localStorage.getItem('accessedWorkspaceId'))
-        .then(
-            (res) => {
-                console.log("FitstSet")
-                // console.log(res)
-                lastChatLengthRef.current = res;
-            }
-        )
-    },[accessedDepartment])
-
-    useEffect( () => {
         getDepartments(localStorage.getItem('accessedWorkspaceId'),localStorage.getItem('loginMemberEmail'))
         .then(
             (res) => {
@@ -277,6 +268,22 @@ const Workspace = function () {
             }
         )
     }, [dpMemberUpdateState, accessedDepartment])
+
+    useEffect( () => {
+        getLastChatData(localStorage.getItem('loginMemberEmail'), localStorage.getItem('accessedWorkspaceId'))
+        .then(
+            (res) => {
+                lastChatLengthRef.current = res;
+            }
+        )
+
+        getWorkspaceChatCountData(localStorage.getItem('accessedWorkspaceId'))
+        .then(
+            (res) => {
+                setLastChatLength(res)
+            }
+        )
+    }, [accessedDepartment])
 
     useEffect( () => {
         getWorkspaceMemberData(localStorage.getItem('accessedWorkspaceId') )
@@ -304,14 +311,13 @@ const Workspace = function () {
             for (let index = 0; index < departmentIdList.length; index++){
                 stomp.subscribe("/sub/chat/department/" + departmentIdList[index], function (chat) {
                     let result = JSON.parse(chat.body);
-                    // 서버에서 받아오는 데이터 - MessageCount gap에 쓰임
                     getWorkspaceChatCountData(localStorage.getItem('accessedWorkspaceId'))
                     .then(
                         (res) => {
+                            receivedDepartmentId.current = result.departmentId;
                             setLastChatLength(res)
                         }
                     )
-
                     if (chatUpdateState !== result.body){
                         setChatUpdateState(result.content);
                     }

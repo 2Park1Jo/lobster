@@ -1,24 +1,29 @@
 import DepartmentCard from "./DepartmentCard";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { ACCESSED_DEPARTMENT } from "../../recoil/Atoms";
 import { ListGroup } from "react-bootstrap";
 import { setLastChatData } from "../../api/MemberAPI";
-import { useMemo } from "react";
 
 export default function DepartmentList(props){
-    const [accessedDepartment, setAccessedDepartment] = useRecoilState(ACCESSED_DEPARTMENT);
-    // const setAccessedDepartment = useSetRecoilState(ACCESSED_DEPARTMENT);
+    const setAccessedDepartment = useSetRecoilState(ACCESSED_DEPARTMENT);
     let navigate = useNavigate();
 
     let departmentCards = [];
     let uncheckedMessageCount = 0;
 
     props.departments.map( (department, index) => {
-        if (department.departmentId === props.messageCountGap[index].departmentId){
+        if (props.messageCountGap[index] === undefined){
+            console.log('undefined')
+            uncheckedMessageCount = "new";
+        }
+        else if (department.departmentId === props.messageCountGap[index].departmentId){
             uncheckedMessageCount = props.messageCountGap[index].countGap;
         }
-        console.log(uncheckedMessageCount)
+
+        if (department.departmentId === localStorage.getItem('accessedDepartmentId')){
+            uncheckedMessageCount = 0;
+        }
         departmentCards.push(
             <DepartmentCard
                 name={department.departmentName}
