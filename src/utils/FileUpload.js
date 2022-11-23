@@ -3,7 +3,7 @@ import { Alert } from 'reactstrap';
 import AWS from 'aws-sdk';
 import { ACCESS_KEY, REGION, S3_BUCKET, SECRET_ACCESS_KEY } from '../Config.js'
 
-const FileUpload=({file,stomp,isConfirmed,setIsConfirmed,isCancled})=>{
+const FileUpload=({file,stomp,isConfirmed,setIsConfirmed,index,callback})=>{
     const [progress , setProgress] = useState(0);
     AWS.config.update({
         accessKeyId:ACCESS_KEY,
@@ -15,7 +15,7 @@ const FileUpload=({file,stomp,isConfirmed,setIsConfirmed,isCancled})=>{
         region: REGION
     });
     
-    const uploadFile = async () => {
+    const uploadFile = () => {
         let currentDate = new Date();
         let year = currentDate.getFullYear();
         let month = currentDate.getMonth() + 1;
@@ -60,11 +60,11 @@ const FileUpload=({file,stomp,isConfirmed,setIsConfirmed,isCancled})=>{
                             date : currentTime,
                             link:"https://"+S3_BUCKET+".s3."+REGION+".amazonaws.com/"+key
                          }))
+                        console.log("Done")
+                        callback(1)
             }
           })
-    }
-    if(isCancled){
-        alert("파일 업로드가 취소되었습니다!")
+
     }
 
     if(isConfirmed){
@@ -74,7 +74,7 @@ const FileUpload=({file,stomp,isConfirmed,setIsConfirmed,isCancled})=>{
     
     return(
         <div>
-        <Alert color="primary">{file.name}의 업로드 비율: {progress}%</Alert>
+        <Alert color="secondary">{file.name}의 업로드 비율: {progress}%</Alert>
         </div>
     )    
 }
