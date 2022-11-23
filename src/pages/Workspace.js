@@ -8,7 +8,7 @@ import WorkspaceMemberAdd from '../components/modals/WorkspaceMemberAdd';
 import FileUploadConfirm from '../components/modals/FileUploadConfirm';
 import BucketModal from '../components/modals/BucketModal';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect,useLayoutEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Modal from 'react-modal';
 import { useRecoilState } from "recoil";
@@ -100,6 +100,7 @@ const Workspace = function () {
     let [imgList, setImgList] = useState([]);
     let [fileClassification, setFileClassification] = useState('file');
     let [fileSearch, setFileSearch] = useState('');
+    let [isContainFolder,setIsContainFolder]=useState(false)
 
     let navigate = useNavigate();
     const location = useLocation();
@@ -282,7 +283,7 @@ const Workspace = function () {
     function containsFiles(event) {
         if (event.dataTransfer.types) {
             for (var i=0; i<event.dataTransfer.types.length; i++) {
-                if (event.dataTransfer.types[i] == "Files") {
+                if (event.dataTransfer.types[i] === "Files") {
                     return true;
                 }
             }
@@ -291,7 +292,7 @@ const Workspace = function () {
         return false;
     }
 
-    function handleDrop(e) {
+    async function handleDrop(e) {
         e.stopPropagation();
         e.preventDefault();
         setDrag(false)
@@ -303,29 +304,42 @@ const Workspace = function () {
         }
         else{
             let files = e.dataTransfer ? e.dataTransfer.files : 'null';
-            let isFile=true
+            setIsContainFolder(false)
             let list=[]
+            let count=0
             console.log(files.length)
             for(let i=0, file; file = files[i]; i++) {
                 var reader = new FileReader();
 
-                reader.onload=function(e){
-                    list.push(file)
-                    setSelectedFile([...list]);
-                    if(i===files.length-1){
-                        setFileUploadConfirmModalIsOpen(true)
+                reader.onerror=function(e){
+                    count++
+                    if(count===files.length){
+                        alert("폴더는 업로드 하실 수 없습니다!")
                     }
                 }
-                
-                reader.onerror = function (e) {
-                    isFile=false
-                    alert("거부된 파일명 :"+file.name+"\n폴더는 업로드 하실 수 없습니다!")
-                    if(i===files.length-1){
-                        setFileUploadConfirmModalIsOpen(true)
+
+                reader.onload=function(e){
+                    list.push(file)
+                }
+
+                reader.onloadend=function(e){
+                    count++
+                    if(count===files.length){
+                        if(list.length===files.length){
+                            setSelectedFile([...list]);
+                            setFileUploadConfirmModalIsOpen(true)
+                        }
+                        else{
+                            alert("폴더는 업로드 하실 수 없습니다!")          
+                        }
                     }
-                };
+                }
+
                 reader.readAsText(file);
             }
+            // if(isContainFolder){
+            //     alert("폴더는 업로드 하실 수 없습니다!")          
+            // }
         }
     }
     
@@ -338,6 +352,11 @@ const Workspace = function () {
             setDrag(false)
         }
     }
+
+    function preventModalScroll(){
+        document.body.style.overflow = "unset"
+    }
+
     // if(isReceivedWorkspace && isReceivedDepertment && isReceivedDepertmentMember && isReceivedWorkspaceMember && isReceivedChat){
         return(
             <div className="maincontainer">
@@ -517,7 +536,7 @@ const Workspace = function () {
 
                                         <FaFileUpload onClick={handleClick} style={{float:'right', fontSize:'16px', marginTop:'2px', marginRight:'3px'}} className="arrow"/>
                                     </div>
-                                    <Modal ariaHideApp={false} isOpen= {FileUploadConfirmModalIsOpen} style={modalStyles} onRequestClose={() => closeUploadModal}>
+                                    <Modal ariaHideApp={false} isOpen= {FileUploadConfirmModalIsOpen} style={modalStyles} onRequestClose={() => document.body.style.overflow = "unset"}>
                                         <FileUploadConfirm 
                                             setFileUploadConfirmModalIsOpen={setFileUploadConfirmModalIsOpen}
                                             selectedFile={selectedFile}
@@ -573,9 +592,13 @@ const Workspace = function () {
                                         <div style={{float:'left', color:'white'}}>버켓</div>
                                         <SiBitbucket onClick={()=>setBucketModalIsOpen(true)} style={{float:'right'}} className="arrow"/>
                                     </div>
-                                    <Modal ariaHideApp={false} isOpen= {BucketModalIsOpen} style={modalStyles} onRequestClose={() => setBucketModalIsOpen(false)}>
+                                    <Modal ariaHideApp={false} isOpen= {BucketModalIsOpen} style={modalStyles} onRequestClose={() => preventModalScroll()}>
                                         <BucketModal 
                                             setBucketModalIsOpen={setBucketModalIsOpen}
+                                            departmentId={localStorage.getItem('accessedDepartmentId')} 
+                                            workspaceId={localStorage.getItem('accessedWorkspaceId')}
+                                            email={localStorage.getItem('loginMemberEmail')} 
+                                            memberName={departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail'))}
                                             />
                                     </Modal>
                                     <div className='child'>

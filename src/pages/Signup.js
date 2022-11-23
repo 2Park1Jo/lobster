@@ -109,10 +109,8 @@ const Signup=function(){
 
     function signUpBtnClicked(){
         if(isIdconfirmed===true&&isPwconfirmed===true&&isPwCheckconfirmed===true&&isNameconfirmed===true){
-            //console.log(email,password,name)
             let result=registerUser(email,password,name)
             result.then(value=>{
-                console.log(value)
                 if(value==="success"){
                     alert("가입이 완료되었습니다!")
                     navigate("/")
