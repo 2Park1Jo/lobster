@@ -65,7 +65,6 @@ export const isDuplicatedId=async function(email){
             withCredentials: true
         
         }).then(response=>{
-            console.log(response)
             return response.data;
         }).catch(error=>{
             console.log(error)
@@ -88,10 +87,11 @@ export const getMemberProfile=async function(email){
             withCredentials: true
         
         }).then(response=>{
-            console.log(response.status)
             return [response.data,response.status];
         }).catch(error=>{
-            console.log(error)
+            if(error.message.indexOf("400")!==-1){
+                return[null,400]
+            }
         })
     return data
 }
@@ -110,13 +110,12 @@ export const registerUser=async function(email,password,name){
             withCredentials: true
         
         }).then(response=>{
-            console.log(response.status)
             if(response.status===201){
                 return "success"
             }
         }).catch(error=>{
-            console.log(error.response.status)
             if(error.response.status===409){
+                console.log("중복")
                 return "duplicated"
             }
             else{
