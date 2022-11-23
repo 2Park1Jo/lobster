@@ -42,7 +42,6 @@
 
 .selected-member-div{
     background-color:whitesmoke;
-    cursor: pointer;
     border-radius: 5px;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -70,6 +69,7 @@
     margin-top: 10px;
     margin-bottom: 10px;
     height: 20px;
+    margin-left: 3px;
 }
 .searched-Email-div:hover{
     background-color: gainsboro;
@@ -80,6 +80,13 @@
     flex-direction: column;
     align-content: center;
     justify-content: center;
+}
+.workSpace-add-modal-container{
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    width: 400px;
 }
 .upload-modal-container{
     display: flex;

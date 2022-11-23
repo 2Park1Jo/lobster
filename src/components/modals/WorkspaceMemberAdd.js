@@ -41,10 +41,10 @@ const WorkspaceMemberAdd=({setWorkspaceMemberAddModalIsOpen,workspaceId,workspac
         if(isExistedInList===false){
             setMemberList([...memberList,email]);
             setmMemberNameList([...memberNameList,name]);
-            setSearchedMemberHTML(<span style={{color:'green', fontSize : '14px'}}>추가되었습니다.</span>)
+            setSearchedMemberHTML(<span style={{color:'green', fontSize : '14px',marginLeft:"3px"}}>추가되었습니다.</span>)
         }
         else{   
-            setSearchedMemberHTML(<span style={{color:'orange', fontSize : '14px'}}>이미 리스트에 추가되었습니다.</span>)
+            setSearchedMemberHTML(<span style={{color:'orange', fontSize : '14px',marginLeft:"3px"}}>이미 리스트에 추가되었습니다.</span>)
         }
     }
 
@@ -55,6 +55,7 @@ const WorkspaceMemberAdd=({setWorkspaceMemberAddModalIsOpen,workspaceId,workspac
         memberList.splice(index,1);
         setmMemberNameList([...memberNameList])
         setMemberList([...memberList])
+        setSearchedMemberHTML()
         // console.log(memberList)
     }
 
@@ -97,40 +98,49 @@ const WorkspaceMemberAdd=({setWorkspaceMemberAddModalIsOpen,workspaceId,workspac
                     console.log(data.email)
                     console.log(data.memberName)
                     setSearchedMemberHTML(
-                        <div className='searched-Email-div' onClick={()=>addMemberToList(data.email,data.memberName)}>
+                        <div className='searched-Email-div'>
                             <div>
                                 <span style={{color:'black', fontSize : '14px', float:'left'}}>{data.memberName}&nbsp;({data.email})</span>
-                                <span style={{color:'black', fontSize : '14px', float:'right'}}>+</span>
+                                <span style={{color:'black', fontSize : '14px', float:'right' ,cursor:"pointer"}} onClick={()=>addMemberToList(data.email,data.memberName)}>+</span>
                             </div>
                         </div>)
                 }
-                else if(status===404){
-                    setSearchedMemberHTML(<span style={{color:'red', fontSize : '14px'}}>존재하지 않는 유저의 이메일입니다.</span>)
+                else if(status===400){
+                    setSearchedMemberHTML(<span style={{color:'red', fontSize : '14px',marginLeft:"3px"}}>존재하지 않는 유저의 이메일입니다.</span>)
                 }
                 else {
-                    setSearchedMemberHTML(<span style={{color:'red', fontSize : '14px'}}>서버에 에러가 발생했습니다.</span>)
+                    setSearchedMemberHTML(<span style={{color:'red', fontSize : '14px',marginLeft:"3px"}}>서버에 에러가 발생했습니다.</span>)
                 }
             }).catch(error=>{
-                setSearchedMemberHTML(<span style={{color:'red', fontSize : '14px'}}>서버에 에러가 발생했습니다.</span>)
+                setSearchedMemberHTML(<span style={{color:'red', fontSize : '14px',marginLeft:"3px"}}>서버에 에러가 발생했습니다.</span>)
             })
+    }
+
+    function setEmail(e){
+        if(e.target.value.length<50){
+            setinputMemberEmail(e.target.value)
+        }
+        else{
+            alert("50글자 이하로 입력해주세요!")
+        }
     }
 
 return(
     <div>
         <button className="modal-close" type="button" onClick={() => setWorkspaceMemberAddModalIsOpen(false)}>X</button>
-        <div className='modal-container'>
+        <div className='workSpace-add-modal-container'>
             <h3 >멤버 초대하기</h3>
             <div>
-                <label>이메일 검색</label>
-                <div>
-                    <input
+                <label style={{marginLeft:"3px"}}>이메일 검색</label>
+                <div style={{marginTop:"10px"}}>
+                    <input className='form-control bg-light'
                         type="text"
                         placeholder="초대할 유저의 이메일을 입력해주세요"
                         value={ inputMemberEmail }
-                        onChange={e => setinputMemberEmail(e.target.value)}
-                        style={{float:'left', height:"38px"}}
+                        onChange={e =>setEmail(e)}
+                        style={{width:"340px",float:'left', height:"38px",marginBottom:"10px"}}
                     />
-                    <button className="btn btn-primary" style={{float:'right'}} onClick={()=>searchMember()}>검색</button>
+                    <button className="btn btn-secondary" style={{float:'right'}} onClick={()=>searchMember()}>검색</button>
                 </div>
             </div>
             
@@ -139,11 +149,11 @@ return(
             </div>
 
             <div className='added-member-container'>
-                <label>멤버 리스트</label>
+                <label style={{marginLeft:"3px"}}>멤버 리스트</label>
                 {addedMemberHTML}
             </div>
 
-            <button className="btn btn-primary" onClick={()=>inviteMember()}>
+            <button className="btn btn-secondary" onClick={()=>inviteMember()}>
                 초대하기
             </button>
         </div>

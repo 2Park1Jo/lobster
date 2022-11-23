@@ -6,45 +6,62 @@ const DepartmentModifyModal=({departmentName,departmentGoal,departmentDeadLine,s
     let [inputDepartmentGoal, setInputDepartmentGoal] = useState(departmentGoal);
     let [inputDepartmentDeadLine, setInputDepartmentDeadLine] = useState(departmentDeadLine);
     
+    function setName(e){
+        if(e.target.value.length<50){
+            setInputDepartmentName(e.target.value)
+        }
+        else{
+            alert("50글자 이하로 입력해주세요!")
+        }
+    }
 
+    function setGoal(e){
+        if(e.target.value.length<50){
+            setInputDepartmentGoal(e.target.value)
+        }
+        else{
+            alert("50글자 이하로 입력해주세요!")
+        }
+    }
 
 return(
-    <div>
+    <div className='departmentMember-add-modal-container'>
         <button className="modal-close" type="button" onClick={() => setdpModifyModalIsOpen(false)}>X</button>
         <h3 className="Auth-form-title">그룹 수정하기</h3>
         <div className="form-group mt-3">
             <label>그룹이름</label>
             <input
                 type="text"
-                className="form-control mt-1"
+                className="form-control bg-light"
                 placeholder="그룹 이름을 입력해주세요"
                 value={ inputDepartmentName }
-                onChange={e => setInputDepartmentName(e.target.value)}
+                onChange={e => setName(e)}
             />
         </div>
         <div className="form-group mt-3">
             <label>목적</label>
             <input
                 type="text"
-                className="form-control mt-1"
+                className="form-control bg-light"
                 placeholder="목적을 입력해주세요"
                 value={ inputDepartmentGoal }
-                onChange={e => setInputDepartmentGoal(e.target.value)}
+                onChange={e => setGoal(e)}
             />
         </div>
         <div className="form-group mt-3">
                 <label>마감일</label>
                 <input
                     type="date"
-                    className="form-control mt-1"
+                    className="form-control bg-light"
                     placeholder="마감일을 입력해주세요"
                     value={ inputDepartmentDeadLine }
                     onChange={e => setInputDepartmentDeadLine(e.target.value)}
+                    onkeydown="return false"
                 />
         </div>
 
         <div className="d-grid gap-2 mt-3">
-                <button className="btn btn-primary">
+                <button className="btn btn-secondary">
                     수정하기
                 </button>
         </div>
