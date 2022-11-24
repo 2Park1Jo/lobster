@@ -13,7 +13,7 @@ export default function BucketCard({ departmentName, departmentGoal, departmentD
                 <div className="percentage-circle">
                     <CircularProgressbar value={percentage} text={`${percentage}%`} styles={buildStyles({pathColor: '#FF4D4D', textColor: 'white'})}/>
                 </div>
-                <div>
+                <div style={{marginTop:'5px'}}>
                     <div className="bucket-card-department_info">부서명: {departmentName}</div>
                     <div className="bucket-card-department_info">목표 : {departmentGoal}</div>
                     <div className="bucket-card-department_info">마감일: {departmentDeadLine}</div>

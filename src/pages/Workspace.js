@@ -724,7 +724,10 @@ const Workspace = function () {
                         </div>
                     </div>
                 :
-                    <Bucket/>
+                    <Bucket
+                        departmentIdList = {departmentIdList}
+                        departmentViewModel = {departmentViewModel}
+                    />
                 }
             </div>
         );

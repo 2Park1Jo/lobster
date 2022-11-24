@@ -11,10 +11,10 @@
     height: 157px;
     background-color: #2B2B2B;
     border-radius: 10px;
+    margin-bottom: 10px;
 }
 
 .bucket-card-top{
-    align-items: center;
     display: inline-flex;
 }
 
