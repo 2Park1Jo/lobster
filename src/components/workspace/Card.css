@@ -12,6 +12,23 @@
     background-color: #2B2B2B;
     border-radius: 10px;
     margin-bottom: 10px;
+    cursor: pointer;
+    margin-top: 3px;
+    margin-left: 3px;
+    box-shadow: rgba(255, 255, 255, 0.2) 1px 1px 5px;
+}
+
+.bucket-semi-card{
+    width: 250px;
+    height: 65px;
+    background-color: #2B2B2B;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    padding-top: 5px;
+    margin-top: 3px;
+    margin-left: 3px;
+    box-shadow: rgba(255, 255, 255, 0.2) 1px 1px 5px;
 }
 
 .bucket-card-top{
@@ -57,6 +74,9 @@
 }
 
 .bucket-commit-Title{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     margin-bottom: 2px;
 }
 
@@ -67,6 +87,9 @@
     font-size: 12px;
     line-height: 14px;
     letter-spacing: -0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     
     color: #C7C7C7;
 }
