@@ -5,3 +5,68 @@
 .card:hover{
     background-color: #d5d4d4;
 }
+
+.bucket-card{
+    width: 360px;
+    height: 157px;
+    background-color: #2B2B2B;
+    border-radius: 10px;
+}
+
+.bucket-card-top{
+    align-items: center;
+    display: inline-flex;
+}
+
+.percentage-circle{
+    width: 80px;
+    height: 80px;
+    margin: 10px;
+    flex-shrink: 0;
+}
+
+.bucket-card-department_info{
+    color: white;
+    font-family: 'Noto Sans CJK KR';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 16px;
+    
+    margin-top: 10px;
+    margin-left: 10px;
+    width: 240px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bucket-card-commit-info{
+    color: white;
+    font-family: 'Noto Sans CJK KR';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 22px;
+
+    word-wrap: break-word;
+    overflow: hidden;
+
+    margin-left: 20px;
+}
+
+.bucket-commit-Title{
+    margin-bottom: 2px;
+}
+
+.bucket-commit-history{
+    font-family: 'Noto Sans CJK KR';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 14px;
+    letter-spacing: -0.02em;
+    
+    color: #C7C7C7;
+}

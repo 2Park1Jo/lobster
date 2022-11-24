@@ -1,0 +1,31 @@
+.bucket-page-main-container{
+    width: 100vw;
+    height: 100vh;
+    color: red;
+}
+
+.bucket-page-top{
+    background-color: bisque;
+    width: 100%;
+    height: 15%;
+}
+
+.bucket-page-body{
+    display: flex;
+    align-items: stretch;
+    height: 85%;
+}
+
+.bucket-page-first-col{
+    flex-direction: column;
+    background-color: #484848;
+    width: 30%;
+    align-items: center;
+}
+
+.bucket-page-second-col{
+    flex-direction: column;
+    background-color: #2B2B2B;
+    width: 70%;
+    align-items: center;
+}
