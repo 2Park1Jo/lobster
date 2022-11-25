@@ -1,4 +1,4 @@
-import { calculateDDay } from '../../utils/DataProcessing'
+import { calculateDDay, calculateProgress } from '../../utils/DataProcessing'
 
 export class WorkspaceViewModel{
     constructor(model){
@@ -47,6 +47,22 @@ export class WorkspaceViewModel{
         })
 
         return workspaceName;
+    }
+
+    getCreationDate(workspaceId){
+        let workspaceCreationDate = "";
+
+        this.getAll().map((workspace) => {
+            if (workspace.workspaceId === workspaceId){
+                workspaceCreationDate = workspace.creationDate;
+            }
+        })
+
+        return workspaceCreationDate;    
+    }
+
+    getWorkspaceProgress(workspaceId){
+        return calculateProgress(this.getCreationDate(workspaceId), this.getDeadLine(workspaceId))
     }
 
     getDDay(workspaceId){

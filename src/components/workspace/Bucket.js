@@ -2,7 +2,7 @@ import "./Bucket.css"
 import BucketCard from "./BucketCard"
 import BucketSemiCard from "./BucketSemiCard";
 import BucketBox from "./BucketBox";
-import ProgressBar from 'react-bootstrap/ProgressBar';
+import StatisticsForm from "./statistics/StatisticsForm";
 import { useState, useEffect } from "react";
 import { getLastBucket, getBucket } from "../../api/BucketAPI"
 import { BiChevronsLeft } from "react-icons/bi";
@@ -127,57 +127,60 @@ export default function Bucket({departmentIdList, departmentViewModel, workspace
     setIsOpenBucketBox(false);
   }
 
-  let now = 60;
-
   return(
     <div className="bucket-page-main-container">
       <div className="bucket-page-top">
-
-        <ProgressBar className="percentage-bar" variant="danger" now={now} label={"마감일까지 " + `${now}%`}/>
-
         <div className="bucket-workspace-info">
-          <div>{workspaceViewModel.getName(localStorage.getItem('accessedWorkspaceId'))}</div>
-          <div>{workspaceViewModel.getGoal(localStorage.getItem('accessedWorkspaceId'))}</div>
+          <div className="bucket-page-workspace-name">{workspaceViewModel.getName(localStorage.getItem('accessedWorkspaceId'))}</div>
+          <div className="bucket-page-workspace-goal">{workspaceViewModel.getGoal(localStorage.getItem('accessedWorkspaceId'))}</div>
         </div>
 
-        <div className="bucket-workspace-deadline">
-          <div>{workspaceViewModel.getDeadLine(localStorage.getItem('accessedWorkspaceId'))}</div>
-          <div>{workspaceViewModel.getDDay(localStorage.getItem('accessedWorkspaceId'))}</div>
+        <div className="bucket-workspace-deadline-info">
+          <div className="bucket-page-workspace-deadline">마감일 : {workspaceViewModel.getDeadLine(localStorage.getItem('accessedWorkspaceId'))}</div>
+          <div className="bucket-page-workspace-dday">{workspaceViewModel.getDDay(localStorage.getItem('accessedWorkspaceId'))}</div>
         </div>
 
       </div>
       <div className="bucket-page-body">
-        <div className="bucket-page-first-col">
-          <div className="bucket-card-container">
-            {bucketCardList}
-          </div>
+        {
+          bucketCardList.length > 0 ?
+          <div className="bucket-page-first-col">
+            <div className="bucket-card-container">
+              {bucketCardList}
+            </div>
 
-          {
-            isOpenSemiBucketCard === true ?
+            {
+              isOpenSemiBucketCard === true ?
+                <>
+                  <BiChevronsLeft className="close-arrow" onClick={() => closeArrowClick()}/>
+                  <div className="bucket-card-container" style={{width:'263px'}}>
+                    {bucketCommitList}
+                  </div> 
+                </>
+              :
+                <></>
+            }
+            
+
+            {
+              isOpenBucketBox === true ?
               <>
-                <BiChevronsLeft className="close-arrow" onClick={() => closeArrowClick()}/>
-                <div className="bucket-card-container" style={{width:'263px'}}>
-                  {bucketCommitList}
-                </div> 
+                <BiChevronsLeft className="close-arrow" onClick={() => setIsOpenBucketBox(false)}/>
+                <div>
+                  { bucketBox }
+                </div>
               </>
-            :
+              :
               <></>
-          }
-          
-
-          {
-            isOpenBucketBox === true ?
-            <>
-              <BiChevronsLeft className="close-arrow" onClick={() => setIsOpenBucketBox(false)}/>
-              <div>
-                { bucketBox }
-              </div>
-            </>
-            :
-            <></>
-          }
-        </div>
+            }
+          </div>
+          :
+          <></>
+        }
         <div className="bucket-page-second-col">
+          <StatisticsForm
+            workspaceViewModel={workspaceViewModel}
+          />
         </div>
       </div>
     </div>

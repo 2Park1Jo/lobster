@@ -17,6 +17,7 @@
     height: 88%;
     display: flex;
     flex-direction: row;
+    overflow: auto;
 }
 
 .bucket-page-first-col{
@@ -31,15 +32,56 @@
 .bucket-page-second-col{
     background-color: #2B2B2B;
     flex-grow: 1;
+    padding: 15px;
+    padding-right: 20px;
 }
 
 .bucket-workspace-info{
     float: left;
 }
 
-.bucket-workspace-deadline{
+.bucket-page-workspace-name{
+    font-family: 'Noto Sans CJK KR';
+    font-style: normal;
+    font-weight: 900;
+    font-size: 20px;
+    line-height: 30px;
+    letter-spacing: -0.04em;
+    color: #FF4D4D;
+}
+.bucket-page-workspace-goal{
+    font-family: 'Noto Sans CJK KR';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 21px;
+    letter-spacing: -0.02em; 
+    color: #C7C7C7;
+}
+
+.bucket-workspace-deadline-info{
     display: inline;
     float: right;
+}
+
+.bucket-page-workspace-deadline{
+    font-family: 'Noto Sans CJK KR';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 21px;   
+    letter-spacing: -0.02em;
+    color: #C7C7C7;
+}
+
+.bucket-page-workspace-dday{
+    font-family: 'Noto Sans CJK KR';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 30px;
+    letter-spacing: -0.02em;
+    color: #FF4D4D;
 }
 
 .bucket-page-box-container{
@@ -144,7 +186,7 @@
 
 .percentage-bar{
     height: 14px;
-    margin-bottom: 5px;
+    margin: 15px;
 }
 
 .division-line{
