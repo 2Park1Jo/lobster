@@ -34,6 +34,8 @@
     flex-grow: 1;
     padding: 15px;
     padding-right: 20px;
+    min-width: 710px;
+    overflow-y: auto;
 }
 
 .bucket-workspace-info{
@@ -185,8 +187,7 @@
 }
 
 .percentage-bar{
-    height: 14px;
-    margin: 15px;
+
 }
 
 .division-line{

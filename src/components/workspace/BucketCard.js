@@ -16,7 +16,7 @@ export default function BucketCard({departmentName, departmentGoal, departmentDe
                 <div style={{marginTop:'5px'}}>
                     <div className="bucket-card-department_info">부서명: {departmentName}</div>
                     <div className="bucket-card-department_info">목표 : {departmentGoal}</div>
-                    <div className="bucket-card-department_info">마감일: {departmentDeadLine}</div>
+                    <div className="bucket-card-department_info">{departmentDeadLine}</div>
                 </div>
             </div>
             <div className="bucket-card-commit-info">

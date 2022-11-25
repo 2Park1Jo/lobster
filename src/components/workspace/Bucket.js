@@ -182,6 +182,7 @@ export default function Bucket({departmentIdList, departmentViewModel, workspace
             workspaceViewModel={workspaceViewModel}
             departmentViewModel={departmentViewModel}
             chatViewModel = {chatViewModel}
+            departmentIdList = {departmentIdList}
           />
         </div>
       </div>
