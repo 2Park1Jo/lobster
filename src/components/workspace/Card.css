@@ -8,6 +8,7 @@
 
 .talk-king-card{
     width: 45%;
+    max-width: 400px;
     height: 140px;
     background-color: #2B2B2B;
     border-radius: 10px;
