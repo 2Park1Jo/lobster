@@ -26,7 +26,7 @@ const BucketAddModal=({setBucketMenu,departmentId,workspaceId,email,memberName})
             let index=i;
             list.push(<div className="added-file-div">
                 <AiOutlineFileText style={{fontSize : '20px',float:'left'}}/>
-                <div style={{color:'black', fontSize : '14px', float:'left', marginTop:'0.2px'}}>{selectedFile.at(i).name}</div>
+                <div style={{width:"460px", color:'black', fontSize : '14px', float:'left', marginTop:'0.2px'}}>{selectedFile.at(i).name}</div>
                 <div style={{color:'black', fontSize : '14px', float:'right', marginTop:'0.2px',marginRight:'5px',cursor:"pointer"}} onClick={()=>deleteFile(index)}>X</div>
             </div>)
         }

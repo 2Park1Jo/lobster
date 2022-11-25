@@ -16,7 +16,7 @@ const BucketHistoryModal=({setBucketMenu,departmentId})=>{
             let data=value.data
             if(data.length>0){
                 let list=[]
-                for(let i=0;i<data.length;i++){
+                for(let i=data.length-1;i>=0;i--){
                     bucket.push(data[i])
                     console.log(data[i])
                     let fileCount=0
@@ -100,21 +100,44 @@ const BucketHistoryModal=({setBucketMenu,departmentId})=>{
         </div>
         <div className="bucket-history-modal-container">
                     <div className="bucket-history-modal-commitsContainer">
+                        {bucketList.length===0?
+                            <>
+                                <span style={{color:"black", fontSize:"30px"}}>버킷이 비어있습니다!</span>
+                                <span style={{color:"black", fontSize:"20px",textAlign:"center"}}>버킷에 자료를 올리고 구성원들과 공유해보세요!</span>
+                            </>
+                            :
                         <div className="bucket-history-modal-commitList">
-                            {bucketList}
+                                {bucketList}
                         </div>
+                        }
                     </div>
-                    <div className="bucket-history-modal-contentContainer">
-                        <h2 style={{marginTop:"30px"}}>
-                            {title}
-                        </h2>
-                        <div className="bucket-history-modal-file">
-                            {fileList}
-                        </div>
-                        <div style={{width:"400px", height:"200px"}}>
-                            {detail}
-                        </div>
-                </div>
+                        {title.length===0?
+                            <div className="bucket-history-modal-contentContainer">
+                            <span style={{color:"whit", fontSize:"50px",textAlign:"center"}}>버킷 내역을 클릭하시면 동료들이 올린 내용을 확인하실 수 있어요!</span>
+                            </div>
+                        :
+                            <>
+                            <div className="bucket-history-modal-selected-container">
+                                <div style={{flexDirection:"row", marginTop:"30px"}}>
+                                <span style={{float:"left", marginLeft:"20px", fontSize:"30px"}}>제목</span>
+                                <input type="text" className="w-75 form-control bg-light" value={ title }
+                                style={{paddingBottom:"10px", marginLeft:"105px"}} readonly="readonly"/>
+                                </div>
+
+                                <div className="bucket-history-modal-file" style={{marginTop:"40px"}}>
+                                    {fileList}
+                                </div>
+                                
+                                <div style={{flexDirection:"row",marginTop:"40px"}}>
+                                <span style={{float:"left" , marginLeft:"10px",fontSize:"20px"}}>세부사항</span>
+                                <textarea style={{resize: 'none', float:"left", height:"200px",marginLeft:"30px"}} type="text" className="w-75 form-control bg-light" readonly="readonly" value={detail}/>
+                                </div>
+                                <div>
+                                <button className="btn btn-danger" style={{float:"right", marginTop:"20px", marginRight:"61px", marginBottom:"20px"}}>파일 다운로드</button>
+                                </div>
+                                </div>
+                            </>
+                        }
         </div>
         </>
     )
