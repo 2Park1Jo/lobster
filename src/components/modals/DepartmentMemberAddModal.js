@@ -166,12 +166,15 @@ const DepartmentMemberAddModal = ({modalIsOpen, setModalIsOpen, accessedDepartme
         <div className='departmentMember-add-modal-container'>
             <button className="modal-close" type="button" onClick={() => setModalIsOpen(false)}>X</button>
             <h3 className="Auth-form-title">멤버추가</h3>
-            <div className="form-group mt-3" style={{height:'300px'}}>
+            <div className="form-group mt-3">
                 <Dropdown show={true}>
                     <Dropdown.Menu as={CustomMenu} selectedMemberNameList={selectedMemberNameList}>
                         { applyWorkspaceMemberListInDropdown() }
                     </Dropdown.Menu>
                 </Dropdown>
+            </div>
+            <div style={{height:'225px'}}>
+                &nbsp;
             </div>
 
             <div className="d-grid gap-2 mt-3">

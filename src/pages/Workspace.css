@@ -50,10 +50,13 @@
     flex-direction: column;
     background-color: #F1F1F1;
     min-width: 230px;
-    overflow-y: auto;
+    overflow-y: hidden;
     height: calc(100% - 80px);
     flex-shrink: 0;
     align-items: center;
+}
+.second-col-container:hover{
+    overflow-y: auto;
 }
 .third-col{
     flex-direction: column;
@@ -145,8 +148,10 @@
     height: calc(100vh - 136px);
     flex-grow: 1;
     flex-shrink: 1;
+    overflow-y: hidden;
+}
+.third-col-ChatList:hover{
     overflow-y: auto;
-
 }
 .third-col-ChatInput{
     width: 100%;
@@ -185,9 +190,12 @@
     background-color: #F3F3F3;
     height: auto;
     max-height: 183px;
-    overflow-y: auto;
+    overflow-y: hidden;
     border-end-end-radius: 10px;
     border-end-start-radius: 10px;
+}
+.fourth-col-DPMemberList:hover{
+    overflow-y: auto;
 }
 .fourth-col-UploadedFile{
     width: 96%;

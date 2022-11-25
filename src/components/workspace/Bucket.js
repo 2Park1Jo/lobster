@@ -1,94 +1,190 @@
-import '../../pages/Workspace.css'
-import {useState} from "react";
-import AWS from 'aws-sdk';
-import { Row, Col, Button, Input, Alert } from 'reactstrap';
-import { ACCESS_KEY, REGION, S3_BUCKET, SECRET_ACCESS_KEY } from '../../Config.js'
-import { FileUploader } from "react-drag-drop-files";
+import "./Bucket.css"
+import BucketCard from "./BucketCard"
+import BucketSemiCard from "./BucketSemiCard";
+import BucketBox from "./BucketBox";
+import StatisticsForm from "./statistics/StatisticsForm";
+import { useState, useEffect } from "react";
+import { getLastBucket, getBucket } from "../../api/BucketAPI"
+import { BiChevronsLeft } from "react-icons/bi";
 
-const fileTypes = ["JPG", "PNG", "GIF"];
+export default function Bucket({departmentIdList, departmentViewModel, workspaceViewModel, chatViewModel}){
+  let [bucketCardList, setBucketCardList] = useState([]);
+  let [bucketCommitList, setBucketCommitList] = useState([]);
+  let [bucketBox, setBucketBox] = useState("");
 
-AWS.config.update({
-    accessKeyId:ACCESS_KEY,
-    secretAccessKey:SECRET_ACCESS_KEY
-});
+  let [selectedDepartmentId, setSelectedDepartmentId] = useState("");
+  let [selectedCommit, setSelectedCommit] = useState("");
 
-const myBucket=new AWS.S3({
-    params:{Bucket: S3_BUCKET},
-    region: REGION
-});
+  let [isOpenSemiBucketCard, setIsOpenSemiBucketCard] = useState(false);
+  let [isOpenBucketBox, setIsOpenBucketBox] = useState(false);
 
-export default function Bucket(){
-    const [progress , setProgress] = useState(0);
-    const [selectedFile, setSelectedFile] = useState(null);
-    const [showAlert, setShowAlert] = useState(false);
-    const [file, setFile] = useState(null);
-    const handleChange = (file) => {
-     setFile(file);
-    };
-    const handleFileInput = (e) => {
-        const file = e.target.files[0];
-        const fileExt = file.name.split('.').pop();
-        // if(file.type !== 'image/jpeg' || fileExt !=='jpg'){
-        //   alert('jpg 파일만 Upload 가능합니다.');
-        //   return;
-        // }
-        setProgress(0);
-        setSelectedFile(e.target.files[0]);
-    }
-    
-    const uploadFile = (file) => {
-        const params = {
-          ACL: 'public-read',
-          Body: file,
-          ACL: AWS.config.acl,
-          Bucket: S3_BUCKET,
-          Key: "upload/" + file.name.replace(/ /g, '')
-        };
-        
-        myBucket.putObject(params)
-          .on('httpUploadProgress', (evt) => {
-            setProgress(Math.round((evt.loaded / evt.total) * 100))
-            setShowAlert(true);
-            setTimeout(() => {
-              setShowAlert(false);
-              setSelectedFile(null);
-            }, 3000)
-          })
-          .send((err) => {
-            if (err) console.log(err)
-          })
-    }
-    return(
-        <div className="contents-container">
-            <div>
-      <div>
-        <Row>
-          <Col><h1>File Upload</h1></Col>
-        </Row>
-      </div>
-      <div>
-        <Row>
-          <Col>
-            { showAlert?
-              <Alert color="primary">업로드 진행률 : {progress}%</Alert>
-              : 
-              <Alert color="primary">파일을 선택해 주세요.</Alert> 
+  useEffect( () => {
+    let bucketCards = [];
+    departmentIdList.map( (departmentId) => {
+      if (departmentId !== localStorage.getItem('accessedWorkspaceId')){
+        getLastBucket(departmentId)
+        .then(
+          (res) =>{
+            let departmentName = departmentViewModel.getName(departmentId);
+            let departmentGoal = departmentViewModel.getGoal(departmentId);
+            let departmentDeadLine = departmentViewModel.getDeadLine(departmentId);
+            if (res.memberName !== undefined){
+              bucketCards.push(
+                <BucketCard
+                  departmentName={departmentName}
+                  departmentGoal={departmentGoal}
+                  departmentDeadLine={departmentDeadLine}
+                  bucketTitle={res.title}
+                  memberName={res.memberName}
+                  email={res.email}
+                  date={res.date}
+                  fileLinkList=""
+                  onClick={() => bucketCardClick(departmentId)}
+                  key = {res.commitId}   
+                />
+              )
+              setBucketCardList([...bucketCards])
             }
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Input color="primary" type="file" onChange={handleFileInput}/>
-            {selectedFile?(
-              <Button color="primary" onClick={() => uploadFile(selectedFile)}> Upload to S3</Button>
-            ) : null }
-          </Col>
-        </Row>
+          }
+        )
+      }})
+  },[])
+
+  useEffect( () => {
+    if (selectedDepartmentId === ""){
+      return
+    }
+    getBucket(selectedDepartmentId)
+    .then(
+      (res) => {
+        if (res.status === 200){
+          let bucketCommits = [];
+          let commitList = res.data.reverse().map(data => data);
+          commitList.map(
+            (commit) => {
+              bucketCommits.push(
+                <BucketSemiCard
+                  bucketTitle = {commit.title}
+                  memberName = {commit.memberName}
+                  email = {commit.email}
+                  date = {commit.date}
+                  onClick={() => commitClick(commit.commitId)}
+                  key = {commit.commitId}
+                />
+              )
+            }
+          )
+          setBucketCommitList([...bucketCommits])
+        }
+      }
+    )
+  }, [selectedDepartmentId])
+
+  useEffect( () => {
+    if (selectedCommit === ""){
+      return
+    }
+    getBucket(selectedDepartmentId)
+    .then(
+      (res) => {
+        if (res.status === 200){
+          res.data.map(
+            (commit) => {
+              if (commit.commitId === selectedCommit){
+                setBucketBox(
+                  <BucketBox
+                    bucketTitle={commit.title}
+                    bucketCommit={commit.commit}
+                    link1={commit.fileLink1}
+                    link2={commit.fileLink2}
+                    link3={commit.fileLink3}
+                    link4={commit.fileLink4}
+                    link5={commit.fileLink5}
+                    key={commit.commitId}
+                  />
+                )
+              }
+            }
+          )
+        }
+      }
+    )
+  }, [selectedCommit])
+
+  function bucketCardClick(departmentId){
+    setIsOpenSemiBucketCard(true);
+    setIsOpenBucketBox(false);
+    setSelectedDepartmentId(departmentId)
+  }
+
+  function commitClick(commitId){
+    setIsOpenBucketBox(true);
+    setSelectedCommit(commitId)
+  }
+
+  function closeArrowClick(){
+    setIsOpenSemiBucketCard(false);
+    setIsOpenBucketBox(false);
+  }
+
+  return(
+    <div className="bucket-page-main-container">
+      <div className="bucket-page-top">
+        <div className="bucket-workspace-info">
+          <div className="bucket-page-workspace-name">{workspaceViewModel.getName(localStorage.getItem('accessedWorkspaceId'))}</div>
+          <div className="bucket-page-workspace-goal">{workspaceViewModel.getGoal(localStorage.getItem('accessedWorkspaceId'))}</div>
+        </div>
+
+        <div className="bucket-workspace-deadline-info">
+          <div className="bucket-page-workspace-deadline">마감일 : {workspaceViewModel.getDeadLine(localStorage.getItem('accessedWorkspaceId'))}</div>
+          <div className="bucket-page-workspace-dday">{workspaceViewModel.getDDay(localStorage.getItem('accessedWorkspaceId'))}</div>
+        </div>
+
+      </div>
+      <div className="bucket-page-body">
+        {
+          bucketCardList.length > 0 ?
+          <div className="bucket-page-first-col">
+            <div className="bucket-card-container">
+              {bucketCardList}
+            </div>
+
+            {
+              isOpenSemiBucketCard === true ?
+                <>
+                  <BiChevronsLeft className="close-arrow" onClick={() => closeArrowClick()}/>
+                  <div className="bucket-card-container" style={{width:'263px'}}>
+                    {bucketCommitList}
+                  </div> 
+                </>
+              :
+                <></>
+            }
+            
+
+            {
+              isOpenBucketBox === true ?
+              <>
+                <BiChevronsLeft className="close-arrow" onClick={() => setIsOpenBucketBox(false)}/>
+                <div>
+                  { bucketBox }
+                </div>
+              </>
+              :
+              <></>
+            }
+          </div>
+          :
+          <></>
+        }
+        <div className="bucket-page-second-col">
+          <StatisticsForm
+            workspaceViewModel={workspaceViewModel}
+            departmentViewModel={departmentViewModel}
+            chatViewModel = {chatViewModel}
+          />
+        </div>
       </div>
     </div>
-    <FileUploader handleChange={handleChange} name="file" types={fileTypes} />
-    <img src="assets/images/rightCrab.png" width="140px"/>
-        </div>
-    );
-    
+  )
 }
