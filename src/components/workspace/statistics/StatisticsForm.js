@@ -1,13 +1,16 @@
 import WorkspaceStatistics from "./WorkspaceStatistics";
 import DepartmentStatistics from "./DepartmentStatistics";
 
-export default function StatisticsForm({workspaceViewModel}){
+export default function StatisticsForm({workspaceViewModel, departmentViewModel, chatViewModel}){
     return (   
         <>
             <WorkspaceStatistics
                 workspaceViewModel={workspaceViewModel}
             />
-            <DepartmentStatistics/>
+            <DepartmentStatistics
+                departmentViewModel={departmentViewModel}
+                chatViewModel = {chatViewModel}
+            />
         </>
     );
 };

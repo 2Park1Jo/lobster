@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { getLastBucket, getBucket } from "../../api/BucketAPI"
 import { BiChevronsLeft } from "react-icons/bi";
 
-export default function Bucket({departmentIdList, departmentViewModel, workspaceViewModel}){
+export default function Bucket({departmentIdList, departmentViewModel, workspaceViewModel, chatViewModel}){
   let [bucketCardList, setBucketCardList] = useState([]);
   let [bucketCommitList, setBucketCommitList] = useState([]);
   let [bucketBox, setBucketBox] = useState("");
@@ -180,6 +180,8 @@ export default function Bucket({departmentIdList, departmentViewModel, workspace
         <div className="bucket-page-second-col">
           <StatisticsForm
             workspaceViewModel={workspaceViewModel}
+            departmentViewModel={departmentViewModel}
+            chatViewModel = {chatViewModel}
           />
         </div>
       </div>

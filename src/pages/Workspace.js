@@ -733,6 +733,7 @@ const Workspace = function () {
                         departmentIdList = {departmentIdList}
                         departmentViewModel = {departmentViewModel}
                         workspaceViewModel = {workspaceViewModel}
+                        chatViewModel = {chatViewModel}
                     />
                 }
             </div>
