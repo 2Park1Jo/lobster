@@ -3,7 +3,7 @@ import WorkspaceStatistics from "./WorkspaceStatistics";
 import DepartmentChatStatistics from "./DepartmentChatStatistics";
 import TalkKingStatistics from "./TalkKingStatistics";
 
-export default function StatisticsForm({workspaceViewModel, departmentViewModel, chatViewModel, departmentIdList}){
+export default function StatisticsForm({workspaceViewModel, departmentViewModel, chatViewModel, departmentList}){
     return (   
         <div className="statistics-form-container">
             <WorkspaceStatistics
@@ -12,7 +12,7 @@ export default function StatisticsForm({workspaceViewModel, departmentViewModel,
             <DepartmentChatStatistics
                 departmentViewModel={departmentViewModel}
                 chatViewModel = {chatViewModel}
-                departmentIdList = {departmentIdList}
+                departmentList = {departmentList}
             />
             <TalkKingStatistics/>
 

@@ -5,21 +5,21 @@ import { getChattingData} from '../../../api/DepartmentAPI';
 import 'react-circular-progressbar/dist/styles.css';
 import './Statistics.css'
 
-export default function DepartmentChatStatistics({departmentViewModel, chatViewModel, departmentIdList}){
+export default function DepartmentChatStatistics({departmentViewModel, chatViewModel, departmentList}){
 
     let [chatCount, setChatCount] = useState([]);
     let [countProgressBar, setCountProgressBar] = useState([]);
-    console.log(departmentIdList)
+    console.log(departmentList)
 
     useEffect( () => {
         let chatCountList = [];
-        departmentIdList.map( (departmentId) => {
-            getChattingData(departmentId)
+        departmentList.map( (department) => {
+            getChattingData(department.departmentId)
             .then((res) => {
                 chatCountList.push({
-                    departmentId: departmentId,
+                    departmentId: department.departmentId,
                     chatCount: res.length,
-                    key: departmentId
+                    key: department.departmentId
                 })
                 setChatCount([...chatCountList])
             })

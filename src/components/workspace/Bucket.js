@@ -5,9 +5,10 @@ import BucketBox from "./BucketBox";
 import StatisticsForm from "./statistics/StatisticsForm";
 import { useState, useEffect } from "react";
 import { getLastBucket, getBucket } from "../../api/BucketAPI"
+import { getWorkspaceDepartments } from "../../api/DepartmentAPI"
 import { BiChevronsLeft } from "react-icons/bi";
 
-export default function Bucket({departmentIdList, departmentViewModel, workspaceViewModel, chatViewModel}){
+export default function Bucket({departmentViewModel, workspaceViewModel, chatViewModel}){
   let [bucketCardList, setBucketCardList] = useState([]);
   let [bucketCommitList, setBucketCommitList] = useState([]);
   let [bucketBox, setBucketBox] = useState("");
@@ -18,36 +19,44 @@ export default function Bucket({departmentIdList, departmentViewModel, workspace
   let [isOpenSemiBucketCard, setIsOpenSemiBucketCard] = useState(false);
   let [isOpenBucketBox, setIsOpenBucketBox] = useState(false);
 
+  let departmentList = [];
+
   useEffect( () => {
-    let bucketCards = [];
-    departmentIdList.map( (departmentId) => {
-      if (departmentId !== localStorage.getItem('accessedWorkspaceId')){
-        getLastBucket(departmentId)
-        .then(
-          (res) =>{
-            let departmentName = departmentViewModel.getName(departmentId);
-            let departmentGoal = departmentViewModel.getGoal(departmentId);
-            let departmentDeadLine = departmentViewModel.getDeadLine(departmentId);
-            if (res.memberName !== undefined){
-              bucketCards.push(
-                <BucketCard
-                  departmentName={departmentName}
-                  departmentGoal={departmentGoal}
-                  departmentDeadLine={departmentDeadLine}
-                  bucketTitle={res.title}
-                  memberName={res.memberName}
-                  email={res.email}
-                  date={res.date}
-                  fileLinkList=""
-                  onClick={() => bucketCardClick(departmentId)}
-                  key = {res.commitId}   
-                />
-              )
-              setBucketCardList([...bucketCards])
+    getWorkspaceDepartments(localStorage.getItem('accessedWorkspaceId'), "")
+    .then( (res) => {
+      departmentList = res;
+
+      let bucketCards = [];
+      departmentList.map( (department) => {
+        console.log(department)
+        if (department.departmentId !== localStorage.getItem('accessedWorkspaceId')){
+          getLastBucket(department.departmentId)
+          .then(
+            (res) =>{
+              let departmentName = departmentViewModel.getName(department.departmentId);
+              let departmentGoal = departmentViewModel.getGoal(department.departmentId);
+              let departmentDeadLine = departmentViewModel.getDeadLine(department.departmentId);
+              if (res.memberName !== undefined){
+                bucketCards.push(
+                  <BucketCard
+                    departmentName={departmentName}
+                    departmentGoal={departmentGoal}
+                    departmentDeadLine={departmentDeadLine}
+                    bucketTitle={res.title}
+                    memberName={res.memberName}
+                    email={res.email}
+                    date={res.date}
+                    fileLinkList=""
+                    onClick={() => bucketCardClick(department.departmentId)}
+                    key = {res.commitId}   
+                  />
+                )
+                setBucketCardList([...bucketCards])
+              }
             }
-          }
-        )
-      }})
+          )
+        }})
+    })
   },[])
 
   useEffect( () => {
@@ -173,16 +182,22 @@ export default function Bucket({departmentIdList, departmentViewModel, workspace
               :
               <></>
             }
+            </div>
+          : //버켓없을경우
+          <div className="bucket-page-first-col"> 
+            <div className="bucket-card-container">
+              <BucketCard
+                departmentName="등록된 버킷이 없습니다."
+              />
+            </div> 
           </div>
-          :
-          <></>
         }
         <div className="bucket-page-second-col">
           <StatisticsForm
             workspaceViewModel={workspaceViewModel}
             departmentViewModel={departmentViewModel}
             chatViewModel = {chatViewModel}
-            departmentIdList = {departmentIdList}
+            departmentList = {departmentList}
           />
         </div>
       </div>
