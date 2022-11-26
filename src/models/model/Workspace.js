@@ -3,7 +3,8 @@ export class WorkspaceModel{
         workspaceId: "",
         workspaceName: "",
         workspaceGoal: "",
-        workspaceDeadline: ""
+        workspaceDeadline: "",
+        creationDate: ""
     }]
 
     updateModel(updatedModel){

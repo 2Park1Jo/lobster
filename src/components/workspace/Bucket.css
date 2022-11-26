@@ -1,0 +1,229 @@
+.bucket-page-main-container{
+    width: 100vw;
+    height: 100vh;
+    color: white;
+}
+
+.bucket-page-top{
+    background-color: #1B1B1B;
+    height: 12%;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-top: 15px;
+}
+
+.bucket-page-body{
+    align-items: stretch;
+    height: 88%;
+    display: flex;
+    flex-direction: row;
+    overflow: auto;
+}
+
+.bucket-page-first-col{
+    display: flex;
+    background-color: #2B2B2B;
+    min-width: 380px;
+    padding: 10px;
+    padding-left: 20px;
+    flex-shrink: 0;
+}   
+
+.bucket-page-second-col{
+    background-color: #2B2B2B;
+    flex-grow: 1;
+    padding: 15px;
+    padding-right: 20px;
+}
+
+.bucket-workspace-info{
+    float: left;
+}
+
+.bucket-page-workspace-name{
+    font-family: 'Noto Sans CJK KR';
+    font-style: normal;
+    font-weight: 900;
+    font-size: 20px;
+    line-height: 30px;
+    letter-spacing: -0.04em;
+    color: #FF4D4D;
+}
+.bucket-page-workspace-goal{
+    font-family: 'Noto Sans CJK KR';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 21px;
+    letter-spacing: -0.02em; 
+    color: #C7C7C7;
+}
+
+.bucket-workspace-deadline-info{
+    display: inline;
+    float: right;
+}
+
+.bucket-page-workspace-deadline{
+    font-family: 'Noto Sans CJK KR';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 21px;   
+    letter-spacing: -0.02em;
+    color: #C7C7C7;
+}
+
+.bucket-page-workspace-dday{
+    font-family: 'Noto Sans CJK KR';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 30px;
+    letter-spacing: -0.02em;
+    color: #FF4D4D;
+}
+
+.bucket-page-box-container{
+    width: 600px;
+    height: 100%;
+    border-radius: 10px;
+    background-color: #2B2B2B;
+    padding: 20px;
+    overflow-y: hidden;
+
+    margin-top: 3px;
+    margin-left: 3px;
+    box-shadow: rgba(255, 255, 255, 0.2) 1px 1px 5px;
+
+    color: white;
+    font-family: 'Noto Sans CJK KR';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 20px;
+}
+.bucket-page-box-container:hover{
+    overflow-y: auto;
+}
+.bucket-page-box-container::-webkit-scrollbar {
+    width: 13px;
+}
+.bucket-page-box-container::-webkit-scrollbar-thumb {
+    background: gainsboro;; /* 스크롤바의 색상 */
+    border-radius: 10px;
+    background-clip: padding-box;
+    border: 3px solid transparent;
+}
+.bucket-page-box-container::-webkit-scrollbar-track{
+    background-color: #2B2B2B;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.bucket-page-box-title{
+    display: inline-block;
+    width: 460px;
+    height: 80px;
+    border-radius: 10px;
+    margin-left: 15px;
+    background-color: #2B2B2B;
+    box-shadow: rgba(255, 255, 255, 0.2) 1px 1px 5px;
+    /* border: 1px solid gainsboro; */
+    padding: 10px;
+    font-size: 15px;
+}
+
+.bucket-page-box-file-container{
+    border: 1px solid #CFCFCF;
+    background-color: #F1F1F1;
+    border-radius: 10px;
+    text-align: center;
+    height: 92px;
+    width: 120px;
+    margin-left: 10px;
+    padding: 5px;
+    display: inline-block;
+    margin-top: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    overflow-y:auto;
+    overflow-x: hidden;
+    word-wrap: break-word;
+}
+.bucket-page-box-file-container::-webkit-scrollbar {
+    width: 0px;
+}
+
+.bucket-page-box-files{
+    margin-left: 70px;
+    /* text-align: center; */
+}
+
+.bucket-page-box-commit{
+    display: inline-block;
+    width: 460px;
+    height: 200px;
+    border-radius: 10px;
+    margin-left: 15px;
+    background-color: #2B2B2B;
+    box-shadow: rgba(255, 255, 255, 0.2) 1px 1px 5px;
+    /* border: 1px solid gainsboro; */
+    margin-top: 10px;
+    padding: 10px;
+
+    font-size: 15px;
+}
+
+.bucket-page-box-comment{
+    display: inline-block;
+    width: 520px;
+    height: 280px;
+    border-radius: 10px;
+    margin-left: 20px;
+    background-color: gainsboro;
+}
+
+.percentage-bar{
+    height: 14px;
+    margin: 15px;
+}
+
+.division-line{
+    border-top: 2px solid #444444;
+    margin: 30px 0px;
+}
+
+.bucket-card-container{
+    width: 373px;
+    overflow-y: hidden;
+}
+
+.bucket-card-container:hover{
+    overflow-y: auto;
+}
+
+.bucket-card-container::-webkit-scrollbar {
+    width: 13px;
+}
+.bucket-card-container::-webkit-scrollbar-thumb {
+    background: whitesmoke;
+    border-radius: 10px;
+    background-clip: padding-box;
+    border: 3px solid transparent;
+}
+
+.bucket-card-container::-webkit-scrollbar-track{
+    background-color: #484848;
+    border-radius: 10px;
+}
+
+.close-arrow{
+    font-size: 22px;
+    color: #F1F1F1;
+    cursor: pointer;
+}
+
+.close-arrow:hover{
+    color:red;
+}

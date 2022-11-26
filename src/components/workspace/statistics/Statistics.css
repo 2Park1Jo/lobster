@@ -1,0 +1,14 @@
+.workspace-statistics{
+    height: 70px;
+    border-radius: 10px;
+    padding-top: 1px;
+
+    background-color: #2B2B2B;
+    box-shadow: rgba(255, 255, 255, 0.2) 1px 1px 5px;
+}
+
+.workspace-statistics-date-info{
+    padding-left:20px;
+    padding-right:20px;
+    font-size:12px;
+}
