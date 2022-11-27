@@ -18,6 +18,7 @@ export default function DepartmentChatStatistics({departmentViewModel}){
                 getChattingData(department.departmentId)
                 .then((res) => {
                     chatCountList.push({
+                        departmentName: department.departmentName,
                         departmentId: department.departmentId,
                         chatCount: res.length,
                         key: department.departmentId
@@ -40,11 +41,10 @@ export default function DepartmentChatStatistics({departmentViewModel}){
         }
 
         for (let index = 0; index < chatCountList.length; index++){
-            let departmentName = departmentViewModel.getName(chatCountList[index].departmentId)
             let progress = Math.round((Number(chatCountList[index].chatCount) / wholeChatCount) * 100);
             progressBars.push(
                 <>
-                    <div className="progress-left-text">{departmentName}</div>
+                    <div className="progress-left-text">{chatCountList[index].departmentName}</div>
                     <ProgressBar key={chatCount[index].departmentId} className="progress-bar-in-departmentStatistics" variant="danger" now={progress} label={`${progress}% `}/>
                 </>
             )
