@@ -351,11 +351,15 @@ const Workspace = function () {
             stomp.subscribe("/sub/chat/workspace/" + localStorage.getItem('accessedWorkspaceId'), function (data) {
                 let result = JSON.parse(data.body);
                 setDepartmentUpdateState(result.content);
+                if (result.contentType === "-1"){ // modify
+                    setChatUpdateState(result.content);
+                }
             });
 
             stomp.subscribe("/sub/chat/workspace", function (data) {
                 let result = data.body;
                 setWorkspaceMemberUpdateState(result.content);
+                setDepartmentUpdateState(result.content)
                 setDpMemberUpdateState(result.content);
             });
 
@@ -365,6 +369,7 @@ const Workspace = function () {
                     setConnectedMemberList(result)
                 } 
             });
+
 
             stomp.send('/pub/chat/enter', {}, JSON.stringify({departmentId: localStorage.getItem('accessedDepartmentId'), email: localStorage.getItem('loginMemberEmail')}))
         }
@@ -606,8 +611,14 @@ const Workspace = function () {
                                 <span className='department-deadline'>{ departmentViewModel.getDeadLine(localStorage.getItem('accessedDepartmentId')) }</span>
                                 <FaPowerOff className='setting' style={{marginLeft:'10px'}} onClick={()=> logout()}/>
                                 <BsGearFill className='setting' style={{marginLeft:'10px'}} onClick={()=> setdpModifyModalIsOpen(true)}/>
-                                    <Modal isOpen= {dpModifyModalIsOpen} style={modalStyles} onRequestClose={() => setdpModifyModalIsOpen(false)}>
-                                        <DepartmentModifyModal departmentName={accessedDepartment.name} departmentGoal={departmentViewModel.getGoal(localStorage.getItem('accessedDepartmentId'))} departmentDeadLine={departmentViewModel.getDeadLine(localStorage.getItem('accessedDepartmentId'))} setdpModifyModalIsOpen={setdpModifyModalIsOpen}/>
+                                    <Modal ariaHideApp={false} isOpen={dpModifyModalIsOpen} style={modalStyles} onRequestClose={() => setdpModifyModalIsOpen(false)}>
+                                        <DepartmentModifyModal 
+                                            departmentName={accessedDepartment.name} 
+                                            departmentGoal={departmentViewModel.getGoal(localStorage.getItem('accessedDepartmentId'))} 
+                                            departmentDeadLine={String(departmentViewModel.getDeadLine(localStorage.getItem('accessedDepartmentId'))).replace("마감일 : ","")} 
+                                            setdpModifyModalIsOpen={setdpModifyModalIsOpen}
+                                            stomp = {stomp}
+                                        />
                                     </Modal>
                                 <MdSensorDoor className='setting' onClick={()=> moveToWorkspaceBanner()}/>
                                 <div className='department-dday'>{ departmentViewModel.getDDay(localStorage.getItem('accessedDepartmentId')) }</div>
