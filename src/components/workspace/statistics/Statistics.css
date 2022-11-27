@@ -1,14 +1,43 @@
-.workspace-statistics{
-    height: 70px;
-    border-radius: 10px;
-    padding-top: 1px;
+.statistics-form-container{
+}
 
+.workspace-statistics{
+    height: 100px;
+    border-radius: 10px;
+    padding: 15px;
+
+    background-color: #2B2B2B;
+    box-shadow: rgba(255, 255, 255, 0.2) 1px 1px 5px;
+    margin-bottom: 20px;
+}
+
+.workspace-statistics-date-info{
+    /* padding-left:20px;
+    padding-right:20px; */
+    font-size:12px;
+}
+
+.department-chat-progress-container{
+    /* height: 70px; */
+    border-radius: 10px;
+    padding: 15px;
+    background-color: #2B2B2B;
+    box-shadow: rgba(255, 255, 255, 0.2) 1px 1px 5px;
+    margin-bottom: 20px;
+}
+
+.progress-left-text{
+    margin-right: 10px;
+}
+
+.talk-king-statistics-main-container{
+    border-radius: 10px;
+    padding: 15px;
     background-color: #2B2B2B;
     box-shadow: rgba(255, 255, 255, 0.2) 1px 1px 5px;
 }
 
-.workspace-statistics-date-info{
-    padding-left:20px;
-    padding-right:20px;
-    font-size:12px;
+.talk-king-statistics-container{
+    display: flex;
+    justify-content: center;
 }

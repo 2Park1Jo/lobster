@@ -6,6 +6,33 @@
     background-color: #d5d4d4;
 }
 
+.talk-king-card{
+    width: 45%;
+    max-width: 400px;
+    height: auto;
+    background-color: #2B2B2B;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    box-shadow: rgba(255, 255, 255, 0.2) 1px 1px 5px;
+    padding: 10px;
+    margin: 10px;
+}
+
+.talk-rank{
+    text-align: center;
+    font-family: 'Noto Sans CJK KR';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 20px;
+}
+
+.talk-king-card-body{
+    width: 100%;
+    display: inline-flex;
+}
+
 .bucket-card{
     width: 360px;
     height: 157px;
@@ -40,6 +67,18 @@
     height: 80px;
     margin: 10px;
     flex-shrink: 0;
+}
+.talk-king-card-info{
+    color: white;
+    font-family: 'Noto Sans CJK KR';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 16px;
+    
+    margin-top: 10px;
+    /* margin-left: 10px; */
+    width: 100%;
 }
 
 .bucket-card-department_info{

@@ -33,6 +33,6 @@ export function calculateProgress(creationDate, deadline){
 
     console.log(RemainingPeriod + "/" + wholePeriod)
 
-    let progress =  Math.ceil((RemainingPeriod / wholePeriod) * 100);
+    let progress =  Math.ceil(((wholePeriod - RemainingPeriod ) / wholePeriod) * 100);
     return progress
 }
