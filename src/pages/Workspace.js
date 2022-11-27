@@ -121,7 +121,7 @@ const Workspace = function () {
 
     let [messageCountGap, setMessageCountGap] = useState([]);
 
-    const [play] = useSound(mySound);
+    const [play] = useSound(mySound, { volume: 0.001 });
 
 
     useEffect( () => {     
@@ -138,7 +138,6 @@ const Workspace = function () {
         stomp.connect({}, onConnected, (error) => {
             console.log('sever error : ' + error );
         });
-    
     },[])
 
     useEffect(() => {
@@ -151,7 +150,6 @@ const Workspace = function () {
     },[lastBucketUpdateState])
 
     useEffect(() => {
-        console.log(messageCountGap)
         let isGapUpperZero = false;
         for (let index = 0; index < messageCountGap.length; index++){
             if (messageCountGap[index].countGap > 0){
@@ -162,35 +160,42 @@ const Workspace = function () {
         if (receivedDepartmentId.current === localStorage.getItem('accessedDepartmentId')){
             return;
         }
-
-        console.log(isChatReceived.current)
         if (isGapUpperZero && isChatReceived.current){    
             play();
             console.log("beep")
+            isChatReceived.current = false;
         }
     },[messageCountGap])
 
     function setLastChatLength(workspaceChatCountData){
         let gap = [];
 
-        workspaceChatCountData.map((departmentLastChatData) => {
-            for (let index = 0; index < lastChatLengthRef.current.length; index++){
-                if (lastChatLengthRef.current[index].departmentId === departmentLastChatData.departmentId){
-                    let countGap = Number(departmentLastChatData.messageCount) - Number(lastChatLengthRef.current[index].messageCount);
-                    if (departmentLastChatData.departmentId === localStorage.getItem('accessedDepartmentId')){
-                        countGap = 0;
-                    }
-                    
-                    gap.push({
-                        departmentId: departmentLastChatData.departmentId,
-                        countGap: countGap
-                    }
-                    );
+        workspaceChatCountData.map((departmentLastChatData, index) => {
+            if (lastChatLengthRef.current[index] === undefined){
+                let countGap = Number(departmentLastChatData.messageCount);               
+                gap.push({
+                    departmentId: departmentLastChatData.departmentId,
+                    countGap: countGap,
+                    isNewDepartment: true
                 }
+                )
+            }
+            else if (lastChatLengthRef.current[index].departmentId === departmentLastChatData.departmentId){
+                let countGap = Number(departmentLastChatData.messageCount) - Number(lastChatLengthRef.current[index].messageCount);
+                if (departmentLastChatData.departmentId === localStorage.getItem('accessedDepartmentId')){
+                    countGap = 0;
+                }
+                
+                gap.push({
+                    departmentId: departmentLastChatData.departmentId,
+                    countGap: countGap,
+                    isNewDepartment: false
+                }
+                );
             }
         })
         
-        setMessageCountGap(gap)
+        setMessageCountGap([...gap])
     }
 
     useEffect(() => {
@@ -207,12 +212,20 @@ const Workspace = function () {
                 if (departmentIdList.length !== stomp.counter - 3){
                     stomp.subscribe("/sub/chat/department/" + departmentIdList[departmentIdList.length - 1], function (chat) {
                         let result = JSON.parse(chat.body);
-                        if (chatUpdateState !== result.body){
-                            setChatUpdateState(result.content);
-                        }
                         if (result.contentType === "-1"){ // invite
                             setChatUpdateState(result.content);
                             setDpMemberUpdateState(result.content);
+                        }
+                        else if (chatUpdateState !== result.body){
+                            getWorkspaceChatCountData(localStorage.getItem('accessedWorkspaceId'))
+                            .then(
+                                (res) => {
+                                    receivedDepartmentId.current = result.departmentId;
+                                    setLastChatLength(res)
+                                }
+                            )
+                            setChatUpdateState(result.content);
+                            isChatReceived.current = true;
                         }
                     });
                 }
@@ -316,20 +329,20 @@ const Workspace = function () {
             for (let index = 0; index < departmentIdList.length; index++){
                 stomp.subscribe("/sub/chat/department/" + departmentIdList[index], function (chat) {
                     let result = JSON.parse(chat.body);
-                    getWorkspaceChatCountData(localStorage.getItem('accessedWorkspaceId'))
-                    .then(
-                        (res) => {
-                            receivedDepartmentId.current = result.departmentId;
-                            setLastChatLength(res)
-                        }
-                    )
-                    if (chatUpdateState !== result.body){
-                        setChatUpdateState(result.content);
-                        isChatReceived.current = true;
-                    }
                     if (result.contentType === "-1"){ // invite
                         setChatUpdateState(result.content);
                         setDpMemberUpdateState(result.content);
+                    }
+                    else if (chatUpdateState !== result.body){
+                        getWorkspaceChatCountData(localStorage.getItem('accessedWorkspaceId'))
+                        .then(
+                            (res) => {
+                                receivedDepartmentId.current = result.departmentId;
+                                setLastChatLength(res)
+                            }
+                        )
+                        setChatUpdateState(result.content);
+                        isChatReceived.current = true;
                     }
                 });
             }
@@ -741,13 +754,11 @@ const Workspace = function () {
                         </div>
                     </div>
                 :
-                <div className='workspace-bucketPage-container'>
                     <Bucket
                         departmentViewModel = {departmentViewModel}
                         workspaceViewModel = {workspaceViewModel}
                         chatViewModel = {chatViewModel}
                     />
-                </div>
                 }
             </div>
         );
