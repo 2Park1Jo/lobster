@@ -3,6 +3,7 @@ import { FaUpload} from "react-icons/fa";
 import { AiOutlineFileText } from "react-icons/ai";
 import { SiBitbucket } from "react-icons/si";
 import {putBucket} from "../../api/BucketAPI.js"
+import { Slider } from "@material-ui/core";
 import AWS from 'aws-sdk';
 import { ACCESS_KEY, REGION, S3_BUCKET, SECRET_ACCESS_KEY } from '../../Config.js'
 
@@ -19,6 +20,26 @@ const BucketAddModal=({setBucketMenu,departmentId,workspaceId,email,memberName})
     const [urlList,setUrlList]=useState([])
     let count=0
     let url=[]
+
+    let [bucketProgress, setBucketProgress] = useState(0);
+
+    // console.log(bucketProgress)
+
+    const handleSliderChange = (event, newValue) => {
+        setBucketProgress(newValue);
+    };
+
+    const handleInputChange = (event) => {
+        setBucketProgress(event.target.value === '' ? '' : Number(event.target.value));
+    };
+
+    const handleBlur = () => {
+        if (bucketProgress < 0) {
+            setBucketProgress(0);
+        } else if (bucketProgress > 100) {
+            setBucketProgress(100);
+        }
+    };
 
     useEffect(()=>{
         let list=[]
@@ -210,7 +231,7 @@ const BucketAddModal=({setBucketMenu,departmentId,workspaceId,email,memberName})
         let seconds = String(currentDate.getSeconds()).padStart(2, "0");
         let currentTime = year + '-' + month + '-' + date + ' ' + houres + ':' + minutes + ':' + seconds;
 
-        let request=Promise.resolve(putBucket(departmentId,workspaceId,currentTime,email,memberName,inputTitle,inputDetail,urlList))
+        let request=Promise.resolve(putBucket(departmentId,workspaceId,currentTime,email,memberName,inputTitle,inputDetail,urlList,bucketProgress))
 
         request.then((value)=>{
             console.log(value)
@@ -265,11 +286,36 @@ const BucketAddModal=({setBucketMenu,departmentId,workspaceId,email,memberName})
                 </div>
                 
                 <div style={{flexDirection:"row"}}>
-                <span style={{float:"left" , marginLeft:"20px"}}>세부사항</span>
-                <textarea style={{resize: 'none', float:"left", height:"200px",marginLeft:"30px"}} type="text" placeholder="내용을 입력해주세요" className="w-75 form-control bg-light" onChange={e => setDetail(e)}/>
+                    <span style={{float:"left" , marginLeft:"20px"}}>세부사항</span>
+                    <textarea style={{resize: 'none', float:"left", height:"160px",marginLeft:"30px"}} type="text" placeholder="내용을 입력해주세요" className="w-75 form-control bg-light" onChange={e => setDetail(e)}/>
                 </div>
+                
+                <div className="slider-bard-container">
+                    <div style={{float:"left" , marginLeft:"20px"}}>진행률</div>
+                    <Slider
+                        style={{float:"left", width:'498px', height:'10px', marginLeft:'45px'}}
+
+                        value={typeof bucketProgress === 'number' ? bucketProgress : 0}
+                        onChange={handleSliderChange}
+                        aria-labelledby="input-slider"
+
+                        size="small"
+                        defaultValue={0}
+                        aria-label="Small"
+                        valueLabelDisplay="auto"
+                        color="secondary"
+                    />
+                    <input
+                        style={{width:'50px', fontWeight:'500' , fontSize:'14px', border:'none', marginLeft:'5px', color:'red'}}
+                        value={bucketProgress}
+                        onChange={handleInputChange}
+                        onBlur={handleBlur}
+                        type="number"
+                    />
+                </div>
+
                 <div>
-                <button className="btn btn-danger" style={{float:"right", marginTop:"20px", marginRight:"61px"}} onClick={()=>bucketUpload()}>버킷 업로드</button>
+                    <button className="btn btn-danger" style={{float:"right", marginRight:"61px"}} onClick={()=>bucketUpload()}>버킷 업로드</button>
                 </div>
             </div>
         </>

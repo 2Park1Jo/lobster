@@ -115,7 +115,7 @@ const BucketHistoryModal=({setBucketMenu,departmentId})=>{
                     <div className="bucket-history-modal-commitsContainer">
                         {bucketList.length===0?
                             <div className="bucket-history-empty">
-                                <span style={{color:"white", fontSize:"30px"}}>버킷이 비어있습니다!</span>
+                                <span style={{color:"white", fontSize:"20px"}}>버킷이 비어있습니다!</span>
                                 <span style={{color:"white", fontSize:"20px",textAlign:"center"}}>버킷에 자료를 올리고 구성원들과 공유해보세요!</span>
                             </div>
                             :
@@ -126,7 +126,7 @@ const BucketHistoryModal=({setBucketMenu,departmentId})=>{
                     </div>
                         {title.length===0?
                             <div className="bucket-history-modal-contentContainer">
-                            <span style={{color:"whit", fontSize:"50px",textAlign:"center"}}>버킷 내역을 클릭하시면 동료들이 올린 내용을 확인하실 수 있어요!</span>
+                            <span style={{color:"white", fontSize:"20px",textAlign:"center"}}>버킷 내역을 클릭하시면 동료들이 올린 내용을 확인하실 수 있어요!</span>
                             </div>
                         :
                             <>
