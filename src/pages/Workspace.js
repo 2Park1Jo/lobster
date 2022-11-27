@@ -7,6 +7,7 @@ import DepartmentModifyModal from '../components/modals/DepartmentModifyModal';
 import WorkspaceMemberAdd from '../components/modals/WorkspaceMemberAdd';
 import FileUploadConfirm from '../components/modals/FileUploadConfirm';
 import BucketModal from '../components/modals/BucketModal';
+import BucketSemiCard from '../components/workspace/BucketSemiCard';
 
 import React, { useState, useRef, useEffect,useLayoutEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -16,6 +17,7 @@ import { useRecoilState } from "recoil";
 import { getLastChatData, setLastChatData } from '../api/MemberAPI';
 import { getWorkspaceMemberData, getWorkspaceData, getWorkspaceChatCountData } from '../api/WorkspaceAPI';
 import { getDepartmentMemberData, getChattingData, getDepartments } from '../api/DepartmentAPI';
+import { getLastBucket } from '../api/BucketAPI'
 
 import { ACCESSED_DEPARTMENT, WORKSPACE_ID } from '../recoil/Atoms';
 
@@ -105,6 +107,9 @@ const Workspace = function () {
     let [fileSearch, setFileSearch] = useState('');
     let [isContainFolder,setIsContainFolder]=useState(false)
 
+    let [lastBucketData, setLastBucketData] = useState("");
+    let [lastBucketUpdateState, setLastBucketUpdateState] = useState(false);
+
     let navigate = useNavigate();
     const location = useLocation();
 
@@ -148,6 +153,15 @@ const Workspace = function () {
             }
         )
     },[])
+
+    useEffect(() => {
+        getLastBucket(localStorage.getItem('accessedDepartmentId'))
+        .then(
+            (res) => {
+                setLastBucketData(res);
+            }
+        )
+    },[lastBucketUpdateState])
 
     useEffect(() => {
         console.log(messageCountGap)
@@ -284,6 +298,8 @@ const Workspace = function () {
                 setLastChatLength(res)
             }
         )
+
+        setLastBucketUpdateState(!lastBucketUpdateState)
     }, [accessedDepartment])
 
     useEffect( () => {
@@ -709,7 +725,7 @@ const Workspace = function () {
                                     :
                                     <div className='fourth-col-Bucket'>
                                         <div className='container-top'>
-                                            <div style={{float:'left', color:'white'}}>버켓</div>
+                                            <div style={{float:'left', color:'white'}}>버킷</div>
                                             <SiBitbucket onClick={()=>setBucketModalIsOpen(true)} style={{float:'right'}} className="arrow"/>
                                         </div>
                                         <Modal ariaHideApp={false} isOpen= {BucketModalIsOpen} style={modalStyles} onRequestClose={() => preventModalScroll()}>
@@ -722,6 +738,13 @@ const Workspace = function () {
                                                 />
                                         </Modal>
                                         <div className='child'>
+                                            <BucketSemiCard
+                                                bucketTitle={lastBucketData.title}
+                                                memberName={lastBucketData.memberName}
+                                                email={lastBucketData.email}
+                                                date={lastBucketData.date}
+                                                width="274px"
+                                            />
                                         </div>
                                     </div>
                                 }
@@ -730,7 +753,6 @@ const Workspace = function () {
                     </div>
                 :
                     <Bucket
-                        departmentIdList = {departmentIdList}
                         departmentViewModel = {departmentViewModel}
                         workspaceViewModel = {workspaceViewModel}
                         chatViewModel = {chatViewModel}

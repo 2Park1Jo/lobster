@@ -216,8 +216,8 @@
     margin-bottom: 2%;
 }
 .child{
-    background-color: white;
-    height: 180px;
+    background-color: #2B2B2B;
+    height: auto;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
 }
