@@ -10,7 +10,7 @@ export const getAllDepartment = async () =>{
 }
 
 export const getWorkspaceDepartments = async (workspaceId) =>{
-    const responose = await axios.get(BACK_BASE_URL + '/workspace/' + workspaceId + '/departments')
+    const responose = await axios.get(BACK_BASE_URL + 'workspace/' + workspaceId + '/departments')
     return responose.data;
 }
 

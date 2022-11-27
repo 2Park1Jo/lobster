@@ -1,27 +1,29 @@
 import React, {useState, useEffect} from "react";
 import ProgressBar from 'react-bootstrap/ProgressBar';
-import TalkKingCard from "./TalkKingCard";
-import { getChattingData} from '../../../api/DepartmentAPI';
+import { getChattingData } from '../../../api/DepartmentAPI';
+import { getWorkspaceDepartments } from "../../../api/DepartmentAPI";
 import 'react-circular-progressbar/dist/styles.css';
 import './Statistics.css'
 
-export default function DepartmentChatStatistics({departmentViewModel, chatViewModel, departmentList}){
+export default function DepartmentChatStatistics({departmentViewModel}){
 
     let [chatCount, setChatCount] = useState([]);
     let [countProgressBar, setCountProgressBar] = useState([]);
-    console.log(departmentList)
 
     useEffect( () => {
         let chatCountList = [];
-        departmentList.map( (department) => {
-            getChattingData(department.departmentId)
-            .then((res) => {
-                chatCountList.push({
-                    departmentId: department.departmentId,
-                    chatCount: res.length,
-                    key: department.departmentId
+        getWorkspaceDepartments(localStorage.getItem('accessedWorkspaceId'))
+        .then( (res) => {
+            res.map( (department) => {
+                getChattingData(department.departmentId)
+                .then((res) => {
+                    chatCountList.push({
+                        departmentId: department.departmentId,
+                        chatCount: res.length,
+                        key: department.departmentId
+                    })
+                    setChatCount([...chatCountList])
                 })
-                setChatCount([...chatCountList])
             })
         })
     },[])

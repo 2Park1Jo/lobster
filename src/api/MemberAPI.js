@@ -34,6 +34,11 @@ export const getLastChatData = async (memberEmail, workspaceId) =>{
     return responose.data;
 }
 
+export const getTalkKingMembers = async (workspaceId) =>{
+    const responose = await axios.get(BACK_BASE_URL + 'workspace/' + workspaceId + '/top-three-chats')
+    return responose.data;
+}
+
 export const isLoginSuccessed =async function(email,password){
     const data=await axios.post(BACK_BASE_URL+'member/login',
         {

@@ -26,11 +26,11 @@ export default function TalkKingCard({rank, memberName, departmentName, chatCoun
                 <></>  
             }
             <div className="talk-king-card-body">
-                <IoPersonCircle style={{fontSize:'50px', marginTop:'20px'}}/>
+                <IoPersonCircle style={{ minWidth:'100px', fontSize:'60px', marginTop:'20px'}}/>
                 <div style={{marginTop:'5px'}}>
-                <div className="bucket-card-department_info">이름: {memberName}</div>
-                    <div className="bucket-card-department_info">부서명: {departmentName}</div>
-                    <div className="bucket-card-department_info">채팅수 : {chatCount}</div>
+                <div className="talk-king-card-info">이름: {memberName}</div>
+                    <div className="talk-king-card-info">속한부서: {departmentName}</div>
+                    <div className="talk-king-card-info">채팅수 : {chatCount}</div>
                 </div>
             </div>
         </div>

@@ -22,20 +22,22 @@ export default function Bucket({departmentViewModel, workspaceViewModel, chatVie
   let departmentList = [];
 
   useEffect( () => {
-    getWorkspaceDepartments(localStorage.getItem('accessedWorkspaceId'), "")
+    getWorkspaceDepartments(localStorage.getItem('accessedWorkspaceId'))
     .then( (res) => {
       departmentList = res;
+      console.log(res)
 
       let bucketCards = [];
       departmentList.map( (department) => {
+        let departmentId = department.departmentId;
         console.log(department)
-        if (department.departmentId !== localStorage.getItem('accessedWorkspaceId')){
-          getLastBucket(department.departmentId)
+        if (departmentId !== localStorage.getItem('accessedWorkspaceId')){
+          getLastBucket(departmentId)
           .then(
             (res) =>{
-              let departmentName = departmentViewModel.getName(department.departmentId);
-              let departmentGoal = departmentViewModel.getGoal(department.departmentId);
-              let departmentDeadLine = departmentViewModel.getDeadLine(department.departmentId);
+              let departmentName = departmentViewModel.getName(departmentId);
+              let departmentGoal = departmentViewModel.getGoal(departmentId);
+              let departmentDeadLine = departmentViewModel.getDeadLine(departmentId);
               if (res.memberName !== undefined){
                 bucketCards.push(
                   <BucketCard
@@ -46,8 +48,8 @@ export default function Bucket({departmentViewModel, workspaceViewModel, chatVie
                     memberName={res.memberName}
                     email={res.email}
                     date={res.date}
-                    fileLinkList=""
-                    onClick={() => bucketCardClick(department.departmentId)}
+                    bucketProgress = {res.bucketProgress}
+                    onClick={() => bucketCardClick(departmentId)}
                     key = {res.commitId}   
                   />
                 )
