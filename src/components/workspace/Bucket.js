@@ -19,6 +19,8 @@ export default function Bucket({departmentViewModel, workspaceViewModel, chatVie
   let [isOpenSemiBucketCard, setIsOpenSemiBucketCard] = useState(false);
   let [isOpenBucketBox, setIsOpenBucketBox] = useState(false);
 
+  let [lastCommitList,setLastCommitList]=useState([])
+
   let departmentList = [];
 
   useEffect( () => {
@@ -28,6 +30,7 @@ export default function Bucket({departmentViewModel, workspaceViewModel, chatVie
       console.log(res)
 
       let bucketCards = [];
+      let lastCommits=[];
       departmentList.map( (department) => {
         let departmentId = department.departmentId;
         let departmentName = department.departmentName;
@@ -54,6 +57,26 @@ export default function Bucket({departmentViewModel, workspaceViewModel, chatVie
                   />
                 )
                 setBucketCardList([...bucketCards])
+                lastCommit.push({"title":res.title})
+                let fileLinks=[];
+                if(res.fileLink1!=null){
+                  fileLinks.push(res.fileLink1)
+                }
+                if(res.fileLink2!=null){
+                  fileLinks.push(res.fileLink1)
+                }
+                if(res.fileLink3!=null){
+                  fileLinks.push(res.fileLink1)
+                }
+                if(res.fileLink4!=null){
+                  fileLinks.push(res.fileLink1)
+                }
+                if(res.fileLink5!=null){
+                  fileLinks.push(res.fileLink1)
+                }
+                lastCommit.push({"files":fileLinks})
+                lastCommits.push([...lastCommit])
+                setLastCommitList([...lastCommits])
               }
             }
           )
@@ -150,6 +173,8 @@ export default function Bucket({departmentViewModel, workspaceViewModel, chatVie
           <div className="bucket-page-workspace-deadline">마감일 : {workspaceViewModel.getDeadLine(localStorage.getItem('accessedWorkspaceId'))}</div>
           <div className="bucket-page-workspace-dday">{workspaceViewModel.getDDay(localStorage.getItem('accessedWorkspaceId'))}</div>
         </div>
+
+        <button onClick={()=>console.log(lastCommitList)}>제출물 만들기</button>
 
       </div>
       <div className="bucket-page-body">

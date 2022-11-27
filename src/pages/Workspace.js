@@ -741,11 +741,13 @@ const Workspace = function () {
                         </div>
                     </div>
                 :
+                <div className='workspace-bucketPage-container'>
                     <Bucket
                         departmentViewModel = {departmentViewModel}
                         workspaceViewModel = {workspaceViewModel}
                         chatViewModel = {chatViewModel}
                     />
+                </div>
                 }
             </div>
         );

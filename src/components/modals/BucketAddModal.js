@@ -105,6 +105,9 @@ const BucketAddModal=({setBucketMenu,departmentId,workspaceId,email,memberName})
         if(inputTitle.length===0){
             alert("제목은 필수입니다!")
         }
+        else if(fileList.length<1){
+            alert("한 개 이상의 파일을 업로드해주세요!")
+        }
         else{
             setIsConfirmed(true)
             for(var i=0;i<selectedFile.length;i++){
