@@ -69,6 +69,21 @@ const WorkspaceMemberAdd=({setWorkspaceMemberAddModalIsOpen,workspaceId,workspac
                 if (res.status === 201){
                     // alert("초대가 완료되었습니다.")
                     stomp.send('/pub/chat/workspace/invitation', {}, ('ok'))
+
+                    let departmentMemberList = [];
+
+                    for (let index = 0; index < memberList.length; index++){
+                        departmentMemberList.push({
+                            departmentId: workspaceId,
+                            email: memberList[index],
+                            memberName: memberNameList[index],
+                            role: '',
+                            grade: ''
+                        },)
+                    }
+
+                    stomp.send('/pub/chat/invitation', {}, JSON.stringify(departmentMemberList))
+
                     setWorkspaceMemberAddModalIsOpen(false)
                 }
             });

@@ -61,3 +61,8 @@ export const getBucket=async function(departmentId){
 
     return request
 }
+
+export const getLastBucket = async (departmentId) =>{
+    const responose = await axios.get(BACK_BASE_URL + 'workspace/department/' + departmentId + '/last-bucket-history')
+    return responose.data;
+}

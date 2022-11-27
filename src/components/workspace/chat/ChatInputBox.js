@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { BiPaperPlane } from "react-icons/bi";
 import './ChatInputBox.css';
 
-const fileTypes = ["JPG", "PNG", "GIF"];
 export default function ChatInputBox(props){
     let [inputChattingContent, setInputChattingContent] = useState(""); // 사용자가 입력한 채팅 컨텐츠 데이터
 
@@ -53,7 +52,6 @@ export default function ChatInputBox(props){
             setInputChattingContent("");
         }
     };
-
     
     return(
         <div className='chat-input-box-container'>

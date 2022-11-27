@@ -703,28 +703,38 @@ const Workspace = function () {
                                         <></>
                                     }
                                 </div>
-                                <div className='fourth-col-Bucket'>
-                                    <div className='container-top'>
-                                        <div style={{float:'left', color:'white'}}>버켓</div>
-                                        <SiBitbucket onClick={()=>setBucketModalIsOpen(true)} style={{float:'right'}} className="arrow"/>
+                                {
+                                    localStorage.getItem('accessedDepartmentId') === localStorage.getItem('accessedWorkspaceId') ?
+                                    <></>
+                                    :
+                                    <div className='fourth-col-Bucket'>
+                                        <div className='container-top'>
+                                            <div style={{float:'left', color:'white'}}>버켓</div>
+                                            <SiBitbucket onClick={()=>setBucketModalIsOpen(true)} style={{float:'right'}} className="arrow"/>
+                                        </div>
+                                        <Modal ariaHideApp={false} isOpen= {BucketModalIsOpen} style={modalStyles} onRequestClose={() => preventModalScroll()}>
+                                            <BucketModal 
+                                                setBucketModalIsOpen={setBucketModalIsOpen}
+                                                departmentId={localStorage.getItem('accessedDepartmentId')} 
+                                                workspaceId={localStorage.getItem('accessedWorkspaceId')}
+                                                email={localStorage.getItem('loginMemberEmail')} 
+                                                memberName={departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail'))}
+                                                />
+                                        </Modal>
+                                        <div className='child'>
+                                        </div>
                                     </div>
-                                    <Modal ariaHideApp={false} isOpen= {BucketModalIsOpen} style={modalStyles} onRequestClose={() => preventModalScroll()}>
-                                        <BucketModal 
-                                            setBucketModalIsOpen={setBucketModalIsOpen}
-                                            departmentId={localStorage.getItem('accessedDepartmentId')} 
-                                            workspaceId={localStorage.getItem('accessedWorkspaceId')}
-                                            email={localStorage.getItem('loginMemberEmail')} 
-                                            memberName={departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail'))}
-                                            />
-                                    </Modal>
-                                    <div className='child'>
-                                    </div>
-                                </div>
+                                }
                             </div>
                         </div>
                     </div>
                 :
-                    <Bucket/>
+                    <Bucket
+                        departmentIdList = {departmentIdList}
+                        departmentViewModel = {departmentViewModel}
+                        workspaceViewModel = {workspaceViewModel}
+                        chatViewModel = {chatViewModel}
+                    />
                 }
             </div>
         );
