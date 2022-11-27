@@ -41,6 +41,7 @@ export default function Bucket({departmentViewModel, workspaceViewModel, chatVie
           getLastBucket(departmentId)
           .then(
             (res) =>{
+              let lastCommit = [];
               if (res.memberName !== undefined){
                 bucketCards.push(
                   <BucketCard
