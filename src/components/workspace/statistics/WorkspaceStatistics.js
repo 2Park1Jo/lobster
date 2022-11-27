@@ -12,7 +12,8 @@ export default function WorkspaceStatistics({workspaceViewModel}){
     return (   
         <div className="workspace-statistics">
             <div>워크스페이스 진행률</div>
-            <ProgressBar className="percentage-bar" variant="danger" now={progress} label={"마감일까지 " + `${progress}% ` + dday}/>
+            <ProgressBar className="percentage-bar" variant="danger" now={progress} label={`${progress}%`}/>
+            {/* <ProgressBar className="percentage-bar" variant="danger" now={progress} label={"마감일까지 " + `${progress}% ` + dday}/> */}
             <div className="workspace-statistics-date-info">
                 <div style={{float:'left'}}>{creationDate}</div>
                 <div style={{display:'inline', float:'right'}}>{deadline}</div>
