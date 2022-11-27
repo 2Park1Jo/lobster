@@ -33,15 +33,14 @@ export default function Bucket({departmentViewModel, workspaceViewModel, chatVie
       let lastCommits=[];
       departmentList.map( (department) => {
         let departmentId = department.departmentId;
-        console.log(department)
+        let departmentName = department.departmentName;
+        let departmentGoal = department.departmentGoal;
+        let departmentDeadLine = "마감일: " + department.departmentDeadline;
+
         if (departmentId !== localStorage.getItem('accessedWorkspaceId')){
           getLastBucket(departmentId)
           .then(
             (res) =>{
-              let departmentName = departmentViewModel.getName(departmentId);
-              let departmentGoal = departmentViewModel.getGoal(departmentId);
-              let departmentDeadLine = departmentViewModel.getDeadLine(departmentId);
-              let lastCommit=[];
               if (res.memberName !== undefined){
                 bucketCards.push(
                   <BucketCard

@@ -3,7 +3,7 @@ import '../utils/Constant.js'
 import '../Config.js'
 import { BACK_BASE_URL } from "../Config.js";
 
-export const putBucket=async function(departmentId,workspaceId,date,email,memberName,title,commit,fileList){
+export const putBucket=async function(departmentId,workspaceId,date,email,memberName,title,commit,fileList,bucketProgress){
     let fileLink=[...fileList]
     for(var i=0;i<5-fileList.length;i++){
         fileLink.push(null)
@@ -21,7 +21,8 @@ export const putBucket=async function(departmentId,workspaceId,date,email,member
         fileLink2:fileLink[1],
         fileLink3:fileLink[2],
         fileLink4:fileLink[3],
-        fileLink5:fileLink[4]
+        fileLink5:fileLink[4],
+        bucketProgress:bucketProgress
     },
     {
         headers: {
