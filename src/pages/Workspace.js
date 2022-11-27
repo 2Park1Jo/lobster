@@ -117,6 +117,7 @@ const Workspace = function () {
 
     let lastChatLengthRef = useRef([]);
     let receivedDepartmentId = useRef();
+    let isChatReceived = useRef(false);
 
     let [messageCountGap, setMessageCountGap] = useState([]);
 
@@ -137,21 +138,7 @@ const Workspace = function () {
         stomp.connect({}, onConnected, (error) => {
             console.log('sever error : ' + error );
         });
-        
-
-        getLastChatData(localStorage.getItem('loginMemberEmail'), localStorage.getItem('accessedWorkspaceId'))
-        .then(
-            (res) => {
-                lastChatLengthRef.current = res;
-            }
-        )
-
-        getWorkspaceChatCountData(localStorage.getItem('accessedWorkspaceId'))
-        .then(
-            (res) => {
-                setLastChatLength(res)
-            }
-        )
+    
     },[])
 
     useEffect(() => {
@@ -176,8 +163,8 @@ const Workspace = function () {
             return;
         }
 
-        if (isGapUpperZero){
-            
+        console.log(isChatReceived.current)
+        if (isGapUpperZero && isChatReceived.current){    
             play();
             console.log("beep")
         }
@@ -257,6 +244,7 @@ const Workspace = function () {
                 }
             }
         )
+
     }, [chatUpdateState, accessedDepartment])
 
     useEffect( () => {
@@ -337,6 +325,7 @@ const Workspace = function () {
                     )
                     if (chatUpdateState !== result.body){
                         setChatUpdateState(result.content);
+                        isChatReceived.current = true;
                     }
                     if (result.contentType === "-1"){ // invite
                         setChatUpdateState(result.content);
@@ -752,11 +741,13 @@ const Workspace = function () {
                         </div>
                     </div>
                 :
+                <div className='workspace-bucketPage-container'>
                     <Bucket
                         departmentViewModel = {departmentViewModel}
                         workspaceViewModel = {workspaceViewModel}
                         chatViewModel = {chatViewModel}
                     />
+                </div>
                 }
             </div>
         );
