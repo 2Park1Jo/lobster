@@ -6,7 +6,6 @@ import { WORKSPACE_ID, ACCESSED_DEPARTMENT } from '../recoil/Atoms';
 import { isLoginSuccessed } from '../api/MemberAPI';
 
 const Login = function () {
-
     let [email, setEmail] = useState("");
     let [password, setPassword] = useState("");
 
