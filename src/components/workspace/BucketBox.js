@@ -78,7 +78,6 @@ export default function BucketBox({ bucketTitle, bucketCommit, link1, link2, lin
     }, [])
 
     function fileDownload(){
-        // console.log(fileLinkList[1].click())
         for(var i=0;i<fileLinkList.length;i++){
             let file=fileLinkList[i];
             setTimeout(() => {

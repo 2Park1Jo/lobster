@@ -55,10 +55,6 @@ const BucketAddModal=({setBucketMenu,departmentId,workspaceId,email,memberName,s
         setFileList([...list]);
     },[selectedFile])
 
-    // useEffect(()=>{
-    //     console.log(completeCount)
-    // },[completeCount])
-
     AWS.config.update({
         accessKeyId:ACCESS_KEY,
         secretAccessKey:SECRET_ACCESS_KEY
@@ -90,7 +86,7 @@ const BucketAddModal=({setBucketMenu,departmentId,workspaceId,email,memberName,s
         
         myBucket.putObject(params)
         .send((err,data) => {
-            if (err){ console.log(err)
+            if (err){ 
                 alert("서버에 에러가 발생하였습니다!")
             }
             else{
@@ -118,7 +114,6 @@ const BucketAddModal=({setBucketMenu,departmentId,workspaceId,email,memberName,s
     }
 
     function deleteFile(index){
-        console.log(index)
         selectedFile.splice(index,1)
         setSelectedFile([...selectedFile])
     }
@@ -225,7 +220,6 @@ const BucketAddModal=({setBucketMenu,departmentId,workspaceId,email,memberName,s
     }
 
     function uploadBucket(){
-        console.log("보냄")
         let currentDate = new Date();
         let year = currentDate.getFullYear();
         let month = currentDate.getMonth() + 1;
@@ -238,7 +232,6 @@ const BucketAddModal=({setBucketMenu,departmentId,workspaceId,email,memberName,s
         let request=Promise.resolve(putBucket(departmentId,workspaceId,currentTime,email,memberName,inputTitle,inputDetail,urlList,bucketProgress))
 
         request.then((value)=>{
-            console.log(value)
             if(value===201){
                 stomp.send('/pub/chat/message', {}, JSON.stringify({
                     departmentId: departmentId,
