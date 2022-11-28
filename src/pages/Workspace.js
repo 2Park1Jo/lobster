@@ -55,7 +55,7 @@ import { BACK_BASE_URL} from '../Config';
 import { First, Last } from 'react-bootstrap/esm/PageItem';
 
 import useSound from 'use-sound'
-import mySound from './2.mp4'
+import mySound from './alert.mp3'
 
 const workspace = new WorkspaceModel();
 const workspaceViewModel = new WorkspaceViewModel(workspace);
@@ -121,7 +121,7 @@ const Workspace = function () {
 
     let [messageCountGap, setMessageCountGap] = useState([]);
 
-    const [play] = useSound(mySound, { volume: 0.001 });
+    const [play] = useSound(mySound, { volume: 0.1 });
 
 
     useEffect( () => {     
