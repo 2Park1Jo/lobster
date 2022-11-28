@@ -296,3 +296,10 @@
 .slider-bard-container{
     margin-top: 20px;
 }
+
+.download-modal-container{
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    width: 400px;
+}

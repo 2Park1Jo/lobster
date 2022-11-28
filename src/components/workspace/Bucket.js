@@ -3,6 +3,8 @@ import BucketCard from "./BucketCard"
 import BucketSemiCard from "./BucketSemiCard";
 import BucketBox from "./BucketBox";
 import StatisticsForm from "./statistics/StatisticsForm";
+import BucketZipDownloadModal from "../modals/BucketZipDownloadModal";
+import Modal from "react-modal"
 import { useState, useEffect } from "react";
 import { getLastBucket, getBucket } from "../../api/BucketAPI"
 import { getWorkspaceDepartments } from "../../api/DepartmentAPI"
@@ -20,7 +22,7 @@ export default function Bucket({departmentViewModel, workspaceViewModel, chatVie
   let [isOpenBucketBox, setIsOpenBucketBox] = useState(false);
 
   let [lastCommitList,setLastCommitList]=useState([])
-
+  let [bucketZipDownloadModalIsOpen,setBucketZipDownloadModalIsOpen]=useState(false);
   let departmentList = [];
 
   useEffect( () => {
@@ -42,6 +44,7 @@ export default function Bucket({departmentViewModel, workspaceViewModel, chatVie
           .then(
             (res) =>{
               if (res.memberName !== undefined){
+                let lastCommit=[];
                 bucketCards.push(
                   <BucketCard
                     departmentName={departmentName}
@@ -57,24 +60,24 @@ export default function Bucket({departmentViewModel, workspaceViewModel, chatVie
                   />
                 )
                 setBucketCardList([...bucketCards])
-                lastCommit.push({"title":res.title})
+                lastCommit.push(departmentName)
                 let fileLinks=[];
                 if(res.fileLink1!=null){
                   fileLinks.push(res.fileLink1)
                 }
                 if(res.fileLink2!=null){
-                  fileLinks.push(res.fileLink1)
+                  fileLinks.push(res.fileLink2)
                 }
                 if(res.fileLink3!=null){
-                  fileLinks.push(res.fileLink1)
+                  fileLinks.push(res.fileLink3)
                 }
                 if(res.fileLink4!=null){
-                  fileLinks.push(res.fileLink1)
+                  fileLinks.push(res.fileLink4)
                 }
                 if(res.fileLink5!=null){
-                  fileLinks.push(res.fileLink1)
+                  fileLinks.push(res.fileLink5)
                 }
-                lastCommit.push({"files":fileLinks})
+                lastCommit.push(fileLinks)
                 lastCommits.push([...lastCommit])
                 setLastCommitList([...lastCommits])
               }
@@ -161,6 +164,17 @@ export default function Bucket({departmentViewModel, workspaceViewModel, chatVie
     setIsOpenBucketBox(false);
   }
 
+  const modalStyles = {
+    content: {
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+    },
+};
+
   return(
     <div className="bucket-page-main-container">
       <div className="bucket-page-top">
@@ -174,7 +188,14 @@ export default function Bucket({departmentViewModel, workspaceViewModel, chatVie
           <div className="bucket-page-workspace-dday">{workspaceViewModel.getDDay(localStorage.getItem('accessedWorkspaceId'))}</div>
         </div>
 
-        <button onClick={()=>console.log(lastCommitList)}>제출물 만들기</button>
+        <button onClick={()=>setBucketZipDownloadModalIsOpen(true)}>제출물 만들기</button>
+        <Modal ariaHideApp={false} isOpen= {bucketZipDownloadModalIsOpen} style={modalStyles} onRequestClose={() => setBucketZipDownloadModalIsOpen(false)}>
+          <BucketZipDownloadModal
+            setBucketZipDownloadModalIsOpen={setBucketZipDownloadModalIsOpen}
+            fileList={lastCommitList}
+            workspaceName={workspaceViewModel.getName(localStorage.getItem('accessedWorkspaceId'))}                                  
+            />
+        </Modal>
 
       </div>
       <div className="bucket-page-body">

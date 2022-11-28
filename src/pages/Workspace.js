@@ -121,6 +121,8 @@ const Workspace = function () {
 
     let [messageCountGap, setMessageCountGap] = useState([]);
 
+    let [isShowLast,setIsShowLast]=useState(false);
+
     const [play] = useSound(mySound);
 
 
@@ -469,6 +471,16 @@ const Workspace = function () {
         document.body.style.overflow = "unset"
     }
 
+    function lastCommitClick(){
+        setIsShowLast(true);
+        setBucketModalIsOpen(true);
+    }
+
+    function bucketIconClick(){
+        setIsShowLast(false);
+        setBucketModalIsOpen(true);
+    }
+
     // if(isReceivedWorkspace && isReceivedDepertment && isReceivedDepertmentMember && isReceivedWorkspaceMember && isReceivedChat){
         return(
             <div className="maincontainer">
@@ -608,9 +620,9 @@ const Workspace = function () {
                                         
                                         <div style={{float:'right'}} onClick={()=>setIsShowDPmemberList(!isShowDPmemberList)}>{
                                             isShowDPmemberList===true?
-                                            <BiChevronsDown className='arrow'/>
-                                            :
                                             <BiChevronsUp className='arrow'/>
+                                            :
+                                            <BiChevronsDown className='arrow'/>
                                         }</div>
                                         <BiUserPlus style={{float:'right'}} className="arrow" onClick={()=> setModal2IsOpen(true)}/>
                                         <Modal ariaHideApp={false} isOpen= {modal2IsOpen} style={modalStyles} onRequestClose={() => setModal2IsOpen(false)}>
@@ -649,9 +661,9 @@ const Workspace = function () {
                                         <div style={{float:'right'}} onClick={()=>setIsShowFileList(!isShowFileList)}>
                                             {
                                                 isShowFileList===true?
-                                                    <BiChevronsDown className='arrow'/>
-                                                :
                                                     <BiChevronsUp className='arrow'/>
+                                                :
+                                                    <BiChevronsDown className='arrow'/>
                                             }
                                         </div>
 
@@ -715,14 +727,15 @@ const Workspace = function () {
                                     <div className='fourth-col-Bucket'>
                                         <div className='container-top'>
                                             <div style={{float:'left', color:'white'}}>버킷</div>
-                                            <SiBitbucket onClick={()=>setBucketModalIsOpen(true)} style={{float:'right'}} className="arrow"/>
+                                            <SiBitbucket onClick={()=>bucketIconClick()} style={{float:'right'}} className="arrow"/>
                                         </div>
                                         <Modal ariaHideApp={false} isOpen= {BucketModalIsOpen} style={modalStyles} onRequestClose={() => preventModalScroll()}>
                                             <BucketModal 
                                                 setBucketModalIsOpen={setBucketModalIsOpen}
                                                 departmentId={localStorage.getItem('accessedDepartmentId')} 
                                                 workspaceId={localStorage.getItem('accessedWorkspaceId')}
-                                                email={localStorage.getItem('loginMemberEmail')} 
+                                                email={localStorage.getItem('loginMemberEmail')}
+                                                isShowLast={isShowLast} 
                                                 memberName={departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail'))}
                                                 />
                                         </Modal>
@@ -732,6 +745,7 @@ const Workspace = function () {
                                                 memberName={lastBucketData.memberName}
                                                 email={lastBucketData.email}
                                                 date={lastBucketData.date}
+                                                onClick={()=>lastCommitClick()}
                                                 width="274px"
                                             />
                                         </div>
