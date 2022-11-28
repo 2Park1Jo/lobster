@@ -2,7 +2,7 @@ export function calculateDDay(deadLine){
     let today = new Date();
     let deadLineData = new Date(deadLine);
     let gap = deadLineData.getTime() - today.getTime();
-    let dDay = Math.ceil(gap / (1000 * 60 * 60 * 24));
+    let dDay = Math.round(gap / (1000 * 60 * 60 * 24));
     
     if (deadLine === null){
         return ""
@@ -25,14 +25,13 @@ export function calculateDDay(deadLine){
 
 export function calculateProgress(creationDate, deadline){
     console.log(deadline)
-    let creationDateData = new Date(creationDate);
-    let deadlineData = new Date(deadline);
+    let today = new Date();
+    let creationDateData = new Date(creationDate+"T00:00:00");
+    let deadlineData = new Date(deadline+"T23:59:59");
 
     let wholePeriod = deadlineData.getTime() - creationDateData.getTime();
-    let RemainingPeriod = deadlineData.getTime() - new Date().getTime();
+    let RemainingPeriod = deadlineData.getTime() - today.getTime();
 
-    console.log(RemainingPeriod + "/" + wholePeriod)
-
-    let progress =  Math.ceil(((wholePeriod - RemainingPeriod ) / wholePeriod) * 100);
+    let progress =  Math.ceil(((wholePeriod - RemainingPeriod) / wholePeriod) * 100);
     return progress
 }
