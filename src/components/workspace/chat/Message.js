@@ -26,7 +26,7 @@ export default function Message({ chatSender, chatDate, chatContent,chatType,lin
     };
     return(
         (
-            chatType==="-1"? 
+            chatType==="-1" || chatType==="-2"? 
                 <div className='message'>
                     <span className="small">({ chatDate.split(" ")[1] })&nbsp;{ chatContent } </span>
                 </div>
