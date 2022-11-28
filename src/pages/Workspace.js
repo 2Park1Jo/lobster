@@ -9,12 +9,12 @@ import FileUploadConfirm from '../components/modals/FileUploadConfirm';
 import BucketModal from '../components/modals/BucketModal';
 import BucketSemiCard from '../components/workspace/BucketSemiCard';
 
-import React, { useState, useRef, useEffect,useLayoutEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Modal from 'react-modal';
 import { useRecoilState } from "recoil";
 
-import { getLastChatData, setLastChatData } from '../api/MemberAPI';
+import { getLastChatData } from '../api/MemberAPI';
 import { getWorkspaceMemberData, getWorkspaceData, getWorkspaceChatCountData } from '../api/WorkspaceAPI';
 import { getDepartmentMemberData, getChattingData, getDepartments } from '../api/DepartmentAPI';
 import { getLastBucket } from '../api/BucketAPI'
@@ -51,11 +51,11 @@ import Bucket from '../components/workspace/Bucket';
 
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
-import { BACK_BASE_URL} from '../Config';
-import { First, Last } from 'react-bootstrap/esm/PageItem';
+import { BACK_BASE_URL } from '../Config';
+import { Last } from 'react-bootstrap/esm/PageItem';
 
 import useSound from 'use-sound'
-import mySound from './2.mp4'
+import mySound from './alert.mp3'
 
 const workspace = new WorkspaceModel();
 const workspaceViewModel = new WorkspaceViewModel(workspace);
@@ -120,11 +120,8 @@ const Workspace = function () {
     let isChatReceived = useRef(false);
 
     let [messageCountGap, setMessageCountGap] = useState([]);
-
     let [isShowLast,setIsShowLast]=useState(false);
-
     const [play] = useSound(mySound);
-
 
     useEffect( () => {     
         getWorkspaceData(localStorage.getItem('loginMemberEmail'))
@@ -139,7 +136,6 @@ const Workspace = function () {
         stomp.connect({}, onConnected, (error) => {
             console.log('sever error : ' + error );
         });
-    
     },[])
 
     useEffect(() => {
@@ -163,35 +159,45 @@ const Workspace = function () {
         if (receivedDepartmentId.current === localStorage.getItem('accessedDepartmentId')){
             return;
         }
-
-        console.log(isChatReceived.current)
         if (isGapUpperZero && isChatReceived.current){    
             play();
             console.log("beep")
+            isChatReceived.current = false;
         }
     },[messageCountGap])
 
     function setLastChatLength(workspaceChatCountData){
         let gap = [];
+        let workspaceChatCount = workspaceChatCountData;
 
-        workspaceChatCountData.map((departmentLastChatData) => {
-            for (let index = 0; index < lastChatLengthRef.current.length; index++){
-                if (lastChatLengthRef.current[index].departmentId === departmentLastChatData.departmentId){
-                    let countGap = Number(departmentLastChatData.messageCount) - Number(lastChatLengthRef.current[index].messageCount);
-                    if (departmentLastChatData.departmentId === localStorage.getItem('accessedDepartmentId')){
-                        countGap = 0;
-                    }
-                    
-                    gap.push({
-                        departmentId: departmentLastChatData.departmentId,
-                        countGap: countGap
-                    }
-                    );
-                }
+        workspaceChatCount = workspaceChatCount.filter((item) => lastChatLengthRef.current.filter((i) => i.departmentId === item.departmentId).length > 0,)
+
+        for (let index = 0; index < departmentIdList.length; index++){
+
+            if (lastChatLengthRef.current[index] === undefined){
+                let countGap = 1;               
+                gap.push({
+                    departmentId: departmentIdList[index],
+                    countGap: countGap,
+                    isNewDepartment: true
+                })
             }
-        })
+            else{
+                let countGap = Number(workspaceChatCount[index].messageCount) - Number(lastChatLengthRef.current[index].messageCount);
+                if (departmentIdList[index] === localStorage.getItem('accessedDepartmentId')){
+                    countGap = 0;
+                }
+                
+                gap.push({
+                    departmentId: departmentIdList[index],
+                    countGap: countGap,
+                    isNewDepartment: false
+                });
+            }
+
+        }
         
-        setMessageCountGap(gap)
+        setMessageCountGap([...gap])
     }
 
     useEffect(() => {
@@ -208,12 +214,20 @@ const Workspace = function () {
                 if (departmentIdList.length !== stomp.counter - 3){
                     stomp.subscribe("/sub/chat/department/" + departmentIdList[departmentIdList.length - 1], function (chat) {
                         let result = JSON.parse(chat.body);
-                        if (chatUpdateState !== result.body){
-                            setChatUpdateState(result.content);
-                        }
                         if (result.contentType === "-1"){ // invite
                             setChatUpdateState(result.content);
                             setDpMemberUpdateState(result.content);
+                        }
+                        else if (chatUpdateState !== result.body){
+                            getWorkspaceChatCountData(localStorage.getItem('accessedWorkspaceId'))
+                            .then(
+                                (res) => {
+                                    receivedDepartmentId.current = result.departmentId;
+                                    setLastChatLength(res)
+                                }
+                            )
+                            setChatUpdateState(result.content);
+                            isChatReceived.current = true;
                         }
                     });
                 }
@@ -317,20 +331,24 @@ const Workspace = function () {
             for (let index = 0; index < departmentIdList.length; index++){
                 stomp.subscribe("/sub/chat/department/" + departmentIdList[index], function (chat) {
                     let result = JSON.parse(chat.body);
-                    getWorkspaceChatCountData(localStorage.getItem('accessedWorkspaceId'))
-                    .then(
-                        (res) => {
-                            receivedDepartmentId.current = result.departmentId;
-                            setLastChatLength(res)
-                        }
-                    )
-                    if (chatUpdateState !== result.body){
-                        setChatUpdateState(result.content);
-                        isChatReceived.current = true;
-                    }
                     if (result.contentType === "-1"){ // invite
                         setChatUpdateState(result.content);
                         setDpMemberUpdateState(result.content);
+                    }
+                    else if (result.contentType === "-2"){// bucket modify
+                        setLastBucketUpdateState(!lastBucketUpdateState);
+                        setChatUpdateState(result.content);
+                    }
+                    else if (chatUpdateState !== result.body){
+                        getWorkspaceChatCountData(localStorage.getItem('accessedWorkspaceId'))
+                        .then(
+                            (res) => {
+                                receivedDepartmentId.current = result.departmentId;
+                                setLastChatLength(res)
+                            }
+                        )
+                        setChatUpdateState(result.content);
+                        isChatReceived.current = true;
                     }
                 });
             }
@@ -339,11 +357,15 @@ const Workspace = function () {
             stomp.subscribe("/sub/chat/workspace/" + localStorage.getItem('accessedWorkspaceId'), function (data) {
                 let result = JSON.parse(data.body);
                 setDepartmentUpdateState(result.content);
+                if (result.contentType === "-1"){ // modify
+                    setChatUpdateState(result.content);
+                }
             });
 
             stomp.subscribe("/sub/chat/workspace", function (data) {
                 let result = data.body;
                 setWorkspaceMemberUpdateState(result.content);
+                setDepartmentUpdateState(result.content)
                 setDpMemberUpdateState(result.content);
             });
 
@@ -353,6 +375,7 @@ const Workspace = function () {
                     setConnectedMemberList(result)
                 } 
             });
+
 
             stomp.send('/pub/chat/enter', {}, JSON.stringify({departmentId: localStorage.getItem('accessedDepartmentId'), email: localStorage.getItem('loginMemberEmail')}))
         }
@@ -539,6 +562,7 @@ const Workspace = function () {
                                         lastChatData = {chatViewModel.getLastChatData(localStorage.getItem('accessedDepartmentId'))}
                                         checkedMessageCount = {chatViewModel.getChatLength(localStorage.getItem('accessedDepartmentId'))}
                                         messageCountGap = {messageCountGap}
+                                        isChatReceived = {isChatReceived}
                                     />
                                 </div>
 
@@ -604,8 +628,14 @@ const Workspace = function () {
                                 <span className='department-deadline'>{ departmentViewModel.getDeadLine(localStorage.getItem('accessedDepartmentId')) }</span>
                                 <FaPowerOff className='setting' style={{marginLeft:'10px'}} onClick={()=> logout()}/>
                                 <BsGearFill className='setting' style={{marginLeft:'10px'}} onClick={()=> setdpModifyModalIsOpen(true)}/>
-                                    <Modal isOpen= {dpModifyModalIsOpen} style={modalStyles} onRequestClose={() => setdpModifyModalIsOpen(false)}>
-                                        <DepartmentModifyModal departmentName={accessedDepartment.name} departmentGoal={departmentViewModel.getGoal(localStorage.getItem('accessedDepartmentId'))} departmentDeadLine={departmentViewModel.getDeadLine(localStorage.getItem('accessedDepartmentId'))} setdpModifyModalIsOpen={setdpModifyModalIsOpen}/>
+                                    <Modal ariaHideApp={false} isOpen={dpModifyModalIsOpen} style={modalStyles} onRequestClose={() => setdpModifyModalIsOpen(false)}>
+                                        <DepartmentModifyModal 
+                                            departmentName={accessedDepartment.name} 
+                                            departmentGoal={departmentViewModel.getGoal(localStorage.getItem('accessedDepartmentId'))} 
+                                            departmentDeadLine={String(departmentViewModel.getDeadLine(localStorage.getItem('accessedDepartmentId'))).replace("마감일 : ","")} 
+                                            setdpModifyModalIsOpen={setdpModifyModalIsOpen}
+                                            stomp = {stomp}
+                                        />
                                     </Modal>
                                 <MdSensorDoor className='setting' onClick={()=> moveToWorkspaceBanner()}/>
                                 <div className='department-dday'>{ departmentViewModel.getDDay(localStorage.getItem('accessedDepartmentId')) }</div>
@@ -755,13 +785,11 @@ const Workspace = function () {
                         </div>
                     </div>
                 :
-                <div className='workspace-bucketPage-container'>
                     <Bucket
                         departmentViewModel = {departmentViewModel}
                         workspaceViewModel = {workspaceViewModel}
                         chatViewModel = {chatViewModel}
                     />
-                </div>
                 }
             </div>
         );
