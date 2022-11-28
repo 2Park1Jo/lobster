@@ -24,14 +24,12 @@ export function calculateDDay(deadLine){
 }
 
 export function calculateProgress(creationDate, deadline){
-    console.log(deadline)
     let creationDateData = new Date(creationDate);
     let deadlineData = new Date(deadline);
 
     let wholePeriod = deadlineData.getTime() - creationDateData.getTime();
     let RemainingPeriod = deadlineData.getTime() - new Date().getTime();
 
-    console.log(RemainingPeriod + "/" + wholePeriod)
 
     let progress =  Math.ceil(((wholePeriod - RemainingPeriod ) / wholePeriod) * 100);
     return progress

@@ -34,7 +34,6 @@ const Signup=function(){
             setems(<span style={{color:'orange', fontSize : '14px'}}>중복검사중입니다...</span>)
             let result=Promise.resolve(isDuplicatedId(email))
             result.then(value=>{
-                console.log(value)
                 if(value){
                     setems(<span style={{color:'red', fontSize : '14px'}}>이미 등록된 email주소입니다.</span>)
                 }

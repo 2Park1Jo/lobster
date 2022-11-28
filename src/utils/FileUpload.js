@@ -42,7 +42,7 @@ const FileUpload=({file,stomp,isConfirmed,setIsConfirmed,index,callback})=>{
             setProgress(Math.round((evt.loaded / evt.total) * 100))
         })
         .send((err,data) => {
-            if (err){ console.log(err)
+            if (err){
                 alert("서버에 에러가 발생하였습니다!")
             }
             else{
@@ -60,7 +60,6 @@ const FileUpload=({file,stomp,isConfirmed,setIsConfirmed,index,callback})=>{
                             date : currentTime,
                             link:"https://"+S3_BUCKET+".s3."+REGION+".amazonaws.com/"+key
                          }))
-                        console.log("Done")
                         callback(1)
             }
           })

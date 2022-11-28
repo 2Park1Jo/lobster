@@ -120,7 +120,6 @@ export const registerUser=async function(email,password,name){
             }
         }).catch(error=>{
             if(error.response.status===409){
-                console.log("중복")
                 return "duplicated"
             }
             else{

@@ -104,12 +104,9 @@ const WorkspaceMemberAdd=({setWorkspaceMemberAddModalIsOpen,workspaceId,workspac
         }
         let result=Promise.resolve(getMemberProfile(inputMemberEmail))
             result.then(value=>{
-                console.log(result)
                 let data=value.at(0)
                 let status=value.at(1)
                 if(status===200){
-                    console.log(data.email)
-                    console.log(data.memberName)
                     setSearchedMemberHTML(
                         <div className='searched-Email-div' onClick={()=>addMemberToList(data.email,data.memberName)}>
                             <div>

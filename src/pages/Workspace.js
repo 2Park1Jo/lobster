@@ -147,7 +147,6 @@ const Workspace = function () {
     },[lastBucketUpdateState])
 
     useEffect(() => {
-        console.log(messageCountGap)
         let isGapUpperZero = false;
         for (let index = 0; index < messageCountGap.length; index++){
             if (messageCountGap[index].countGap > 0){
@@ -160,7 +159,6 @@ const Workspace = function () {
         }
         if (isGapUpperZero && isChatReceived.current){    
             play();
-            console.log("beep")
             isChatReceived.current = false;
         }
     },[messageCountGap])
@@ -400,7 +398,6 @@ const Workspace = function () {
     };
 
     const handleFileInput = (e) => {
-        console.log(e.target.files[0].size)
         setSelectedFile([e.target.files[0]]);
         setFileUploadConfirmModalIsOpen(true)
     }
@@ -431,7 +428,6 @@ const Workspace = function () {
             let files = e.dataTransfer ? e.dataTransfer.files : 'null';
             let list=[]
             let count=0
-            console.log(files.length)
             for(let i=0, file; file = files[i]; i++) {
                 var reader = new FileReader();
 

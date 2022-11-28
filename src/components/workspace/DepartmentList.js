@@ -39,7 +39,6 @@ export default function DepartmentList(props){
                             ).then( (res) =>{
                                 if(department.departmentId !== localStorage.getItem('accessedDepartmentId') && res.status === 201){
 
-                                    console.log('success last chat data update')
                                     props.isChatReceived.current = false;
                                     setAccessedDepartment({
                                         id : department.departmentId,

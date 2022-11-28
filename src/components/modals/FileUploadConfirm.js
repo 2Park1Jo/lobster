@@ -18,10 +18,6 @@ const FileUploadConfirm=({setFileUploadConfirmModalIsOpen,selectedFile,setSelect
         setFileList([...list])
     },[selectedFile,isConfirmed])
 
-    useEffect(()=>{
-        console.log(completeList)
-    },[completeList])
-
     function close(){
         setFileUploadConfirmModalIsOpen(false)
         setSelectedFile([]);
@@ -33,7 +29,6 @@ const FileUploadConfirm=({setFileUploadConfirmModalIsOpen,selectedFile,setSelect
     }
 
     function callback(index){
-        console.log(index)
         a+=index
         setCompleteList(a)
     }
