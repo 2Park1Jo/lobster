@@ -187,8 +187,9 @@ export default function Bucket({departmentViewModel, workspaceViewModel, chatVie
           <div className="bucket-page-workspace-deadline">마감일 : {workspaceViewModel.getDeadLine(localStorage.getItem('accessedWorkspaceId'))}</div>
           <div className="bucket-page-workspace-dday">{workspaceViewModel.getDDay(localStorage.getItem('accessedWorkspaceId'))}</div>
         </div>
-
-        <button onClick={()=>setBucketZipDownloadModalIsOpen(true)}>제출물 만들기</button>
+        <div className="bucket-workspace-deadline-info">
+          <button className="btn btn-danger" style={{marginRight:"20px",marginTop:"4çpx"}} onClick={()=>setBucketZipDownloadModalIsOpen(true)}>제출물 만들기</button>
+        </div>
         <Modal ariaHideApp={false} isOpen= {bucketZipDownloadModalIsOpen} style={modalStyles} onRequestClose={() => setBucketZipDownloadModalIsOpen(false)}>
           <BucketZipDownloadModal
             setBucketZipDownloadModalIsOpen={setBucketZipDownloadModalIsOpen}

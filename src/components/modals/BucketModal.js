@@ -2,7 +2,7 @@ import { useState,useRef,useEffect } from "react"
 import BucketAddModal from "./BucketAddModal";
 import BucketHistoryModal from "./BucketHistoryModal";
 
-const BucketModal=({setBucketModalIsOpen,departmentId,workspaceId,email,memberName,isShowLast})=>{
+const BucketModal=({setBucketModalIsOpen,departmentId,workspaceId,email,memberName,isShowLast,stomp})=>{
     const [bucketMenu,setBucketMenu]=useState(0)
 
     return(
@@ -14,7 +14,7 @@ const BucketModal=({setBucketModalIsOpen,departmentId,workspaceId,email,memberNa
             </>
             :
             <>
-                <BucketAddModal setBucketMenu={setBucketMenu} departmentId={departmentId} workspaceId={workspaceId} email={email} memberName={memberName}/>
+                <BucketAddModal setBucketMenu={setBucketMenu} departmentId={departmentId} workspaceId={workspaceId} email={email} memberName={memberName} stomp={stomp}/>
             </>
             }
         </div>

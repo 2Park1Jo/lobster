@@ -6,7 +6,6 @@ import FileSaver from "file-saver"
 const BucketZipDownloadModal=({setBucketZipDownloadModalIsOpen,fileList,workspaceName})=>{
     const [checkList,setCheckList]=useState([])
     const [departmentList,setDepartmentList]=useState([])
-    const [complete,setComplete]=useState(-1)
     let checkedList=[]
     let wholeSize=0;
     useEffect(()=>{
@@ -51,6 +50,10 @@ const BucketZipDownloadModal=({setBucketZipDownloadModalIsOpen,fileList,workspac
                 wholeSize+=fileList[i][1].length;
             }
         }
+        if(wholeSize===0){
+            alert("한 개 이상의 부서를 포함해 주세요!")
+            return;
+        }
         var zip = new JSZip();
         var count = 0;
 
@@ -91,7 +94,7 @@ const BucketZipDownloadModal=({setBucketZipDownloadModalIsOpen,fileList,workspac
             <h1>포함하고 싶은 부서를</h1>
             <h1>선택해 주세요!</h1>
 
-            <div style={{width:"100%", height:"400px", overflowY:"scroll"}}>
+            <div className="download-modal-departmentList-container">
                 {departmentList}
             </div>
             <button className="btn btn-secondary" onClick={()=>downloadZip()}>

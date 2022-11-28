@@ -737,6 +737,7 @@ const Workspace = function () {
                                                 email={localStorage.getItem('loginMemberEmail')}
                                                 isShowLast={isShowLast} 
                                                 memberName={departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail'))}
+                                                stomp={stomp}
                                                 />
                                         </Modal>
                                         <div className='child'>
