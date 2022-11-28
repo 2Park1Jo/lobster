@@ -1,0 +1,7 @@
+---
+applications:
+  - name: Lobster
+    memory: 2000M
+    instances: 1
+    command: npm start
+    path: ./
