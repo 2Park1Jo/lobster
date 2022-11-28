@@ -30,9 +30,6 @@
 
     color: #1F1F1F;
 }
-.workspace-bucketPage-container{
-    width: calc(100% - 70px);
-}
 .first-col{
     flex-direction: column;
     background-color: #1F1F1F;

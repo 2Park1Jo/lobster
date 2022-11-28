@@ -157,7 +157,7 @@ const DepartmentMemberAddModal = ({modalIsOpen, setModalIsOpen, accessedDepartme
             },)
         }
 
-        stomp.send('/pub/chat/invitation', {}, JSON.stringify(departmentMemberList))
+        stomp.send('/pub/chat/department/invitation', {}, JSON.stringify(departmentMemberList))
 
         setModalIsOpen(false);
     }
