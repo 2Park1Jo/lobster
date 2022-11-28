@@ -14,9 +14,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Modal from 'react-modal';
 import { useRecoilState } from "recoil";
 
-import { getLastChatData } from '../api/MemberAPI';
-import { getWorkspaceMemberData, getWorkspaceData, getWorkspaceChatCountData } from '../api/WorkspaceAPI';
-import { getDepartmentMemberData, getChattingData, getDepartments } from '../api/DepartmentAPI';
+import { getLastChatData, setLastChatData } from '../api/MemberAPI';
+import { getWorkspaceMemberData, getWorkspaceData } from '../api/WorkspaceAPI';
+import { getDepartmentMemberData, getChattingData, getDepartments, getDepartmentsChatCountData } from '../api/DepartmentAPI';
 import { getLastBucket } from '../api/BucketAPI'
 
 import { ACCESSED_DEPARTMENT, WORKSPACE_ID } from '../recoil/Atoms';
@@ -76,11 +76,8 @@ let stomp;
 
 const Workspace = function () {
     const messageEndRef = useRef(null); // 채팅메세지의 마지막
-    // let loginMember = useRecoilValue(LOGIN_MEMBER);
     let [accessedDepartment, setAccessedDepartment] = useRecoilState(ACCESSED_DEPARTMENT);
     let [workspaceId, setWorkspaceId] = useRecoilState(WORKSPACE_ID);
-
-    let [isReceivedWorkspace, setIsReceivedWorkspace] = useState(false);
 
     let [modalIsOpen, setModalIsOpen] = useState(false);
     let [modal2IsOpen, setModal2IsOpen] = useState(false); 
@@ -89,10 +86,6 @@ const Workspace = function () {
     let [FileUploadConfirmModalIsOpen,setFileUploadConfirmModalIsOpen]=useState(false);
     let [BucketModalIsOpen,setBucketModalIsOpen]=useState(false);
     let [drag,setDrag]=useState("")
-    let [chatUpdateState, setChatUpdateState] = useState("");
-    let [departmentUpdateState, setDepartmentUpdateState] = useState("");
-    let [dpMemberUpdateState, setDpMemberUpdateState] = useState("");
-    let [workspaceMemberUpdateState, setWorkspaceMemberUpdateState] = useState("");
 
     let [isShowDPmemberList,setIsShowDPmemberList]=useState(true);
     let [selectedMenu,setSelectedMenu]=useState(1);
@@ -103,6 +96,7 @@ const Workspace = function () {
     let [isShowFileList, setIsShowFileList]=useState(true);
     let [fileList, setFileList] = useState([]);
     let [imgList, setImgList] = useState([]);
+
     let [fileClassification, setFileClassification] = useState('file');
     let [fileSearch, setFileSearch] = useState('');
     let [isContainFolder,setIsContainFolder]=useState(false)
@@ -120,6 +114,11 @@ const Workspace = function () {
     let isChatReceived = useRef(false);
 
     let [messageCountGap, setMessageCountGap] = useState([]);
+
+    let [chatUpdateState, setChatUpdateState] = useState("");
+    let [departmentUpdateState, setDepartmentUpdateState] = useState("");
+    let [dpMemberUpdateState, setDpMemberUpdateState] = useState("");
+    let [workspaceMemberUpdateState, setWorkspaceMemberUpdateState] = useState("");
     let [isShowLast,setIsShowLast]=useState(false);
     const [play] = useSound(mySound);
 
@@ -129,7 +128,6 @@ const Workspace = function () {
             (res) => {
                 workspaceViewModel.update(res);
                 setWorkspaceId(localStorage.getItem('accessedWorkspaceId'))
-                setIsReceivedWorkspace(true)
             }
         )
         stomp = Stomp.over(new SockJS(BACK_BASE_URL + "chat"));
@@ -148,7 +146,6 @@ const Workspace = function () {
     },[lastBucketUpdateState])
 
     useEffect(() => {
-        console.log(messageCountGap)
         let isGapUpperZero = false;
         for (let index = 0; index < messageCountGap.length; index++){
             if (messageCountGap[index].countGap > 0){
@@ -165,40 +162,6 @@ const Workspace = function () {
             isChatReceived.current = false;
         }
     },[messageCountGap])
-
-    function setLastChatLength(workspaceChatCountData){
-        let gap = [];
-        let workspaceChatCount = workspaceChatCountData;
-
-        workspaceChatCount = workspaceChatCount.filter((item) => lastChatLengthRef.current.filter((i) => i.departmentId === item.departmentId).length > 0,)
-
-        for (let index = 0; index < departmentIdList.length; index++){
-
-            if (lastChatLengthRef.current[index] === undefined){
-                let countGap = 1;               
-                gap.push({
-                    departmentId: departmentIdList[index],
-                    countGap: countGap,
-                    isNewDepartment: true
-                })
-            }
-            else{
-                let countGap = Number(workspaceChatCount[index].messageCount) - Number(lastChatLengthRef.current[index].messageCount);
-                if (departmentIdList[index] === localStorage.getItem('accessedDepartmentId')){
-                    countGap = 0;
-                }
-                
-                gap.push({
-                    departmentId: departmentIdList[index],
-                    countGap: countGap,
-                    isNewDepartment: false
-                });
-            }
-
-        }
-        
-        setMessageCountGap([...gap])
-    }
 
     useEffect(() => {
         localStorage.setItem('accessedDepartmentId', location.pathname.split('department/')[1].replace("%20", " "))
@@ -219,15 +182,15 @@ const Workspace = function () {
                             setDpMemberUpdateState(result.content);
                         }
                         else if (chatUpdateState !== result.body){
-                            getWorkspaceChatCountData(localStorage.getItem('accessedWorkspaceId'))
+                            getDepartmentsChatCountData(localStorage.getItem('accessedWorkspaceId'), localStorage.getItem('loginMemberEmail'))
                             .then(
                                 (res) => {
+                                    setGap(res)
                                     receivedDepartmentId.current = result.departmentId;
-                                    setLastChatLength(res)
+                                    setChatUpdateState(result.content);
+                                    isChatReceived.current = true;
                                 }
                             )
-                            setChatUpdateState(result.content);
-                            isChatReceived.current = true;
                         }
                     });
                 }
@@ -288,17 +251,10 @@ const Workspace = function () {
     }, [dpMemberUpdateState, accessedDepartment])
 
     useEffect( () => {
-        getLastChatData(localStorage.getItem('loginMemberEmail'), localStorage.getItem('accessedWorkspaceId'))
+        getDepartmentsChatCountData(localStorage.getItem('accessedWorkspaceId'), localStorage.getItem('loginMemberEmail'))
         .then(
             (res) => {
-                lastChatLengthRef.current = res;
-            }
-        )
-
-        getWorkspaceChatCountData(localStorage.getItem('accessedWorkspaceId'))
-        .then(
-            (res) => {
-                setLastChatLength(res)
+                setGap(res)
             }
         )
 
@@ -315,14 +271,37 @@ const Workspace = function () {
         )
     }, [workspaceMemberUpdateState])
 
-    useEffect(()=>{
-        console.log(drag)
-    },[drag])
-
-    function closeUploadModal(){
-        setSelectedFile([])
-        setFileUploadConfirmModalIsOpen(false)
-        console.log("close")
+    function setGap(workspaceChatCountData){
+        getLastChatData(localStorage.getItem('loginMemberEmail'), localStorage.getItem('accessedWorkspaceId'))
+        .then(
+            (res) => {
+                lastChatLengthRef.current = res;
+                let gap = [];
+                for (let index = 0; index < departmentIdList.length; index++){
+                    if (lastChatLengthRef.current[index] === undefined){
+                        let countGap = 1;               
+                        gap.push({
+                            departmentId: departmentIdList[index],
+                            countGap: countGap,
+                            isNewDepartment: true
+                        })
+                    }
+                    else{
+                        let countGap = Number(workspaceChatCountData[index].chatCount) - Number(lastChatLengthRef.current[index].messageCount);
+                        if (departmentIdList[index] === localStorage.getItem('accessedDepartmentId')){
+                            countGap = 0;
+                        }
+                        
+                        gap.push({
+                            departmentId: departmentIdList[index],
+                            countGap: countGap,
+                            isNewDepartment: false
+                        });
+                    }
+                }
+                setMessageCountGap([...gap])
+            }
+        )
     }
 
     function onConnected() {
@@ -340,15 +319,15 @@ const Workspace = function () {
                         setChatUpdateState(result.content);
                     }
                     else if (chatUpdateState !== result.body){
-                        getWorkspaceChatCountData(localStorage.getItem('accessedWorkspaceId'))
+                        getDepartmentsChatCountData(localStorage.getItem('accessedWorkspaceId'), localStorage.getItem('loginMemberEmail'))
                         .then(
                             (res) => {
+                                setGap(res)
                                 receivedDepartmentId.current = result.departmentId;
-                                setLastChatLength(res)
+                                setChatUpdateState(result.content);
+                                isChatReceived.current = true;
                             }
                         )
-                        setChatUpdateState(result.content);
-                        isChatReceived.current = true;
                     }
                 });
             }
