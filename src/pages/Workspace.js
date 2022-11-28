@@ -132,7 +132,6 @@ const Workspace = function () {
                 setIsReceivedWorkspace(true)
             }
         )
-
         stomp = Stomp.over(new SockJS(BACK_BASE_URL + "chat"));
         stomp.connect({}, onConnected, (error) => {
             console.log('sever error : ' + error );
