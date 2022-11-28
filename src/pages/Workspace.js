@@ -51,7 +51,7 @@ import Bucket from '../components/workspace/Bucket';
 
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
-import { BACK_BASE_URL} from '../Config';
+import { BACK_BASE_URL } from '../Config';
 import { Last } from 'react-bootstrap/esm/PageItem';
 
 import useSound from 'use-sound'
@@ -123,7 +123,6 @@ const Workspace = function () {
     let [isShowLast,setIsShowLast]=useState(false);
     const [play] = useSound(mySound);
 
-
     useEffect( () => {     
         getWorkspaceData(localStorage.getItem('loginMemberEmail'))
         .then(
@@ -141,7 +140,6 @@ const Workspace = function () {
     },[])
 
     useEffect(() => {
-        console.log("버킷이 업데이트 되었습니다!")
         getLastBucket(localStorage.getItem('accessedDepartmentId'))
         .then(
             (res) => {
@@ -151,6 +149,7 @@ const Workspace = function () {
     },[lastBucketUpdateState])
 
     useEffect(() => {
+        console.log(messageCountGap)
         let isGapUpperZero = false;
         for (let index = 0; index < messageCountGap.length; index++){
             if (messageCountGap[index].countGap > 0){
@@ -170,31 +169,34 @@ const Workspace = function () {
 
     function setLastChatLength(workspaceChatCountData){
         let gap = [];
+        let workspaceChatCount = workspaceChatCountData;
 
-        workspaceChatCountData.map((departmentLastChatData, index) => {
+        workspaceChatCount = workspaceChatCount.filter((item) => lastChatLengthRef.current.filter((i) => i.departmentId === item.departmentId).length > 0,)
+
+        for (let index = 0; index < departmentIdList.length; index++){
+
             if (lastChatLengthRef.current[index] === undefined){
-                let countGap = Number(departmentLastChatData.messageCount);               
+                let countGap = 1;               
                 gap.push({
-                    departmentId: departmentLastChatData.departmentId,
+                    departmentId: departmentIdList[index],
                     countGap: countGap,
                     isNewDepartment: true
-                }
-                )
+                })
             }
             else{
-                let countGap = Number(departmentLastChatData.messageCount) - Number(lastChatLengthRef.current[index].messageCount);
-                if (departmentLastChatData.departmentId === localStorage.getItem('accessedDepartmentId')){
+                let countGap = Number(workspaceChatCount[index].messageCount) - Number(lastChatLengthRef.current[index].messageCount);
+                if (departmentIdList[index] === localStorage.getItem('accessedDepartmentId')){
                     countGap = 0;
                 }
                 
                 gap.push({
-                    departmentId: departmentLastChatData.departmentId,
+                    departmentId: departmentIdList[index],
                     countGap: countGap,
                     isNewDepartment: false
-                }
-                );
+                });
             }
-        })
+
+        }
         
         setMessageCountGap([...gap])
     }
@@ -561,6 +563,7 @@ const Workspace = function () {
                                         lastChatData = {chatViewModel.getLastChatData(localStorage.getItem('accessedDepartmentId'))}
                                         checkedMessageCount = {chatViewModel.getChatLength(localStorage.getItem('accessedDepartmentId'))}
                                         messageCountGap = {messageCountGap}
+                                        isChatReceived = {isChatReceived}
                                     />
                                 </div>
 
