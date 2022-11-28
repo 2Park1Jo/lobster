@@ -16,7 +16,7 @@ export default function DepartmentList(props){
         if (props.messageCountGap[index] !== undefined){
     
             if (props.messageCountGap[index].isNewDepartment){
-                uncheckedMessageCount = "new " + props.messageCountGap[index].countGap;
+                uncheckedMessageCount = "new";
             }
             else if (department.departmentId === props.messageCountGap[index].departmentId){
                 uncheckedMessageCount = props.messageCountGap[index].countGap;
@@ -40,7 +40,7 @@ export default function DepartmentList(props){
                                 if(department.departmentId !== localStorage.getItem('accessedDepartmentId') && res.status === 201){
 
                                     console.log('success last chat data update')
-
+                                    props.isChatReceived.current = false;
                                     setAccessedDepartment({
                                         id : department.departmentId,
                                         name: department.departmentName
