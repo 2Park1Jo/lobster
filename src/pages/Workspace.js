@@ -9,12 +9,12 @@ import FileUploadConfirm from '../components/modals/FileUploadConfirm';
 import BucketModal from '../components/modals/BucketModal';
 import BucketSemiCard from '../components/workspace/BucketSemiCard';
 
-import React, { useState, useRef, useEffect,useLayoutEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Modal from 'react-modal';
 import { useRecoilState } from "recoil";
 
-import { getLastChatData, setLastChatData } from '../api/MemberAPI';
+import { getLastChatData } from '../api/MemberAPI';
 import { getWorkspaceMemberData, getWorkspaceData, getWorkspaceChatCountData } from '../api/WorkspaceAPI';
 import { getDepartmentMemberData, getChattingData, getDepartments } from '../api/DepartmentAPI';
 import { getLastBucket } from '../api/BucketAPI'
@@ -52,7 +52,7 @@ import Bucket from '../components/workspace/Bucket';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { BACK_BASE_URL} from '../Config';
-import { First, Last } from 'react-bootstrap/esm/PageItem';
+import { Last } from 'react-bootstrap/esm/PageItem';
 
 import useSound from 'use-sound'
 import mySound from './alert.mp3'
@@ -121,8 +121,7 @@ const Workspace = function () {
 
     let [messageCountGap, setMessageCountGap] = useState([]);
 
-    const [play] = useSound(mySound, { volume: 0.1 });
-
+    const [play] = useSound(mySound, { volume: 0.5 });
 
     useEffect( () => {     
         getWorkspaceData(localStorage.getItem('loginMemberEmail'))
@@ -141,6 +140,7 @@ const Workspace = function () {
     },[])
 
     useEffect(() => {
+        console.log("버킷이 업데이트 되었습니다!")
         getLastBucket(localStorage.getItem('accessedDepartmentId'))
         .then(
             (res) => {
@@ -332,6 +332,9 @@ const Workspace = function () {
                     if (result.contentType === "-1"){ // invite
                         setChatUpdateState(result.content);
                         setDpMemberUpdateState(result.content);
+                    }
+                    else if (result.includes("bucket update")){
+                        setLastBucketUpdateState(!lastBucketUpdateState)
                     }
                     else if (chatUpdateState !== result.body){
                         getWorkspaceChatCountData(localStorage.getItem('accessedWorkspaceId'))
@@ -748,6 +751,7 @@ const Workspace = function () {
                                                 workspaceId={localStorage.getItem('accessedWorkspaceId')}
                                                 email={localStorage.getItem('loginMemberEmail')} 
                                                 memberName={departmentMemberViewModel.getMemberName(localStorage.getItem('loginMemberEmail'))}
+                                                stomp = {stomp}
                                                 />
                                         </Modal>
                                         <div className='child'>
