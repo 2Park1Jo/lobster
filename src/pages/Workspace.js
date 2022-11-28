@@ -180,7 +180,7 @@ const Workspace = function () {
                 }
                 )
             }
-            else if (lastChatLengthRef.current[index].departmentId === departmentLastChatData.departmentId){
+            else{
                 let countGap = Number(departmentLastChatData.messageCount) - Number(lastChatLengthRef.current[index].messageCount);
                 if (departmentLastChatData.departmentId === localStorage.getItem('accessedDepartmentId')){
                     countGap = 0;
