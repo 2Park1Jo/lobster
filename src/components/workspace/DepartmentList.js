@@ -13,49 +13,51 @@ export default function DepartmentList(props){
     let uncheckedMessageCount = 0;
 
     props.departments.map( (department, index) => {
-        if (props.messageCountGap[index] === undefined){
-            console.log('undefined')
-            uncheckedMessageCount = "new";
-        }
-        else if (department.departmentId === props.messageCountGap[index].departmentId){
-            uncheckedMessageCount = props.messageCountGap[index].countGap;
-        }
+        if (props.messageCountGap[index] !== undefined){
+    
+            if (props.messageCountGap[index].isNewDepartment){
+                uncheckedMessageCount = "new " + props.messageCountGap[index].countGap;
+            }
+            else if (department.departmentId === props.messageCountGap[index].departmentId){
+                uncheckedMessageCount = props.messageCountGap[index].countGap;
+            }
 
-        if (department.departmentId === localStorage.getItem('accessedDepartmentId')){
-            uncheckedMessageCount = 0;
-        }
-        departmentCards.push(
-            <DepartmentCard
-                name={department.departmentName}
-                onClicked={
-                    () => {
-                        setLastChatData(
-                            localStorage.getItem('loginMemberEmail'),
-                            localStorage.getItem('accessedDepartmentId'),
-                            localStorage.getItem('accessedWorkspaceId'),
-                            props.lastChatData.chatId,
-                            props.checkedMessageCount
-                        ).then( (res) =>{
-                            if(department.departmentId !== localStorage.getItem('accessedDepartmentId') && res.status === 201){
+            if (department.departmentId === localStorage.getItem('accessedDepartmentId')){
+                uncheckedMessageCount = 0;
+            }
+            departmentCards.push(
+                <DepartmentCard
+                    name={department.departmentName}
+                    onClicked={
+                        () => {
+                            setLastChatData(
+                                localStorage.getItem('loginMemberEmail'),
+                                localStorage.getItem('accessedDepartmentId'),
+                                localStorage.getItem('accessedWorkspaceId'),
+                                props.lastChatData.chatId,
+                                props.checkedMessageCount
+                            ).then( (res) =>{
+                                if(department.departmentId !== localStorage.getItem('accessedDepartmentId') && res.status === 201){
 
-                                console.log('success last chat data')
+                                    console.log('success last chat data update')
 
-                                setAccessedDepartment({
-                                    id : department.departmentId,
-                                    name: department.departmentName
-                                })
-                                localStorage.setItem('accessedDepartmentId', department.departmentId)
-                                localStorage.setItem('accessedDepartmentName', department.departmentName)
-                                navigate("/workspace/" + props.workspaceId + "/chat/department/" + department.departmentId)
+                                    setAccessedDepartment({
+                                        id : department.departmentId,
+                                        name: department.departmentName
+                                    })
+                                    localStorage.setItem('accessedDepartmentId', department.departmentId)
+                                    localStorage.setItem('accessedDepartmentName', department.departmentName)
+                                    navigate("/workspace/" + props.workspaceId + "/chat/department/" + department.departmentId)
+                                }
                             }
-                        }
-                        );
-                    }   
-                }
-                uncheckedMessageCount={uncheckedMessageCount}
-                key = {index}
-            />
-        )
+                            );
+                        }   
+                    }
+                    uncheckedMessageCount={uncheckedMessageCount}
+                    key = {index}
+                />
+            )
+        }   
     })
     return(
         <ListGroup variant="flush">{departmentCards}</ListGroup>

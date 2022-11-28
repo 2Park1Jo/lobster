@@ -6,8 +6,9 @@ import {putBucket} from "../../api/BucketAPI.js"
 import { Slider } from "@material-ui/core";
 import AWS from 'aws-sdk';
 import { ACCESS_KEY, REGION, S3_BUCKET, SECRET_ACCESS_KEY } from '../../Config.js'
+import Stomp from "stompjs";
 
-const BucketAddModal=({setBucketMenu,departmentId,workspaceId,email,memberName})=>{
+const BucketAddModal=({setBucketMenu,departmentId,workspaceId,email,memberName,stomp})=>{
     const [inputTitle,setInputTitle]=useState("")
     const [selectedFile, setSelectedFile] = useState([]);
     const [fileList,setFileList]=useState([])
@@ -238,7 +239,14 @@ const BucketAddModal=({setBucketMenu,departmentId,workspaceId,email,memberName})
 
         request.then((value)=>{
             console.log(value)
-            if(value===201){         
+            if(value===201){
+                stomp.send('/pub/chat/message', {}, JSON.stringify({
+                    departmentId: departmentId,
+                    email: null,
+                    content: memberName+"("+email+")"+" 님에 의해 버킷이 최신화 되었습니다",
+                    contentType: -2,
+                    date : currentTime
+                }))         
                 alert("업로드가 완료되었습니다!")
                 setBucketMenu(0)
             }

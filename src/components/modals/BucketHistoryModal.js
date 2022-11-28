@@ -3,7 +3,7 @@ import { AiOutlineFileText } from "react-icons/ai"
 import {getBucket} from "../../api/BucketAPI.js"
 import { useState,useEffect,useRef,useCallback } from "react"
 import BucketSemiCard from "../workspace/BucketSemiCard.js"
-const BucketHistoryModal=({setBucketMenu,departmentId})=>{
+const BucketHistoryModal=({setBucketMenu,departmentId,isShowLast})=>{
     const [bucketList,setBucketList]=useState([]);
     const [title,setTitle]=useState("")
     const [fileList,setFileList]=useState([])
@@ -50,6 +50,9 @@ const BucketHistoryModal=({setBucketMenu,departmentId})=>{
                       />)
                 }
                 setBucketList([...list])
+                if(isShowLast){
+                    showHistory(0)
+                }
             }
         }).catch(err=>{
             alert("서버에 에러가 발생하였습니다.")

@@ -110,11 +110,11 @@ export default function BucketBox({ bucketTitle, bucketCommit, link1, link2, lin
             <div style={{marginLeft:"396px"}}>
                 <button className="btn btn-danger" style={{ marginTop:"20px", marginBottom:"20px"}} onClick={()=>fileDownload()}>파일 다운로드</button>
             </div>
-            <div className="division-line"></div>
+            {/* <div className="division-line"></div>
 
             <div className="bucket-page-box-comment">
                 
-            </div>
+            </div> */}
         </div>
     );
 };
