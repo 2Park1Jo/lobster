@@ -11,7 +11,9 @@
     width: calc(100vw - 60px);
     height: 100vh;
 }
-
+.workspace-bucketPage-container{
+    width: calc(100% - 70px);
+}
 .container-top{
     width: 100%;
     height: 46px;

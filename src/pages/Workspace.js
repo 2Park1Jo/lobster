@@ -105,7 +105,6 @@ const Workspace = function () {
     let [imgList, setImgList] = useState([]);
     let [fileClassification, setFileClassification] = useState('file');
     let [fileSearch, setFileSearch] = useState('');
-    let [isContainFolder,setIsContainFolder]=useState(false)
 
     let [lastBucketData, setLastBucketData] = useState("");
     let [lastBucketUpdateState, setLastBucketUpdateState] = useState(false);
@@ -315,16 +314,6 @@ const Workspace = function () {
         )
     }, [workspaceMemberUpdateState])
 
-    useEffect(()=>{
-        console.log(drag)
-    },[drag])
-
-    function closeUploadModal(){
-        setSelectedFile([])
-        setFileUploadConfirmModalIsOpen(false)
-        console.log("close")
-    }
-
     function onConnected() {
         if (stomp.connected){
             // chat 
@@ -440,7 +429,6 @@ const Workspace = function () {
         }
         else{
             let files = e.dataTransfer ? e.dataTransfer.files : 'null';
-            setIsContainFolder(false)
             let list=[]
             let count=0
             console.log(files.length)
@@ -785,11 +773,13 @@ const Workspace = function () {
                         </div>
                     </div>
                 :
+                <div className='workspace-bucketPage-container'>
                     <Bucket
                         departmentViewModel = {departmentViewModel}
                         workspaceViewModel = {workspaceViewModel}
                         chatViewModel = {chatViewModel}
                     />
+                </div>
                 }
             </div>
         );

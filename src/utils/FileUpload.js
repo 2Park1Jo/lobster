@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import { Alert } from 'reactstrap';
 import AWS from 'aws-sdk';
 import { ACCESS_KEY, REGION, S3_BUCKET, SECRET_ACCESS_KEY } from '../Config.js'

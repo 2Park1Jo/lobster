@@ -3,9 +3,7 @@ import './Login.css';
 import {isCorrectEmail,isCorrectPassword,isCorrectName} from '../utils/Regex.js'
 import { useNavigate } from "react-router-dom";
 import {isDuplicatedId,registerUser} from '../api/MemberAPI'
-import axios from "axios"
 import '../utils/Constant.js'
-import { errorText } from '../utils/Constant.js';
 
 
 const Signup=function(){
