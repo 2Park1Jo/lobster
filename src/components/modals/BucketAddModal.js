@@ -244,7 +244,7 @@ const BucketAddModal=({setBucketMenu,departmentId,workspaceId,email,memberName,s
                     departmentId: departmentId,
                     email: null,
                     content: memberName+"("+email+")"+" 님에 의해 버킷이 최신화 되었습니다",
-                    contentType: -1,
+                    contentType: -2,
                     date : currentTime
                 }))         
                 alert("업로드가 완료되었습니다!")

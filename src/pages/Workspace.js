@@ -334,8 +334,9 @@ const Workspace = function () {
                         setChatUpdateState(result.content);
                         setDpMemberUpdateState(result.content);
                     }
-                    else if (result.includes("bucket update")){
-                        setLastBucketUpdateState(!lastBucketUpdateState)
+                    else if (result.contentType === "-2"){// bucket modify
+                        setLastBucketUpdateState(!lastBucketUpdateState);
+                        setChatUpdateState(result.content);
                     }
                     else if (chatUpdateState !== result.body){
                         getWorkspaceChatCountData(localStorage.getItem('accessedWorkspaceId'))
