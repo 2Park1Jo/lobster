@@ -23,7 +23,7 @@ export default function ChatBox(props){
 
     useEffect( () => {
         props.messageEnd.current?.scrollIntoView({behavior: "auto"})
-    }, [props.departmentId])
+    }, [props.chats.length])
 
     return (
         <div className="px-4 py-3">

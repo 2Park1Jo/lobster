@@ -39,6 +39,11 @@ export const getTalkKingMembers = async (workspaceId) =>{
     return responose.data;
 }
 
+export const getUploadKingMembers = async (workspaceId) =>{
+    const responose = await axios.get(BACK_BASE_URL + 'workspace/' + workspaceId + '/bucket/member/top-three-updates')
+    return responose.data;
+}
+
 export const isLoginSuccessed =async function(email,password){
     const data=await axios.post(BACK_BASE_URL+'member/login',
         {
@@ -120,7 +125,6 @@ export const registerUser=async function(email,password,name){
             }
         }).catch(error=>{
             if(error.response.status===409){
-                console.log("중복")
                 return "duplicated"
             }
             else{

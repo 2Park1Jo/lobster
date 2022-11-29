@@ -35,9 +35,14 @@
     padding: 15px;
     background-color: #2B2B2B;
     box-shadow: rgba(255, 255, 255, 0.2) 1px 1px 5px;
+    margin-bottom: 20px;
 }
 
 .talk-king-statistics-container{
     display: flex;
     justify-content: center;
+}
+
+.bg-workspace-percentage-bar{
+    background-color: #2900f8!important;
 }

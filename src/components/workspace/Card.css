@@ -1,3 +1,4 @@
+.member-card,
 .card{
     background-color:#F1F1F1;
 }
@@ -13,7 +14,6 @@
     background-color: #2B2B2B;
     border-radius: 10px;
     margin-bottom: 10px;
-    cursor: pointer;
     box-shadow: rgba(255, 255, 255, 0.2) 1px 1px 5px;
     padding: 10px;
     margin: 10px;

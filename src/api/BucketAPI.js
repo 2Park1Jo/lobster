@@ -31,7 +31,6 @@ export const putBucket=async function(departmentId,workspaceId,date,email,member
         withCredentials: true
     
     }).then(res=>{
-        console.log(res)
         if(res.status===201){
             return 201
         }
@@ -65,5 +64,10 @@ export const getBucket=async function(departmentId){
 
 export const getLastBucket = async (departmentId) =>{
     const responose = await axios.get(BACK_BASE_URL + 'workspace/department/' + departmentId + '/last-bucket-history')
+    return responose.data;
+}
+
+export const getBucketCommitCountData = async (workspaceId) =>{
+    const responose = await axios.get(BACK_BASE_URL + 'workspace/' + workspaceId + '/bucket/department/commit-count')
     return responose.data;
 }

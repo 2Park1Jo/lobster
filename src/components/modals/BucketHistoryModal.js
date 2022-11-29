@@ -1,4 +1,3 @@
-import { FileList } from "../workspace/FileList"
 import { AiOutlineFileText } from "react-icons/ai"
 import {getBucket} from "../../api/BucketAPI.js"
 import { useState,useEffect,useRef,useCallback } from "react"
@@ -20,7 +19,6 @@ const BucketHistoryModal=({setBucketMenu,departmentId,isShowLast})=>{
                 let list=[]
                 for(let i=data.length-1;i>=0;i--){
                     bucket.push(data[i])
-                    console.log(data[i])
                     let fileCount=0
 
                     if(data[i].fileLink1!==null){

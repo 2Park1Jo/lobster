@@ -14,9 +14,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Modal from 'react-modal';
 import { useRecoilState } from "recoil";
 
-import { getLastChatData } from '../api/MemberAPI';
-import { getWorkspaceMemberData, getWorkspaceData, getWorkspaceChatCountData } from '../api/WorkspaceAPI';
-import { getDepartmentMemberData, getChattingData, getDepartments } from '../api/DepartmentAPI';
+import { getLastChatData, setLastChatData } from '../api/MemberAPI';
+import { getWorkspaceMemberData, getWorkspaceData } from '../api/WorkspaceAPI';
+import { getDepartmentMemberData, getChattingData, getDepartments, getDepartmentsChatCountData } from '../api/DepartmentAPI';
 import { getLastBucket } from '../api/BucketAPI'
 
 import { ACCESSED_DEPARTMENT, WORKSPACE_ID } from '../recoil/Atoms';
@@ -51,7 +51,7 @@ import Bucket from '../components/workspace/Bucket';
 
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
-import { BACK_BASE_URL} from '../Config';
+import { BACK_BASE_URL } from '../Config';
 import { Last } from 'react-bootstrap/esm/PageItem';
 
 import useSound from 'use-sound'
@@ -76,11 +76,8 @@ let stomp;
 
 const Workspace = function () {
     const messageEndRef = useRef(null); // 채팅메세지의 마지막
-    // let loginMember = useRecoilValue(LOGIN_MEMBER);
     let [accessedDepartment, setAccessedDepartment] = useRecoilState(ACCESSED_DEPARTMENT);
     let [workspaceId, setWorkspaceId] = useRecoilState(WORKSPACE_ID);
-
-    let [isReceivedWorkspace, setIsReceivedWorkspace] = useState(false);
 
     let [modalIsOpen, setModalIsOpen] = useState(false);
     let [modal2IsOpen, setModal2IsOpen] = useState(false); 
@@ -89,10 +86,6 @@ const Workspace = function () {
     let [FileUploadConfirmModalIsOpen,setFileUploadConfirmModalIsOpen]=useState(false);
     let [BucketModalIsOpen,setBucketModalIsOpen]=useState(false);
     let [drag,setDrag]=useState("")
-    let [chatUpdateState, setChatUpdateState] = useState("");
-    let [departmentUpdateState, setDepartmentUpdateState] = useState("");
-    let [dpMemberUpdateState, setDpMemberUpdateState] = useState("");
-    let [workspaceMemberUpdateState, setWorkspaceMemberUpdateState] = useState("");
 
     let [isShowDPmemberList,setIsShowDPmemberList]=useState(true);
     let [selectedMenu,setSelectedMenu]=useState(1);
@@ -103,9 +96,9 @@ const Workspace = function () {
     let [isShowFileList, setIsShowFileList]=useState(true);
     let [fileList, setFileList] = useState([]);
     let [imgList, setImgList] = useState([]);
+
     let [fileClassification, setFileClassification] = useState('file');
     let [fileSearch, setFileSearch] = useState('');
-    let [isContainFolder,setIsContainFolder]=useState(false)
 
     let [lastBucketData, setLastBucketData] = useState("");
     let [lastBucketUpdateState, setLastBucketUpdateState] = useState(false);
@@ -120,9 +113,13 @@ const Workspace = function () {
     let isChatReceived = useRef(false);
 
     let [messageCountGap, setMessageCountGap] = useState([]);
+
+    let [chatUpdateState, setChatUpdateState] = useState("");
+    let [departmentUpdateState, setDepartmentUpdateState] = useState("");
+    let [dpMemberUpdateState, setDpMemberUpdateState] = useState("");
+    let [workspaceMemberUpdateState, setWorkspaceMemberUpdateState] = useState("");
     let [isShowLast,setIsShowLast]=useState(false);
     const [play] = useSound(mySound);
-
 
     useEffect( () => {     
         getWorkspaceData(localStorage.getItem('loginMemberEmail'))
@@ -130,18 +127,16 @@ const Workspace = function () {
             (res) => {
                 workspaceViewModel.update(res);
                 setWorkspaceId(localStorage.getItem('accessedWorkspaceId'))
-                setIsReceivedWorkspace(true)
             }
         )
-
         stomp = Stomp.over(new SockJS(BACK_BASE_URL + "chat"));
+        stomp.debug = null
         stomp.connect({}, onConnected, (error) => {
             console.log('sever error : ' + error );
         });
     },[])
 
     useEffect(() => {
-        console.log("버킷이 업데이트 되었습니다!")
         getLastBucket(localStorage.getItem('accessedDepartmentId'))
         .then(
             (res) => {
@@ -163,41 +158,9 @@ const Workspace = function () {
         }
         if (isGapUpperZero && isChatReceived.current){    
             play();
-            console.log("beep")
             isChatReceived.current = false;
         }
     },[messageCountGap])
-
-    function setLastChatLength(workspaceChatCountData){
-        let gap = [];
-
-        workspaceChatCountData.map((departmentLastChatData, index) => {
-            if (lastChatLengthRef.current[index] === undefined){
-                let countGap = Number(departmentLastChatData.messageCount);               
-                gap.push({
-                    departmentId: departmentLastChatData.departmentId,
-                    countGap: countGap,
-                    isNewDepartment: true
-                }
-                )
-            }
-            else{
-                let countGap = Number(departmentLastChatData.messageCount) - Number(lastChatLengthRef.current[index].messageCount);
-                if (departmentLastChatData.departmentId === localStorage.getItem('accessedDepartmentId')){
-                    countGap = 0;
-                }
-                
-                gap.push({
-                    departmentId: departmentLastChatData.departmentId,
-                    countGap: countGap,
-                    isNewDepartment: false
-                }
-                );
-            }
-        })
-        
-        setMessageCountGap([...gap])
-    }
 
     useEffect(() => {
         localStorage.setItem('accessedDepartmentId', location.pathname.split('department/')[1].replace("%20", " "))
@@ -218,15 +181,15 @@ const Workspace = function () {
                             setDpMemberUpdateState(result.content);
                         }
                         else if (chatUpdateState !== result.body){
-                            getWorkspaceChatCountData(localStorage.getItem('accessedWorkspaceId'))
+                            getDepartmentsChatCountData(localStorage.getItem('accessedWorkspaceId'), localStorage.getItem('loginMemberEmail'))
                             .then(
                                 (res) => {
+                                    setGap(res)
                                     receivedDepartmentId.current = result.departmentId;
-                                    setLastChatLength(res)
+                                    setChatUpdateState(result.content);
+                                    isChatReceived.current = true;
                                 }
                             )
-                            setChatUpdateState(result.content);
-                            isChatReceived.current = true;
                         }
                     });
                 }
@@ -287,17 +250,10 @@ const Workspace = function () {
     }, [dpMemberUpdateState, accessedDepartment])
 
     useEffect( () => {
-        getLastChatData(localStorage.getItem('loginMemberEmail'), localStorage.getItem('accessedWorkspaceId'))
+        getDepartmentsChatCountData(localStorage.getItem('accessedWorkspaceId'), localStorage.getItem('loginMemberEmail'))
         .then(
             (res) => {
-                lastChatLengthRef.current = res;
-            }
-        )
-
-        getWorkspaceChatCountData(localStorage.getItem('accessedWorkspaceId'))
-        .then(
-            (res) => {
-                setLastChatLength(res)
+                setGap(res)
             }
         )
 
@@ -314,16 +270,39 @@ const Workspace = function () {
         )
     }, [workspaceMemberUpdateState])
 
-    useEffect(()=>{
-        console.log(drag)
-    },[drag])
-
-    function closeUploadModal(){
-        setSelectedFile([])
-        setFileUploadConfirmModalIsOpen(false)
-        console.log("close")
+    function setGap(workspaceChatCountData){
+        getLastChatData(localStorage.getItem('loginMemberEmail'), localStorage.getItem('accessedWorkspaceId'))
+        .then(
+            (res) => {
+                lastChatLengthRef.current = res;
+                let gap = [];
+                for (let index = 0; index < departmentIdList.length; index++){
+                    if (lastChatLengthRef.current[index] === undefined){
+                        let countGap = 1;               
+                        gap.push({
+                            departmentId: departmentIdList[index],
+                            countGap: countGap,
+                            isNewDepartment: true
+                        })
+                    }
+                    else{
+                        let countGap = Number(workspaceChatCountData[index].chatCount) - Number(lastChatLengthRef.current[index].messageCount);
+                        if (departmentIdList[index] === localStorage.getItem('accessedDepartmentId')){
+                            countGap = 0;
+                        }
+                        
+                        gap.push({
+                            departmentId: departmentIdList[index],
+                            countGap: countGap,
+                            isNewDepartment: false
+                        });
+                    }
+                }
+                setMessageCountGap([...gap])
+            }
+        )
     }
-
+    
     function onConnected() {
         if (stomp.connected){
             // chat 
@@ -339,25 +318,30 @@ const Workspace = function () {
                         setChatUpdateState(result.content);
                     }
                     else if (chatUpdateState !== result.body){
-                        getWorkspaceChatCountData(localStorage.getItem('accessedWorkspaceId'))
+                        getDepartmentsChatCountData(localStorage.getItem('accessedWorkspaceId'), localStorage.getItem('loginMemberEmail'))
                         .then(
                             (res) => {
+                                setGap(res)
                                 receivedDepartmentId.current = result.departmentId;
-                                setLastChatLength(res)
+                                setChatUpdateState(result.content);
+                                isChatReceived.current = true;
                             }
                         )
-                        setChatUpdateState(result.content);
-                        isChatReceived.current = true;
                     }
                 });
             }
 
             //dp add
             stomp.subscribe("/sub/chat/workspace/" + localStorage.getItem('accessedWorkspaceId'), function (data) {
-                let result = JSON.parse(data.body);
-                setDepartmentUpdateState(result.content);
-                if (result.contentType === "-1"){ // modify
-                    setChatUpdateState(result.content);
+                if(data.body.includes("이미 존재하는 부서입니다")){
+                    alert("워크스페이스 내에 동일한 이름의 그룹이 이미 생성되어있습니다.")
+                }
+                else{
+                    let result = JSON.parse(data.body);
+                    setDepartmentUpdateState(result.content);
+                    if (result.contentType === "-1"){ // modify
+                        setChatUpdateState(result.content);
+                    }
                 }
             });
 
@@ -410,7 +394,6 @@ const Workspace = function () {
     };
 
     const handleFileInput = (e) => {
-        console.log(e.target.files[0].size)
         setSelectedFile([e.target.files[0]]);
         setFileUploadConfirmModalIsOpen(true)
     }
@@ -439,10 +422,8 @@ const Workspace = function () {
         }
         else{
             let files = e.dataTransfer ? e.dataTransfer.files : 'null';
-            setIsContainFolder(false)
             let list=[]
             let count=0
-            console.log(files.length)
             for(let i=0, file; file = files[i]; i++) {
                 var reader = new FileReader();
 
@@ -561,6 +542,7 @@ const Workspace = function () {
                                         lastChatData = {chatViewModel.getLastChatData(localStorage.getItem('accessedDepartmentId'))}
                                         checkedMessageCount = {chatViewModel.getChatLength(localStorage.getItem('accessedDepartmentId'))}
                                         messageCountGap = {messageCountGap}
+                                        isChatReceived = {isChatReceived}
                                     />
                                 </div>
 
@@ -783,11 +765,13 @@ const Workspace = function () {
                         </div>
                     </div>
                 :
+                <div className='workspace-bucketPage-container'>
                     <Bucket
                         departmentViewModel = {departmentViewModel}
                         workspaceViewModel = {workspaceViewModel}
                         chatViewModel = {chatViewModel}
                     />
+                </div>
                 }
             </div>
         );

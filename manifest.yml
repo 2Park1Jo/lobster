@@ -1,7 +1,7 @@
 ---
 applications:
-  - name: Lobster
-    memory: 2000M
+  - name: LobsterTest
+    path: build/
     instances: 1
-    command: npm start
-    path: ./
+    buildpack: https://github.com/cloudfoundry/staticfile-buildpack.git
+    memory: 512M

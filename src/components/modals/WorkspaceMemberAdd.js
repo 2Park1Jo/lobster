@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { WorkspaceMember } from '../../models/model/WorkspaceMember';
 import { getMemberProfile } from '../../api/MemberAPI';
 import './Modal.css'
 import { inviteMemberToWorkspace } from '../../api/WorkspaceAPI';
-import Stomp from 'stompjs';
 
 const WorkspaceMemberAdd=({setWorkspaceMemberAddModalIsOpen,workspaceId,workspaceMembers,stomp})=>{
     let [inputMemberEmail,setinputMemberEmail]=useState("");
@@ -19,10 +17,10 @@ const WorkspaceMemberAdd=({setWorkspaceMemberAddModalIsOpen,workspaceId,workspac
             let email=memberList.at(i)
             let name=memberNameList.at(i)
             // console.log(memberList.at(i));
-            memberListHTML.push(<div key={email} className='searched-Email-div'>
+            memberListHTML.push(<div key={email} className='searched-Email-div' onClick={()=>deleteMemberAtList(email)}>
                     <div>
                         <span style={{color:'black', fontSize : '14px', float:'left'}}>{name}&nbsp;({email})</span>
-                        <span style={{color:'black', fontSize : '14px', float:'right',cursor:"pointer"}} onClick={()=>deleteMemberAtList(email)}>X</span>
+                        <span style={{color:'black', fontSize : '14px', float:'right'}} >X</span>
                     </div>
                 </div>)
         }
@@ -106,17 +104,14 @@ const WorkspaceMemberAdd=({setWorkspaceMemberAddModalIsOpen,workspaceId,workspac
         }
         let result=Promise.resolve(getMemberProfile(inputMemberEmail))
             result.then(value=>{
-                console.log(result)
                 let data=value.at(0)
                 let status=value.at(1)
                 if(status===200){
-                    console.log(data.email)
-                    console.log(data.memberName)
                     setSearchedMemberHTML(
-                        <div className='searched-Email-div'>
+                        <div className='searched-Email-div' onClick={()=>addMemberToList(data.email,data.memberName)}>
                             <div>
                                 <span style={{color:'black', fontSize : '14px', float:'left'}}>{data.memberName}&nbsp;({data.email})</span>
-                                <span style={{color:'black', fontSize : '14px', float:'right' ,cursor:"pointer"}} onClick={()=>addMemberToList(data.email,data.memberName)}>+</span>
+                                <span style={{color:'black', fontSize : '14px', float:'right'}}>+</span>
                             </div>
                         </div>)
                 }

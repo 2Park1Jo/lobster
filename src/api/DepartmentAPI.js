@@ -24,6 +24,11 @@ export const getDepartmentMemberData = async (departmentId) =>{
     return responose.data;
 }
 
+export const getDepartmentsChatCountData = async (workspaceId, memberEmail) =>{
+    const responose = await axios.get(BACK_BASE_URL + 'workspace/' + workspaceId + '/email/' + memberEmail + '/chat/count')
+    return responose.data;
+}
+
 export const getChattingData = async (departmentId) =>{
     const responose = await axios.get(BACK_BASE_URL + 'department/' + departmentId + '/chat/content')
     return responose.data;

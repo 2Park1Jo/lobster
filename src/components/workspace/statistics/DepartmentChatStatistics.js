@@ -1,40 +1,34 @@
 import React, {useState, useEffect} from "react";
 import ProgressBar from 'react-bootstrap/ProgressBar';
-import { getChattingData } from '../../../api/DepartmentAPI';
-import { getWorkspaceDepartments } from "../../../api/DepartmentAPI";
+import { getWorkspaceChatCountData } from '../../../api/WorkspaceAPI'
 import 'react-circular-progressbar/dist/styles.css';
 import './Statistics.css'
 
-export default function DepartmentChatStatistics({departmentViewModel}){
+export default function DepartmentChatStatistics(){
 
     let [chatCount, setChatCount] = useState([]);
     let [countProgressBar, setCountProgressBar] = useState([]);
 
     useEffect( () => {
         let chatCountList = [];
-        getWorkspaceDepartments(localStorage.getItem('accessedWorkspaceId'))
-        .then( (res) => {
+        getWorkspaceChatCountData(localStorage.getItem('accessedWorkspaceId'))
+        .then ( (res) => {
             res.map( (department) => {
-                getChattingData(department.departmentId)
-                .then((res) => {
-                    chatCountList.push({
-                        departmentName: department.departmentName,
-                        departmentId: department.departmentId,
-                        chatCount: res.length,
-                        key: department.departmentId
-                    })
-                    setChatCount([...chatCountList])
+                chatCountList.push({
+                    departmentName: department.departmentName,
+                    departmentId: department.departmentId,
+                    chatCount: department.messageCount,
+                    key: department.departmentId
                 })
             })
+            setChatCount([...chatCountList])
         })
-    },[])
+    }, [])
 
     useEffect( () => {
         let progressBars = [];
         let wholeChatCount = 0;
         let chatCountList = [...chatCount];
-
-        chatCountList = chatCountList.sort((a,b) => (b.chatCount - a.chatCount));
 
         for (let index = 0; index < chatCountList.length; index++){
             wholeChatCount = wholeChatCount + Number(chatCountList[index].chatCount);
@@ -43,10 +37,10 @@ export default function DepartmentChatStatistics({departmentViewModel}){
         for (let index = 0; index < chatCountList.length; index++){
             let progress = Math.round((Number(chatCountList[index].chatCount) / wholeChatCount) * 100);
             progressBars.push(
-                <>
+                <div key={chatCount[index].departmentId}>
                     <div className="progress-left-text">{chatCountList[index].departmentName}</div>
                     <ProgressBar key={chatCount[index].departmentId} className="progress-bar-in-departmentStatistics" variant="danger" now={progress} label={`${progress}% `}/>
-                </>
+                </div>
             )
             setCountProgressBar([...progressBars])           
         }
