@@ -29,15 +29,16 @@ export default function MemberList(props){
         )
     })
 
-    members = members.sort((a,b) => { // 이름순으로 정렬
+    members = members.sort((a,b) => { // 이름순으로 정렬  
         if(a.memberName > b.memberName) return 1;
         if(a.memberName < b.memberName) return -1;
-        return 0;
     });
 
-    members = members.filter((member) => member.email === localStorage.getItem('loginMemberEmail')) // 연결되어있는 유저를 앞으로 이동 및 로그인한 유저는 맨앞으로 위치
-                .concat(members.filter((member) => member.email !== localStorage.getItem('loginMemberEmail') && member.isConnected === true))
-                .concat(members.filter((member) => member.isConnected !== true));
+    members = members.sort((a,b) => b.isConnected - a.isConnected);
+
+    members = members.sort((a,b) => { // 본인은 맨 앞으로
+        if(a.email === localStorage.getItem('loginMemberEmail')) return -1;
+    });
 
     if (members !== undefined){
         members.map( (member, index) => {
