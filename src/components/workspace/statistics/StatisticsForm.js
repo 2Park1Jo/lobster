@@ -2,6 +2,8 @@ import "./Statistics.css"
 import WorkspaceStatistics from "./WorkspaceStatistics";
 import DepartmentChatStatistics from "./DepartmentChatStatistics";
 import TalkKingStatistics from "./TalkKingStatistics";
+import UploadKingStatistics from "./UploadKingStatistic";
+import BucketStatistics from "./BucketStatistics";
 
 export default function StatisticsForm({workspaceViewModel, departmentViewModel, chatViewModel, departmentList}){
     return (   
@@ -15,7 +17,8 @@ export default function StatisticsForm({workspaceViewModel, departmentViewModel,
                 departmentList = {departmentList}
             />
             <TalkKingStatistics/>
-
+            <BucketStatistics/>
+            <UploadKingStatistics/>
         </div>
     );
 };

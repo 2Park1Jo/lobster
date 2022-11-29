@@ -1,4 +1,7 @@
 export function calculateDDay(deadLine){
+    if (deadLine !== null){
+        deadLine = deadLine.replace("마감일 : ", "") + "T23:59:59";
+    }
     let today = new Date();
     let deadLineData = new Date(deadLine);
     let gap = deadLineData.getTime() - today.getTime();
@@ -24,14 +27,16 @@ export function calculateDDay(deadLine){
 }
 
 export function calculateProgress(creationDate, deadline){
-    console.log(deadline)
+    if (creationDate === null || deadline === null){
+        return;
+    }
     let today = new Date();
-    let creationDateData = new Date(creationDate+"T00:00:00");
+    let creationDateData = new Date(creationDate.replace(" ", "T"));
     let deadlineData = new Date(deadline+"T23:59:59");
-
+    
     let wholePeriod = deadlineData.getTime() - creationDateData.getTime();
     let RemainingPeriod = deadlineData.getTime() - today.getTime();
 
-    let progress =  Math.ceil(((wholePeriod - RemainingPeriod) / wholePeriod) * 100);
+    let progress =  Math.round(((wholePeriod - RemainingPeriod) / wholePeriod) * 100);
     return progress
 }

@@ -131,6 +131,7 @@ const Workspace = function () {
             }
         )
         stomp = Stomp.over(new SockJS(BACK_BASE_URL + "chat"));
+        stomp.debug = null
         stomp.connect({}, onConnected, (error) => {
             console.log('sever error : ' + error );
         });
@@ -334,10 +335,15 @@ const Workspace = function () {
 
             //dp add
             stomp.subscribe("/sub/chat/workspace/" + localStorage.getItem('accessedWorkspaceId'), function (data) {
-                let result = JSON.parse(data.body);
-                setDepartmentUpdateState(result.content);
-                if (result.contentType === "-1"){ // modify
-                    setChatUpdateState(result.content);
+                if(data.body.includes("이미 존재하는 부서입니다")){
+                    alert("워크스페이스 내에 동일한 이름의 그룹이 이미 생성되어있습니다.")
+                }
+                else{
+                    let result = JSON.parse(data.body);
+                    setDepartmentUpdateState(result.content);
+                    if (result.contentType === "-1"){ // modify
+                        setChatUpdateState(result.content);
+                    }
                 }
             });
 

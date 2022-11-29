@@ -67,3 +67,8 @@ export const getLastBucket = async (departmentId) =>{
     const responose = await axios.get(BACK_BASE_URL + 'workspace/department/' + departmentId + '/last-bucket-history')
     return responose.data;
 }
+
+export const getBucketCommitCountData = async (workspaceId) =>{
+    const responose = await axios.get(BACK_BASE_URL + 'workspace/' + workspaceId + '/bucket/department/commit-count')
+    return responose.data;
+}

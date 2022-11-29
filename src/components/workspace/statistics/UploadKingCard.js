@@ -4,7 +4,7 @@ import 'react-circular-progressbar/dist/styles.css';
 import {IoPersonCircle} from "react-icons/io5";
 import {FaMedal} from "react-icons/fa"
 
-export default function TalkKingCard({rank, memberName, memberEmail, departmentName, chatCount}){
+export default function UploadKingCard({rank, memberName, memberEmail, bucketCount}){
     return (
         <div className="talk-king-card">
             {
@@ -27,10 +27,9 @@ export default function TalkKingCard({rank, memberName, memberEmail, departmentN
             }
             <div className="talk-king-card-body">
                 <IoPersonCircle style={{ minWidth:'100px', fontSize:'60px', marginTop:'20px'}}/>
-                <div style={{marginTop:'5px'}}>
+                <div style={{marginTop:'13px'}}>
                 <div className="talk-king-card-info">이름: {memberName} ({memberEmail})</div>
-                    <div className="talk-king-card-info">속한부서: {departmentName}</div>
-                    <div className="talk-king-card-info">채팅수 : {chatCount}</div>
+                    <div className="talk-king-card-info">업로드수 : {bucketCount}</div>
                 </div>
             </div>
         </div>

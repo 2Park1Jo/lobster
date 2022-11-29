@@ -1,64 +1,62 @@
 import React, { useEffect, useState } from "react";
-import TalkKingCard from "./TalkKingCard";
-import { getTalkKingMembers } from "../../../api/MemberAPI";
+import UploadKingCard from "./UploadKingCard";
+import { getUploadKingMembers } from "../../../api/MemberAPI";
 import 'react-circular-progressbar/dist/styles.css';
 import './Statistics.css'
 
-export default function TalkKingStatistics(){
+export default function UploadKingStatistics(){
 
-    let [talkKingMembers, setTalkKingMembers] = useState([]); 
-    let [talkKingTopCard, setTalkKingTopCard] = useState([]);
-    let [talkKingBottomCards, setTalkKingBottomCards] = useState([]);
+    let [uploadKingMembers, setUploadKingMembers] = useState([]); 
+    let [uploadKingTopCard, setUploadKingTopCard] = useState([]);
+    let [uploadKingBottomCards, setUploadKingBottomCards] = useState([]);
 
     useEffect( () => {
-        getTalkKingMembers(localStorage.getItem('accessedWorkspaceId'))
+        getUploadKingMembers(localStorage.getItem('accessedWorkspaceId'))
         .then( (res) =>{
-            setTalkKingMembers(res);
+            setUploadKingMembers(res);
         })
     },[])
 
     useEffect( () => {
         let topCard = [];
         let bottomCards = [];
-        talkKingMembers.map( (member, index) => {
+        uploadKingMembers.map( (member, index) => {
             if (index === 0){
                 topCard.push(
-                    <TalkKingCard
+                    <UploadKingCard
                         rank= {index + 1}
                         memberName = {member.memberName}
                         memberEmail = {member.email}
-                        departmentName = {member.departmentNameList}
-                        chatCount = {member.numberOfChats}
+                        bucketCount = {member.commitCount}
                         key = {index}
                     />
                 )
             }
             else{
                 bottomCards.push(
-                    <TalkKingCard
+                    <UploadKingCard
                         rank= {index + 1}
                         memberName = {member.memberName}
                         memberEmail = {member.email}
-                        departmentName = {member.departmentNameList}
-                        chatCount = {member.numberOfChats}
+                        bucketCount = {member.commitCount}
                         key = {index}
                     />
                 )
             }
         })
-        setTalkKingTopCard([...topCard])
-        setTalkKingBottomCards([...bottomCards])
+        setUploadKingTopCard([...topCard])
+        setUploadKingBottomCards([...bottomCards])
 
-    }, [talkKingMembers])
+    }, [uploadKingMembers])
     
     return (   
         <div className="talk-king-statistics-main-container">
-            <div>이구역의 채팅왕 !</div>
+            <div>이구역의 버킷왕 !</div>
             <div className="talk-king-statistics-container">
-                {talkKingTopCard}
+                {uploadKingTopCard}
             </div>
             <div className="talk-king-statistics-container">
-                {talkKingBottomCards}
+                {uploadKingBottomCards}
             </div>
         </div>
     );
