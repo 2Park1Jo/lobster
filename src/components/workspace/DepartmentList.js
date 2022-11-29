@@ -22,7 +22,7 @@ export default function DepartmentList(props){
         else if (department.departmentId === props.messageCountGap[index].departmentId){
             uncheckedMessageCount = props.messageCountGap[index].countGap;
         }
-
+        
         if (department.departmentId === localStorage.getItem('accessedDepartmentId')){
             uncheckedMessageCount = 0;
         }

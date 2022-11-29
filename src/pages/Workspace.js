@@ -99,7 +99,6 @@ const Workspace = function () {
 
     let [fileClassification, setFileClassification] = useState('file');
     let [fileSearch, setFileSearch] = useState('');
-    let [isContainFolder,setIsContainFolder]=useState(false)
 
     let [lastBucketData, setLastBucketData] = useState("");
     let [lastBucketUpdateState, setLastBucketUpdateState] = useState(false);
@@ -159,7 +158,6 @@ const Workspace = function () {
         }
         if (isGapUpperZero && isChatReceived.current){    
             play();
-            console.log("beep")
             isChatReceived.current = false;
         }
     },[messageCountGap])
@@ -304,7 +302,7 @@ const Workspace = function () {
             }
         )
     }
-
+    
     function onConnected() {
         if (stomp.connected){
             // chat 
@@ -396,7 +394,6 @@ const Workspace = function () {
     };
 
     const handleFileInput = (e) => {
-        console.log(e.target.files[0].size)
         setSelectedFile([e.target.files[0]]);
         setFileUploadConfirmModalIsOpen(true)
     }
@@ -425,10 +422,8 @@ const Workspace = function () {
         }
         else{
             let files = e.dataTransfer ? e.dataTransfer.files : 'null';
-            setIsContainFolder(false)
             let list=[]
             let count=0
-            console.log(files.length)
             for(let i=0, file; file = files[i]; i++) {
                 var reader = new FileReader();
 
@@ -770,11 +765,13 @@ const Workspace = function () {
                         </div>
                     </div>
                 :
+                <div className='workspace-bucketPage-container'>
                     <Bucket
                         departmentViewModel = {departmentViewModel}
                         workspaceViewModel = {workspaceViewModel}
                         chatViewModel = {chatViewModel}
                     />
+                </div>
                 }
             </div>
         );

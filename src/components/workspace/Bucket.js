@@ -29,7 +29,7 @@ export default function Bucket({departmentViewModel, workspaceViewModel, chatVie
     getWorkspaceDepartments(localStorage.getItem('accessedWorkspaceId'))
     .then( (res) => {
       departmentList = res;
-      
+
       let bucketCards = [];
       let lastCommits=[];
       departmentList.map( (department) => {

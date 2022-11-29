@@ -36,7 +36,6 @@ export function calculateProgress(creationDate, deadline){
     
     let wholePeriod = deadlineData.getTime() - creationDateData.getTime();
     let RemainingPeriod = deadlineData.getTime() - today.getTime();
-
     let progress =  Math.round(((wholePeriod - RemainingPeriod) / wholePeriod) * 100);
     return progress
 }

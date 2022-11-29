@@ -31,7 +31,6 @@ export const putBucket=async function(departmentId,workspaceId,date,email,member
         withCredentials: true
     
     }).then(res=>{
-        console.log(res)
         if(res.status===201){
             return 201
         }
