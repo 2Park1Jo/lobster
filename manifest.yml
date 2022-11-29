@@ -1,7 +1,7 @@
 ---
 applications:
-- name: Lobster
-path: build/
-instances: 1
-buildpack: https://github.com/cloudfoundry/staticfile-buildpack.git
-memory: 256M
+  - name: LobsterTest
+    path: build/
+    instances: 1
+    buildpack: https://github.com/cloudfoundry/staticfile-buildpack.git
+    memory: 512M

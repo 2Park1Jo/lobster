@@ -20,10 +20,11 @@ const BucketZipDownloadModal=({setBucketZipDownloadModalIsOpen,fileList,workspac
         for(var i=0;i<fileList.length;i++){
             let files=[]
             for(var j=0;j<fileList[i][1].length;j++){
-                files.push(<p>{fileList[i][1][j].substring(fileList[i][1][j].lastIndexOf("/")+1)}</p>)
+                files.push(<p key={i}>{fileList[i][1][j].substring(fileList[i][1][j].lastIndexOf("/")+1)}</p>)
             }
             departmentContainer.push(
                 <DepartmentSelectionContainer
+                    key={i}
                     departmentName={fileList[i][0]}
                     fileList={files}
                     setChecked={setChecked}
