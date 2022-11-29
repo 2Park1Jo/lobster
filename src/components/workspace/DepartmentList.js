@@ -31,11 +31,6 @@ export default function DepartmentList(props){
                 name={department.departmentName}
                 onClicked={
                     () => {
-                        console.log(localStorage.getItem('loginMemberEmail'),
-                        localStorage.getItem('accessedDepartmentId'),
-                        localStorage.getItem('accessedWorkspaceId'),
-                        props.lastChatData.chatId,
-                        props.checkedMessageCount)
                         setLastChatData(
                             localStorage.getItem('loginMemberEmail'),
                             localStorage.getItem('accessedDepartmentId'),

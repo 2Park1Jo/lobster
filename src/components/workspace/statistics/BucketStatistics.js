@@ -14,7 +14,6 @@ export default function BucketStatistics(){
         getBucketCommitCountData(localStorage.getItem('accessedWorkspaceId'))
         .then ( (res) => {
             res.map( (department) => {
-                console.log(department)
                 commitCountList.push({
                     departmentName: department.departmentName,
                     departmentId: department.departmentId,

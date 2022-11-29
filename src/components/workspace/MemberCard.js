@@ -7,7 +7,7 @@ import {BsDot} from "react-icons/bs"
 
 export default function MemberCard({ profilePicture, name, email, role, onClicked, isConnected}){
     return(
-        localStorage.getItem('loginMemberEmail').includes(email) ?
+        localStorage.getItem('loginMemberEmail') === email ?
 
         <ListGroup.Item className='member-card'>
             <IoPersonCircle style={{fontSize:'29px', marginRight:'7px', color:'#C61C1C'}} />
