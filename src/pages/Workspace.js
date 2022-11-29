@@ -132,6 +132,7 @@ const Workspace = function () {
             }
         )
         stomp = Stomp.over(new SockJS(BACK_BASE_URL + "chat"));
+        stomp.debug=null;
         stomp.connect({}, onConnected, (error) => {
             console.log('sever error : ' + error );
         });
