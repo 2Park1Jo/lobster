@@ -353,10 +353,9 @@ const Workspace = function () {
             });
 
             stomp.subscribe("/sub/chat/session", function (data) {
-                let result = data.body;
-                if (result.length > 0){
-                    setConnectedMemberList(result)
-                } 
+                let result = JSON.parse(data.body);
+                setConnectedMemberList(result)
+                
             });
 
 
