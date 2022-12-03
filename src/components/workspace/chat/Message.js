@@ -27,19 +27,19 @@ export default function Message({ chatSender, chatDate, chatContent,chatType,lin
     return(
         (
             chatType==="-1" || chatType==="-2"? 
-                <div className='message'>
-                    <span className="small">({ chatDate.split(" ")[1] })&nbsp;{ chatContent } </span>
+                <div className='message text-muted' style={{textAlign:'center'}}>
+                    <span className="small">({ chatDate })&nbsp;{ chatContent } </span>
                 </div>
             :chatType==="0"?
                 <div className='message'>
-                    <li className="small text-muted">{ chatSender } { chatDate.split(" ")[1] }</li>
+                    <li className="small" style={{color:'#2B2B2B'}}>{ chatSender } <span className='text-muted' style={{fontSize:'5px'}}>{ chatDate.replaceAll("-",".").substring(0, 16) }</span></li>
                     <ListGroup.Item style={{width: 'fit-content'}} className="rounded">
                         <span className="small"> { chatContent } </span>
                     </ListGroup.Item>
                 </div>
                 :chatType==="1"?
                 <div className='message'>
-                    <li className="small text-muted">{ chatSender } { chatDate.split(" ")[1] }</li>
+                    <li className="small" style={{color:'#2B2B2B'}}>{ chatSender } <span className='text-muted' style={{fontSize:'5px'}}>{ chatDate.replaceAll("-",".").substring(0, 16) }</span></li>
                     <div>               
                         <ListGroup.Item style={{width: 'auto', float:"left"}} action className="rounded" onClick={handleClick}>
                             <AiOutlineFileText style={{fontSize:"40px"}}/>
@@ -50,7 +50,7 @@ export default function Message({ chatSender, chatDate, chatContent,chatType,lin
                 </div>
                 :
                 <div className='message'>
-                    <li className="small text-muted">{ chatSender } { chatDate.split(" ")[1] }</li>
+                    <li className="small" style={{color:'#2B2B2B'}}>{ chatSender } <span className='text-muted' style={{fontSize:'5px'}}>{ chatDate.replaceAll("-",".").substring(0, 16) }</span></li>
                     <ListGroup.Item style={{width: 'auto'}} action className="rounded">
                         <img src={link} style={{width:"200px", height:"200px"}} onClick={()=>setImageShowModalIsOpen(true)}/>
                     </ListGroup.Item>

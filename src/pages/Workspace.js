@@ -14,7 +14,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Modal from 'react-modal';
 import { useRecoilState } from "recoil";
 
-import { getLastChatData } from '../api/MemberAPI';
+import { getLastChatData, setLastChatData } from '../api/MemberAPI';
 import { getWorkspaceMemberData, getWorkspaceData } from '../api/WorkspaceAPI';
 import { getDepartmentMemberData, getChattingData, getDepartments, getDepartmentsChatCountData } from '../api/DepartmentAPI';
 import { getLastBucket } from '../api/BucketAPI'
@@ -114,10 +114,10 @@ const Workspace = function () {
     let [messageCountGapUpdate, setMessageCountGapUpdate] = useState(false);
     let [messageCountGap, setMessageCountGap] = useState([]);
 
-    let [chatUpdateState, setChatUpdateState] = useState(false);
-    let [departmentUpdateState, setDepartmentUpdateState] = useState(false);
-    let [dpMemberUpdateState, setDpMemberUpdateState] = useState(false);
-    let [workspaceMemberUpdateState, setWorkspaceMemberUpdateState] = useState(false);
+    let [chatUpdateState, setChatUpdateState] = useState("");
+    let [departmentUpdateState, setDepartmentUpdateState] = useState("");
+    let [dpMemberUpdateState, setDpMemberUpdateState] = useState("");
+    let [workspaceMemberUpdateState, setWorkspaceMemberUpdateState] = useState("");
     let [isShowLast,setIsShowLast]=useState(false);
     const [play] = useSound(mySound);
 
@@ -186,15 +186,14 @@ const Workspace = function () {
         .then(
             (res) => {
                 if (res.length > 0){
+                    chatViewModel.update(res);
                     let files = chatViewModel.getFiles(localStorage.getItem('accessedDepartmentId'))
                     let imgs = chatViewModel.getImgs(localStorage.getItem('accessedDepartmentId'))
-
-                    chatViewModel.update(res);
                     if (fileList.length !== files.length){
-                        setFileList(files)
+                        setFileList([...files])
                     }
                     if (imgList.length !== imgs.length){
-                        setImgList(imgs)
+                        setImgList([...imgs])
                     }
 
                     setChats(chatViewModel.getChats(localStorage.getItem('accessedDepartmentId')))
@@ -283,10 +282,10 @@ const Workspace = function () {
                         receivedDepartmentId.current = result.departmentId;
                         isChatReceived.current = true;
                         if (result.contentType === "-1"){ // invite
-                            setDpMemberUpdateState(!dpMemberUpdateState);
+                            setDpMemberUpdateState(Math.random());
                         }
                         else if (result.contentType === "-2"){// bucket modify
-                            setLastBucketUpdateState(!lastBucketUpdateState);
+                            setLastBucketUpdateState(Math.random());
                         }
                     });
                 }
@@ -309,10 +308,10 @@ const Workspace = function () {
                     receivedDepartmentId.current = result.departmentId;
                     isChatReceived.current = true;
                     if (result.contentType === "-1"){ // invite
-                        setDpMemberUpdateState(!dpMemberUpdateState);
+                        setDpMemberUpdateState(Math.random());
                     }
                     else if (result.contentType === "-2"){// bucket modify
-                        setLastBucketUpdateState(!lastBucketUpdateState);
+                        setLastBucketUpdateState(Math.random());
                     }
                 });
             }
@@ -324,7 +323,7 @@ const Workspace = function () {
                 }
                 else{
                     let result = JSON.parse(data.body);
-                    setDepartmentUpdateState(!departmentUpdateState);
+                    setDepartmentUpdateState(Math.random());
                     if (result.contentType === "-1"){ // modify
                         setChatUpdateState(result.departmentId);
                     }
@@ -333,9 +332,9 @@ const Workspace = function () {
 
             stomp.subscribe("/sub/chat/workspace", function (data) {
                 let result = data.body;
-                setWorkspaceMemberUpdateState(!workspaceMemberUpdateState);
-                setDepartmentUpdateState(!departmentUpdateState);
-                setDpMemberUpdateState(!dpMemberUpdateState);
+                setWorkspaceMemberUpdateState(Math.random());
+                setDepartmentUpdateState(Math.random());
+                setDpMemberUpdateState(Math.random());
             });
 
             stomp.subscribe("/sub/chat/session", function (data) {
@@ -361,12 +360,26 @@ const Workspace = function () {
     };
 
     function logout(){
+        setLastChatData(
+            localStorage.getItem('loginMemberEmail'),
+            localStorage.getItem('accessedDepartmentId'),
+            localStorage.getItem('accessedWorkspaceId'),
+            chatViewModel.getLastChatData(localStorage.getItem('accessedDepartmentId')).chatId,
+            chatViewModel.getChatLength(localStorage.getItem('accessedDepartmentId'))
+        )
         localStorage.clear();
         stomp.disconnect()
         navigate('/')
     }
 
     function moveToWorkspaceBanner(){
+        setLastChatData(
+            localStorage.getItem('loginMemberEmail'),
+            localStorage.getItem('accessedDepartmentId'),
+            localStorage.getItem('accessedWorkspaceId'),
+            chatViewModel.getLastChatData(localStorage.getItem('accessedDepartmentId')).chatId,
+            chatViewModel.getChatLength(localStorage.getItem('accessedDepartmentId'))
+        )
         stomp.disconnect();
         navigate('/workspacebanner');
     }
@@ -541,7 +554,7 @@ const Workspace = function () {
 
                             <div className='second-col-WholeMemberList'>
                                 <MemberList 
-                                    members = {workspaceMemberViewModel.getMembers(localStorage.getItem('accessedWorkspaceId'))}//.filter(member => member.email !== localStorage.getItem('loginMemberEmail'))}
+                                    members = {workspaceMembers}
                                     connectedMemberList = {connectedMemberList}
                                 />
                             </div>
@@ -623,7 +636,7 @@ const Workspace = function () {
                                 <div className='fourth-col-DPMemberList'>
                                     {isShowDPmemberList===true?
                                         <MemberList 
-                                            members = {workspaceMembers}
+                                            members = {departmentMembers}
                                             connectedMemberList = {connectedMemberList}
                                         />
                                     :

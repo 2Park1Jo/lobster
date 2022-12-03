@@ -38,7 +38,7 @@ export default function DepartmentList(props){
                                 localStorage.getItem('loginMemberEmail'),
                                 localStorage.getItem('accessedDepartmentId'),
                                 localStorage.getItem('accessedWorkspaceId'),
-                                props.lastChatData.chatId,
+                                "",
                                 props.checkedMessageCount
                             ).then( (res) =>{
                                 if(department.departmentId !== localStorage.getItem('accessedDepartmentId') && res.status === 201){
