@@ -7,7 +7,6 @@ export default function ChatBox(props){
     let [chatContents, setChatContents] = useState([]);
 
     useEffect( () => {
-        console.log("chatBoxUpdate")
         let chats = [];
         props.chats.map( (chat, index) => {
             chats.push(
