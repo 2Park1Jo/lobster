@@ -1,12 +1,16 @@
 import Message from "./Message";
 import { ListGroup } from 'react-bootstrap'
-import { useEffect, useMemo } from "react";
+import { useEffect, useState } from "react";
 
 export default function ChatBox(props){
-    let chats = useMemo( () => {
-        let chatList = [];
+
+    let [chatContents, setChatContents] = useState([]);
+
+    useEffect( () => {
+        console.log("chatBoxUpdate")
+        let chats = [];
         props.chats.map( (chat, index) => {
-            chatList.push(
+            chats.push(
                 <Message
                     chatSender={ props.departmentMemberViewModel.getMemberName(chat.email) }
                     chatDate={chat.date}
@@ -17,18 +21,18 @@ export default function ChatBox(props){
                 />
             )
         })
-        return chatList;
-        }
-    ,[props.chats.length]);
+        setChatContents([...chats])
+
+    }, [props.chats.length])
 
     useEffect( () => {
         props.messageEnd.current?.scrollIntoView({behavior: "auto"})
-    }, [props.chats.length])
+    }, [chatContents])
 
     return (
         <div className="px-4 py-3">
             <ListGroup>
-                { chats }
+                { chatContents }
                 <div ref={ props.messageEnd }></div>
             </ListGroup>
         </div>

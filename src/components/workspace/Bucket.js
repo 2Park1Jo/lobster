@@ -10,7 +10,7 @@ import { getLastBucket, getBucket } from "../../api/BucketAPI"
 import { getWorkspaceDepartments } from "../../api/DepartmentAPI"
 import { BiChevronsLeft } from "react-icons/bi";
 
-export default function Bucket({departmentViewModel, workspaceViewModel, chatViewModel}){
+export default function Bucket({workspaceViewModel}){
   let [bucketCardList, setBucketCardList] = useState([]);
   let [bucketCommitList, setBucketCommitList] = useState([]);
   let [bucketBox, setBucketBox] = useState("");
@@ -244,8 +244,6 @@ export default function Bucket({departmentViewModel, workspaceViewModel, chatVie
         <div className="bucket-page-second-col">
           <StatisticsForm
             workspaceViewModel={workspaceViewModel}
-            departmentViewModel={departmentViewModel}
-            chatViewModel = {chatViewModel}
             departmentList = {departmentList}
           />
         </div>

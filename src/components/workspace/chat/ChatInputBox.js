@@ -6,14 +6,6 @@ import './ChatInputBox.css';
 export default function ChatInputBox(props){
     let [inputChattingContent, setInputChattingContent] = useState(""); // 사용자가 입력한 채팅 컨텐츠 데이터
 
-    function scrollToBottom(behavior) {
-        props.messageEnd.current?.scrollIntoView({behavior: behavior})
-    }
-
-    useEffect( () => {
-        scrollToBottom("auto");
-    }, [props.chatUpdateState])
-
     useEffect( () => {
         if(inputChattingContent === '\n'){
             setInputChattingContent("");

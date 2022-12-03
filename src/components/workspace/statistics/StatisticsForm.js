@@ -5,15 +5,13 @@ import TalkKingStatistics from "./TalkKingStatistics";
 import UploadKingStatistics from "./UploadKingStatistic";
 import BucketStatistics from "./BucketStatistics";
 
-export default function StatisticsForm({workspaceViewModel, departmentViewModel, chatViewModel, departmentList}){
+export default function StatisticsForm({workspaceViewModel, departmentList}){
     return (   
         <div className="statistics-form-container">
             <WorkspaceStatistics
                 workspaceViewModel={workspaceViewModel}
             />
             <DepartmentChatStatistics
-                departmentViewModel={departmentViewModel}
-                chatViewModel = {chatViewModel}
                 departmentList = {departmentList}
             />
             <TalkKingStatistics/>
