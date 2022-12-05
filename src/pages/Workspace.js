@@ -205,6 +205,20 @@ const Workspace = function () {
     }, [chatUpdateState, accessedDepartment])
 
     useEffect( () => {
+        getDepartmentMemberData(localStorage.getItem('accessedDepartmentId'))
+        .then(
+            (res) => {
+                departmentMemberViewModel.update(res);
+                setDepartmentMembers(departmentMemberViewModel.getMembers(localStorage.getItem('accessedDepartmentId')))
+            }
+        )
+    }, [dpMemberUpdateState, accessedDepartment])
+
+    useEffect( () => {
+        setLastBucketUpdateState(Math.random());
+    }, [accessedDepartment])
+
+    useEffect( () => {
         getDepartments(localStorage.getItem('accessedWorkspaceId'),localStorage.getItem('loginMemberEmail'))
         .then(
             (res) => {
@@ -218,16 +232,6 @@ const Workspace = function () {
             }
         )
     }, [departmentUpdateState])
-
-    useEffect( () => {
-        getDepartmentMemberData(localStorage.getItem('accessedDepartmentId'))
-        .then(
-            (res) => {
-                departmentMemberViewModel.update(res);
-                setDepartmentMembers(departmentMemberViewModel.getMembers(localStorage.getItem('accessedDepartmentId')))
-            }
-        )
-    }, [dpMemberUpdateState, accessedDepartment])
 
     useEffect( () => {
         getWorkspaceMemberData(localStorage.getItem('accessedWorkspaceId') )
