@@ -71,7 +71,7 @@
 }
 .fourth-col-container{
     flex-direction: column;
-    background-color: white;
+    background-color: #E0E0E0;
     width: 290px;
     min-width: 290px;
     flex-shrink: 0;
