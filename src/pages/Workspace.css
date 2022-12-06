@@ -199,6 +199,21 @@
 .fourth-col-DPMemberList:hover{
     overflow-y: auto;
 }
+.fourth-col-DPMemberList::-webkit-scrollbar {
+    width: 13px;
+}
+.fourth-col-DPMemberList::-webkit-scrollbar-thumb {
+    background: rgb(127, 127, 127);
+    border-radius: 10px;
+    background-clip: padding-box;
+    border: 3px solid transparent;
+}
+
+.fourth-col-DPMemberList::-webkit-scrollbar-track{
+    border-radius: 10px;
+}
+
+
 .fourth-col-UploadedFile{
     width: 96%;
     height:auto;
@@ -283,6 +298,7 @@ input::placeholder {
     padding-left: 8%;
     display: block;
 }
+
 .file-list-container::-webkit-scrollbar {
     width: 13px;
 }
