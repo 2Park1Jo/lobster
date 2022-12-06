@@ -8,6 +8,7 @@ import WorkspaceMemberAdd from '../components/modals/WorkspaceMemberAdd';
 import FileUploadConfirm from '../components/modals/FileUploadConfirm';
 import BucketModal from '../components/modals/BucketModal';
 import BucketSemiCard from '../components/workspace/BucketSemiCard';
+import Spinner from '../components/modals/Spinner';
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -126,12 +127,20 @@ const Workspace = function () {
     let [departments, setDepartments] = useState([]);
     let [chats, setChats] = useState([]);
 
+    let [loading, setLoading] = useState(false);
+    let [isWorkspaceViewModelUpdated, setIsWorkspaceViewModelUpdated] = useState(false);
+    let [isWorkspaceMemberViewModelUpdated, setIsWorkspaceMemberViewModelUpdated] = useState(false);
+    let [isDepartmentViewModelUpdated, setIsDepartmentViewModelUpdated] = useState(false);
+    let [isDepartmentMemberViewModelUpdated, setIsDepartmentMemberViewModelUpdated] = useState(false);
+    let [isChatViewModelUpdated, setIsChatViewModelUpdated] = useState(false);
+
     useEffect( () => {     
         getWorkspaceData(localStorage.getItem('loginMemberEmail'))
         .then(
             (res) => {
                 workspaceViewModel.update(res);
                 setWorkspaceId(localStorage.getItem('accessedWorkspaceId'))
+                setIsWorkspaceViewModelUpdated(true);
             }
         )
         stomp = Stomp.over(new SockJS(BACK_BASE_URL + "chat"));
@@ -140,6 +149,16 @@ const Workspace = function () {
             console.log('sever error : ' + error );
         });
     },[])
+
+    useEffect( () => {
+        if (isWorkspaceViewModelUpdated && isWorkspaceMemberViewModelUpdated && isDepartmentViewModelUpdated && isDepartmentMemberViewModelUpdated && isChatViewModelUpdated){
+            setLoading(true);
+        }
+        else{
+            setLoading(false);
+        }
+
+    },[isWorkspaceViewModelUpdated,isWorkspaceMemberViewModelUpdated,isDepartmentViewModelUpdated,isDepartmentMemberViewModelUpdated,isChatViewModelUpdated])
 
     useEffect(() => {
         getLastBucket(localStorage.getItem('accessedDepartmentId'))
@@ -198,6 +217,7 @@ const Workspace = function () {
 
                     setChats(chatViewModel.getChats(localStorage.getItem('accessedDepartmentId')))
                     setMessageCountGapUpdate(!messageCountGapUpdate);
+                    setIsChatViewModelUpdated(true);
                 }
             }
         )
@@ -210,6 +230,7 @@ const Workspace = function () {
             (res) => {
                 departmentMemberViewModel.update(res);
                 setDepartmentMembers(departmentMemberViewModel.getMembers(localStorage.getItem('accessedDepartmentId')))
+                setIsDepartmentMemberViewModelUpdated(true);
             }
         )
     }, [dpMemberUpdateState, accessedDepartment])
@@ -229,6 +250,7 @@ const Workspace = function () {
                 })
                 setDepartmentIdList(departmentViewModel.getIdList(localStorage.getItem('accessedWorkspaceId')))
                 setDepartments(departmentViewModel.get(localStorage.getItem('accessedWorkspaceId')))
+                setIsDepartmentViewModelUpdated(true);
             }
         )
     }, [departmentUpdateState])
@@ -239,6 +261,7 @@ const Workspace = function () {
             (res) => {
                 workspaceMemberViewModel.update(res);
                 setWorkspaceMembers(workspaceMemberViewModel.getMembers(localStorage.getItem('accessedWorkspaceId')))
+                setIsWorkspaceMemberViewModelUpdated(true);
             }
         )
     }, [workspaceMemberUpdateState])
@@ -362,6 +385,21 @@ const Workspace = function () {
             transform: 'translate(-50%, -50%)',
         },
     };
+    const spinnerStyles = {
+        content: {
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            backgroundColor: 'transparent',
+            marginRight: '-50%',
+            border: 'none',
+            transform: 'translate(-50%, -50%)',
+        },
+        overlay: {
+            background: 'transparent',
+        }
+    };
 
     function logout(){
         setLastChatData(
@@ -482,8 +520,17 @@ const Workspace = function () {
         setBucketModalIsOpen(true);
     }
 
+    function spinnerClose(){
+        setLoading(true);
+        document.body.style.overflow = "unset"
+    }
+
     return(
         <div className="maincontainer">
+            <Modal ariaHideApp={false} isOpen= {!loading} style={spinnerStyles} onRequestClose={() => spinnerClose()}>
+                <Spinner/>
+            </Modal>
+
             <div className='first-col'>
                 <div className='first-col-Button'>
                     {selectedMenu===1?
@@ -541,6 +588,10 @@ const Workspace = function () {
                                     checkedMessageCount = {chatViewModel.getChatLength(localStorage.getItem('accessedDepartmentId'))}
                                     messageCountGap = {messageCountGap}
                                     isChatReceived = {isChatReceived}
+                                    setIsDepartmentMemberViewModelUpdated = {setIsDepartmentMemberViewModelUpdated}
+                                    setIsChatViewModelUpdated = {setIsChatViewModelUpdated}
+                                    loading = {loading}
+                                    setLoading = {setLoading}
                                 />
                             </div>
 
