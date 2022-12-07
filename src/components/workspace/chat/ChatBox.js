@@ -11,7 +11,7 @@ export default function ChatBox(props){
         props.chats.map( (chat, index) => {
             chats.push(
                 <Message
-                    chatSender={ props.departmentMemberViewModel.getMemberName(chat.email) }
+                    chatSender={ chat.sender }
                     chatDate={chat.date}
                     chatContent={chat.content}
                     chatType={chat.contentType}

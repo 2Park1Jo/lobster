@@ -631,7 +631,6 @@ const Workspace = function () {
                                         :<></>}
                                     <div className='third-col-ChatList'>
                                         <ChatBox
-                                            departmentMemberViewModel = {departmentMemberViewModel}
                                             chats = {chats}
                                             messageEnd = {messageEndRef}
                                         />
