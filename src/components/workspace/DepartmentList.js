@@ -34,25 +34,30 @@ export default function DepartmentList(props){
                     name={department.departmentName}
                     onClicked={
                         () => {
-                            setLastChatData(
-                                localStorage.getItem('loginMemberEmail'),
-                                localStorage.getItem('accessedDepartmentId'),
-                                localStorage.getItem('accessedWorkspaceId'),
-                                props.lastChatData.chatId,
-                                props.checkedMessageCount
-                            ).then( (res) =>{
-                                if(department.departmentId !== localStorage.getItem('accessedDepartmentId') && res.status === 201){
-                                    props.isChatReceived.current = false;
-                                    setAccessedDepartment({
-                                        id : department.departmentId,
-                                        name: department.departmentName
-                                    })
-                                    localStorage.setItem('accessedDepartmentId', department.departmentId)
-                                    localStorage.setItem('accessedDepartmentName', department.departmentName)
-                                    navigate("/workspace/" + props.workspaceId + "/chat/department/" + department.departmentId)
+                            if (props.loading && props.checkedMessageCount !== 0){
+                                setLastChatData(
+                                    localStorage.getItem('loginMemberEmail'),
+                                    localStorage.getItem('accessedDepartmentId'),
+                                    localStorage.getItem('accessedWorkspaceId'),
+                                    "",
+                                    props.checkedMessageCount
+                                ).then( (res) =>{
+                                    if(department.departmentId !== localStorage.getItem('accessedDepartmentId') && res.status === 201){
+                                        props.isChatReceived.current = false;
+                                        setAccessedDepartment({
+                                            id : department.departmentId,
+                                            name: department.departmentName
+                                        })
+                                        localStorage.setItem('accessedDepartmentId', department.departmentId)
+                                        localStorage.setItem('accessedDepartmentName', department.departmentName)
+                                        props.setIsDepartmentMemberViewModelUpdated(false);
+                                        props.setIsChatViewModelUpdated(false);
+                                        props.setLoading(false);
+                                        navigate("/workspace/" + props.workspaceId + "/chat/department/" + department.departmentId)
+                                    }
                                 }
+                                );
                             }
-                            );
                         }   
                     }
                     uncheckedMessageCount={uncheckedMessageCount}
