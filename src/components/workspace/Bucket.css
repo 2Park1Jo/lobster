@@ -19,7 +19,23 @@
     height: calc(100% - 74px);
     display: flex;
     flex-direction: row;
-    overflow: scroll;
+    overflow-y: hidden;
+    overflow-x: auto;
+}
+.bucket-page-body::-webkit-scrollbar {
+    /* width: 13px; */
+    height: 13px;
+}
+.bucket-page-body::-webkit-scrollbar-thumb {
+    background: rgb(127, 127, 127);
+    border-radius: 10px;
+    background-clip: padding-box;
+    border: 3px solid transparent;
+}
+
+.bucket-page-body::-webkit-scrollbar-track{
+    background-color: #2B2B2B;
+    /* border-radius: 10px; */
 }
 
 .bucket-page-first-col{
@@ -37,17 +53,13 @@
     padding: 15px;
     padding-right: 30px;
     min-width: 710px;
-}
-
-/* .bucket-page-second-col:hover{
     overflow-y: auto;
-} */
-
-/* .bucket-page-second-col::-webkit-scrollbar {
+}
+.bucket-page-second-col::-webkit-scrollbar {
     width: 13px;
 }
 .bucket-page-second-col::-webkit-scrollbar-thumb {
-    background: whitesmoke;
+    background: rgb(127, 127, 127);
     border-radius: 10px;
     background-clip: padding-box;
     border: 3px solid transparent;
@@ -56,7 +68,8 @@
 .bucket-page-second-col::-webkit-scrollbar-track{
     background-color: #2B2B2B;
     border-radius: 10px;
-} */
+}
+
 
 .bucket-workspace-info{
     float: left;
@@ -217,7 +230,7 @@
 }
 
 .bucket-card-container{
-    width: 378px;
+    width: 373px;
     overflow-y: hidden;
 }
 
@@ -229,14 +242,14 @@
     width: 13px;
 }
 .bucket-card-container::-webkit-scrollbar-thumb {
-    background: rgb(165, 165, 165);
+    background: whitesmoke;
     border-radius: 10px;
     background-clip: padding-box;
     border: 3px solid transparent;
 }
 
 .bucket-card-container::-webkit-scrollbar-track{
-    background-color: #2B2B2B;
+    background-color: #484848;
     border-radius: 10px;
 }
 
