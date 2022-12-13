@@ -167,6 +167,7 @@ const Workspace = function () {
                 setLastBucketData(res);
             }
         )
+    
     },[lastBucketUpdateState])
 
     useEffect( () => {
@@ -237,6 +238,10 @@ const Workspace = function () {
 
     useEffect( () => {
         setLastBucketUpdateState(Math.random());
+        let files = chatViewModel.getFiles(localStorage.getItem('accessedDepartmentId'))
+        let imgs = chatViewModel.getImgs(localStorage.getItem('accessedDepartmentId'))
+        setFileList([...files])
+        setImgList([...imgs])
     }, [accessedDepartment])
 
     useEffect( () => {

@@ -1,19 +1,10 @@
 .statistics-form-container{
-    height: 98%;
-    padding-top: 1px;
-    padding-left: 1%;
-    background-color: #2B2B2B;
-    overflow-y: hidden;
-}
-.statistics-form-container:hover{
-    overflow-y: auto;
 }
 
 .workspace-statistics{
     height: 100px;
     border-radius: 10px;
     padding: 15px;
-    width: 99%;
 
     background-color: #2B2B2B;
     box-shadow: rgba(255, 255, 255, 0.2) 1px 1px 5px;
@@ -28,7 +19,6 @@
 
 .department-chat-progress-container{
     /* height: 70px; */
-    width: 99%;
     border-radius: 10px;
     padding: 15px;
     background-color: #2B2B2B;
@@ -41,7 +31,6 @@
 }
 
 .talk-king-statistics-main-container{
-    width: 99%;
     border-radius: 10px;
     padding: 15px;
     background-color: #2B2B2B;
@@ -50,7 +39,6 @@
 }
 
 .talk-king-statistics-container{
-    width: 99%;
     display: flex;
     justify-content: center;
 }
