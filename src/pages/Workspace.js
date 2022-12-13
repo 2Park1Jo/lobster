@@ -167,6 +167,7 @@ const Workspace = function () {
                 setLastBucketData(res);
             }
         )
+    
     },[lastBucketUpdateState])
 
     useEffect( () => {

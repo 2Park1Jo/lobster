@@ -235,7 +235,7 @@ const BucketAddModal=({setBucketMenu,departmentId,workspaceId,email,memberName,s
             if(value===201){
                 stomp.send('/pub/chat/message', {}, JSON.stringify({
                     departmentId: departmentId,
-                    email: null,
+                    email: email,
                     content: memberName+"("+email+")"+" 님에 의해 버킷이 최신화 되었습니다",
                     contentType: -2,
                     date : currentTime
