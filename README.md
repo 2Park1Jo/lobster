@@ -1,5 +1,5 @@
 ## <img width="25" height="25" src="https://user-images.githubusercontent.com/101173462/207255526-664d8e71-f866-4952-992a-378e101215bb.png"> Lobster
-  [lobster.paas-ta.org](lobster.paas-ta.org)
+  [lobster.paas-ta.org](https://lobster.paas-ta.org)
 
 ### Lobster는 대학생들의 조별과제 등 팀 단위로 이루어지는 협업을 도와주는 웹 커뮤니티 서비스입니다.
 
