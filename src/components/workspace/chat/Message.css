@@ -1,23 +1,67 @@
-.message{
+.message {
     word-break: break-all;
     padding-bottom: 7px;
 
-    font-family: 'Noto Sans CJK KR';
+    font-family: "Noto Sans CJK KR";
     font-style: normal;
     font-weight: 400;
 }
-.text-Area{
+
+.message-content {
+    display: flex;
+}
+
+.translation-button {
+    cursor: pointer;
+    width: auto;
+    height: 30%;
+    border-radius: 5px;
+    border: solid gainsboro 1px;
+    color: gray;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+.translation-button:hover {
+    background-color: gainsboro !important;
+}
+
+.translation-option-button-container {
+    display: block;
+    width: auto;
+    height: 30%;
+    color: gray;
+}
+
+.translation-option-button {
+    cursor: pointer;
+    display: flex;
+    width: fit-content;
+    height: 30%;
+    border-radius: 5px;
+    border: solid gainsboro 1px;
+    color: gray;
+    padding-left: 5px;
+    padding-right: 5px;
+    /* font-size: 12px; */
+}
+
+.translation-option-button:hover {
+    background-color: gainsboro !important;
+}
+
+.text-Area {
     width: 100%;
     border: none;
     outline-color: none;
 }
-.download-button{
+.download-button {
     font-size: 40px;
     float: left;
     cursor: pointer;
     margin-top: auto;
-    color:gray;
+    color: gray;
 }
-.download-button:hover{
+.download-button:hover {
     color: black;
 }
