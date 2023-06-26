@@ -279,7 +279,7 @@ const BucketAddModal=({setBucketMenu,departmentId,workspaceId,email,memberName,s
                 <div style={{flexDirection:"row", marginTop:"30px"}}>
                 <input style={{display: 'none'}} ref={inputRef} type="file" onChange={handleFileInput}/>
                 <span style={{ marginLeft:"20px"}}>파일</span><button className="btn btn-secondary" style={{marginLeft:"60px"}} onClick={handleClick}>PC</button>                   
-                <div className="bucket-modal-file-container" onDrop={e=>handleDrop(e)} onDragLeave={()=>setDrag(false)} onDragOver={e=>handleDragEnter(e)}>
+                <div className="bucket-modal-file-container" onDrop={e=>handleDrop(e)} onDragLeave={(e)=>{if (e.currentTarget.contains(e.relatedTarget)) return;setDrag(false)}} onDragOver={e=>handleDragEnter(e)}>
                     {drag===true?
                         <div className='bucket-modal-fileDraged'><FaUpload /></div>
                         :<></>}

@@ -505,8 +505,12 @@ const Workspace = function () {
     function handleDragEnter(e) {
         e.preventDefault();
         if (containsFiles(e)) {
-            setDrag(true)
+            if(drag===false){
+                console.log(true)
+                setDrag(true)
+            }
         } else {
+            console.log(false)
             setDrag(false)
         }
     }
@@ -629,7 +633,7 @@ const Workspace = function () {
                             </div>
                             <img style={{float:'right'}} draggable="false" src = "https://paasta-lobster-bucket.s3.ap-northeast-2.amazonaws.com/image/lobster_img.png" height="74px"/>
                         </div>
-                        <div onDrop={e=>handleDrop(e)} onDragLeave={()=>setDrag(false)} onDragOver={e=>handleDragEnter(e)}>
+                        <div onDrop={e=>handleDrop(e)} onDragLeave={(e)=>{if (e.currentTarget.contains(e.relatedTarget)) return;setDrag(false)}} onDragOver={e=>handleDragEnter(e)}>
                             <div className='third-col-ChatContainer'>
                                     {drag===true?
                                         <div className='third-col-fileUpload'><FaUpload /></div>
